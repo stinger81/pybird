@@ -1,0 +1,102 @@
+= PYBIRD
+
+Current Version: V0.8.4-DEV
+
+== License
+
+Copyright (C) 2022-2023 Michael Dompke (https://github.com/stinger81)
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details
+
+You should have received a copy of the GNU General Public License
+along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+Michael Dompke (https://github.com/stinger81)
+michael@dompke.dev
+
+
+== Useful Links
+
+* link:src[PYBIRD CODE]
+* link:CHANGELOG.md[Change Log]
+* <<_install-software-development,Install (Software Development)>>
+* <<_install-server,Install (Server)>>
+* <<_platform-setup,PYBIRD Setup>>
+* link:docs/App_Development_Guide.adoc[App Development Guide]
+
+== Additional Features
+Some features of a PYBIRD will require additional accounts/credentials to work
+
+- link:https://www.mongodb.com/atlas/database[MongoDB Atlas]
+- link:https://developer.twitter.com/en/docs/developer-portal/overview[Twitter Developer Account]
+
+[#_install-software-development]
+== Install (Software Development)
+
+=== Windows/MacOS/Linux
+
+. Install https://docs.anaconda.com/free/anaconda/install/[Anaconda]
+. Create a Conda Environment
++
+[source,commandline]
+----
+conda create --name pybird python=3.9
+----
+
+. Activate the environment
++
+[source,commandline]
+----
+conda activate pybird
+----
+// you can leave the environment at anytime by:
+//
+// [source,commandline]
+// ----
+// conda deactivate
+// ----
+
+. Required dependencies
++
+[source,commandline]
+----
+python -m pip install toml pycryptodome tweepy pymongo
+----
+
+. Finish General PYBIRD Setup: <<finish-setupall-platforms,Finish Setup(All Platforms)>>
+
+[#_install-server]
+== Install (Server)
+
+=== Linux/RaspberryPi
+
+. Install dependencies
+
+[source,commandline]
+----
+python -m pip install toml pycryptodome tweepy pymongo
+----
+[#_platform-setup]
+== Platform Setup
+
+*_under development_*
+
+
+
+== Tested Operating Systems
+
+Tested using Python 3.9:
+
+- Windows 11 Pro w/ and w/o Anaconda
+- Ubuntu for WSL
+- AWS EC2
+- Raspberry Pi OS (32 and 64 bit)
+

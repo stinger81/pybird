@@ -1,0 +1,13 @@
+{
+  "app_code": "TEST",
+  "step_time": "1 m",
+  "step_on_boot": true,
+  "step_on_shutdown": false,
+  "debug_mode": false,
+  "app_parameters": {
+    "": ""
+  },
+  "log_to_DB": true,
+  "LOG TO DB NOTE": "logging to a database is a user toggle option. However, a dedicated database must be set up. Contact your sales representative to enable the dedicated database",
+  "checksum_sha256": ""
+}

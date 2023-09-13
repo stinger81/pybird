@@ -1,0 +1,10 @@
+[Unit]
+Description=PYBIRD systemd service.
+
+[Service]
+Type=simple
+ExecStartPre=/bin/sleep 45
+ExecStart=/usr/bin/python3 /home/user/pybird/src/PYBIRD_bootloader.py -boot /home/user
+
+[Install]
+WantedBy=multi-user.target

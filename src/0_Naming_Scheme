@@ -1,0 +1,38 @@
+# ##########################################################################
+#
+#   Copyright (C) 2022-2023 Michael Dompke (https://github.com/stinger81)
+#
+#    This program is free software: you can redistribute it and/or modify
+#    it under the terms of the GNU General Public License as published by
+#    the Free Software Foundation, either version 3 of the License, or
+#    any later version.
+#
+#    This program is distributed in the hope that it will be useful,
+#    but WITHOUT ANY WARRANTY; without even the implied warranty of
+#    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#    GNU General Public License for more details
+#
+#    You should have received a copy of the GNU General Public License
+#    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#
+#   Michael Dompke (https://github.com/stinger81)
+#   michael@dompke.dev
+#
+# ##########################################################################
+PYBIRD - Used for UI's and primary service
+
+TAS - App Subsystem | Contains the user level framework/Plugins for using the PYBIRD system
+TBS - Boot Subsystem | Used for running pybird on Boot
+TCS - Core Subsystem | Contains the core PYBIRD framework. Includes:
+    -> Configuration
+    -> I/O Utilities
+    -> Logging
+    -> Core Framework
+    -> Variables 
+TDS - Data Subsystem | contains basic data structures and a way to save user data to memory
+    -> MongoDB Atlas Support
+    -> NVM Names based data storage (Data is not guarantied to transfer between instances)
+TKS - Keychain Subsystem | Securely store keys/credentials separately from the Main PYBIRD Files
+TNS - Node Subsystem | Used to build/run an instance of PYBIRD
+TWM - Twitter Manager | Used to post on twitter
+WDT - Watchdog | classes for managing the software watchdog

@@ -1,0 +1,73 @@
+# ##########################################################################
+#
+#   Copyright (C) 2022-2023 Michael Dompke (https://github.com/stinger81)
+#
+#    This program is free software: you can redistribute it and/or modify
+#    it under the terms of the GNU General Public License as published by
+#    the Free Software Foundation, either version 3 of the License, or
+#    any later version.
+#
+#    This program is distributed in the hope that it will be useful,
+#    but WITHOUT ANY WARRANTY; without even the implied warranty of
+#    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#    GNU General Public License for more details
+#
+#    You should have received a copy of the GNU General Public License
+#    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#
+#   Michael Dompke (https://github.com/stinger81)
+#   michael@dompke.dev
+#
+# ##########################################################################
+
+version = ""
+
+# WARNING: If a copy of this file is located in the home directory, the file in $PYBIRD/config will be ignored
+# WARNING: If a copy of this file is located in the home directory, the file in $PYBIRD/config will be ignored
+# WARNING: If a copy of this file is located in the home directory, the file in $PYBIRD/config will be ignored
+
+##################################################################
+# bootloader config
+[server]
+
+PYBIRD="pybird"                 #Location Relative to home
+PYBIRDRemoteDir="pybird_apps"   #Location Relative to home
+PYBIRDPlatform="aws-ec2"
+PYBIRDpython="python3"
+
+
+[watchdog]
+launchSWwdt = true # Software Watch Dog
+# RESERVED FOR FUTURE USE | launchServiceWdt = false # will create a process to watch that the service launching the boot loader is up
+
+[nodes]
+nodes = ["N000"]
+bootMode = true 
+# BOOTMODE will override the following settings
+#   system_config.console.show_console = False
+#   system_config.system.test_mode = False
+#   system_config.system.debug_mode = False
+# end bootloader config
+##################################################################
+# PYBIRD config
+[system_config]
+    [system_config.system]
+        test_mode=false
+        debug_mode=true
+        remote_app_enabled=true
+    
+    [system_config.console]
+        show_console=true
+    
+    [system_config.twitter]
+        max_char=280
+    
+    [system_config.status]
+        log_length=5
+    
+    [system_config.encryption]
+        encrypt_app_keys=false
+
+    [system_config.credentials]
+        delete_dir_after_upload=true # if true all setting below will be ignored, the entire directory will be deleted. Strongly recommended to increase security and prevent accidental unencoded key leaks
+        delete_file_after_upload=true # it is strongly recommended that this is deleted after upload for security reasons 

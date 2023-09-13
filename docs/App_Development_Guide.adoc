@@ -1,0 +1,226 @@
+= PYBIRD App Development Guide
+:author_name: Michael Dompke (stinger81)
+:author_email: michael@dompke.com
+:author: Michael Dompke (stinger81)
+:toc:
+:toc-title: Table of Contents
+:toc-placement: left
+:toclevels: 4
+:numbered:
+:description: PYBIRD App Development Guide
+:keywords: PYBIRD
+:imagesdir: ./img
+:source-highlighter: rouge
+:website:
+:stem:
+
+// == Intro
+
+== Logging Methods
+
+=== Standard Logging
+==== console
+[source,python]
+----
+self.interface.console(in_string: str, logType: str = "MSG") -> None:
+    """
+    Log a message to console
+    :param in_string: string to be logged
+    :param logType: type of log to be logged
+    :return: None
+    """
+----
+==== log
+[source,python]
+----
+self.interface.log(in_string: str, logType: str = "MSG") -> None:
+    """
+    log message to:
+        console
+        local log
+    :param in_string: string to be logged
+    :param logType: type of log to be logged
+    :return: None
+    """
+----
+==== log_db
+[source,python]
+----
+
+self.interface.log_db(in_string: str, logType: str = "MSG") -> None:
+    """
+    log message to:
+        console
+        local log
+        database
+
+    :param in_string: string to be logged
+    :param logType: type of log to be logged
+    :return: None
+    """
+----
+==== log_list
+[source,python]
+----
+
+self.interface.log_list(in_list: list, logType: str = "MSG") -> None:
+    """
+    log list
+        console
+        local log
+    :param in_list: list to be logged
+    :param logType: type of log to be logged
+    :return: None
+
+    Example:
+        log_list([1,2,3,4,5,6,7,8,9,10], logType="MSG")
+    """
+----
+==== log_delimiter
+[source,python]
+----
+
+self.interface.log_delimiter(in_string: str,
+                  logType: str = "MSG",
+                  delimiter: str = ",",
+                  removeBlanks: bool = False) -> None:
+    """
+    log delimited
+        console
+        local log
+    :param in_string: string to be logged
+    :param logType: type of log to be logged
+    :param delimiter: delimiter to split string
+    :param removeBlanks: remove blank lines
+    :return: None
+
+    Example:
+        log_delimiter("1,2,3,4,5,6,7,8,9,10", delimiter=",", removeBlanks=True)
+        log_delimiter("1,2,3,4,5,6,7,8,9,10", delimiter=",", removeBlanks=False)
+    """
+
+----
+==== log_multiline
+[source,python]
+----
+self.interface.log_multiline(in_string: str, logType: str = "MSG") -> None:
+    """
+    log multiline
+        console
+        local log
+    :param in_string: string to be logged
+    :param logType: type of log to be logged
+    :return: None
+    """
+----
+==== log_dict
+[source,python]
+----
+self.interface.log_dict(in_dict: dict, logType: str = "MSG") -> None:
+    """
+    log dictionary
+        console
+        local log
+    :param in_dict: dictionary to be logged
+    :param logType: type of log to be logged
+    :return: None
+    """
+----
+
+=== Debug Methods
+
+==== dlog
+[source,python]
+----
+self.interface.dlog(in_string: str, logType: str = "MSG") -> None:
+    """
+    debug log message to:
+        console
+        local log
+    :param in_string: string to be logged
+    :param logType: type of log to be logged
+    :return: None
+    """
+
+----
+==== dlog_db
+[source,python]
+----
+self.interface.dlog_db(in_string: str, logType: str = "MSG") -> None:
+    """
+    debug log message to:
+        console
+        local log
+        database
+    :param in_string: string to be logged
+    :param logType: type of log to be logged
+    :return: None
+    """
+----
+==== dlog_list
+[source,python]
+----
+self.interface.dlog_list(in_list, logType: str = "MSG") -> None:
+    """
+    debug log list
+        console
+        local log
+    :param in_list: list to be logged
+    :param logType: type of log to be logged
+    :return: None
+    """
+----
+==== dlog_delimeter
+[source,python]
+----
+self.interface.dlog_delimeter(self,
+                   in_string: str,
+                   logType: str = "MSG",
+                   delimiter: str = ",",
+                   removeBlanks: bool = False) -> None:
+    """
+    debug log delimited
+        console
+        local log
+    :param in_string: string to be logged
+    :param logType: type of log to be logged
+    :param delimiter: delimiter to use
+    :param removeBlanks: remove blank lines
+    :return: None
+    """
+----
+==== dlog_multiline
+[source,python]
+----
+self.interface.dlog_multiline(in_string: str, logType: str = "MSG") -> None:
+    """
+    debug log multiline
+        console
+        local log
+    :param in_string: string to be logged
+    :param logType: type of log to be logged
+    :return: None
+    """
+----
+==== dlog_dict
+[source,python]
+----
+self.interface.dlog_dict(in_dict: dict, logType: str = "MSG") -> None:
+    """
+    debug log dictionary
+        console
+        local log
+    :param in_dict: dictionary to be logged
+    :param logType: type of log to be logged
+    :return: None
+    """
+----
+
+== Data Structures and Data Storage
+=== Included Data Structures
+=== Saving Objects to Non-Volatile Memory
+=== MongoDB Atlas Interface
+
+== App Configuration and Custom Parameters
+
+== PYBIRD Plugins
