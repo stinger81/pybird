@@ -29,12 +29,16 @@ export = TCS_interface.interface("EXPORT INTERFACE")
 print(TCS_utils.LICENSE)
 
 
-
 def _UI():
     ui = TCS_UIutils.userInterface("Main Menu", "PyBird UI (Run PYBIRDMgrUI.py to add keys/credentials)")
     ui.addOption("LOG COMMANDS", "")
-    ui.addOption("ex", "Export Logs", export.export_log)
+    ui.addOption("ex", "Export ALL Logs", export.export_log)
+    ui.addOption("exm", "Export Master Log", export.export_master_log)
+    ui.addOption("exs", "Export Session Log", export.export_session_log)
+    ui.addOption("exa", "Export App Log", export.export_app_log)
+    ui.addOption("bm", "Build Master Log From Session Logs", export.build_master_from_session_logs)
     ui.addOption("exc", "Export and Clear Logs", export.export_and_clear)
+
     ui.addQuit(isDefault=True)
     ui.run()
 

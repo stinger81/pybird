@@ -55,6 +55,12 @@ bootMode = true
         test_mode=false
         debug_mode=true
         remote_app_enabled=true
+
+    [system_config.logging]
+    # Either Master or Session Logging must be enabled, if they are both false session logging will be overriden to True
+        enable_master_log=false
+        enable_session_log=false
+        enable_app_log=true
     
     [system_config.console]
         show_console=true

@@ -36,7 +36,7 @@ from TCS_variables_error import *
 
 PYBIRD_VER_MAJOR = 0
 PYBIRD_VER_MINOR = 8
-PYBIRD_VER_PATCH = 5
+PYBIRD_VER_PATCH = 6
 PYBIRD_VER_BUILD = 0
 PYBIRD_VER_PRE = True
 PYBIRD_VER_RC = False
@@ -75,12 +75,20 @@ HOME_DIRECTORY = HOME
 # endregion
 ####################################################################################################
 ####################################################################################################
+# region session info
+SESSION_DATETIME_FORMAT = "%Y%m%d%H%M%S%f%z"
+SESSION_FILE_EXTENSION = ".sessionID"
+SESSION_UNIQUE_ID_LENGTH = 8  # MD5 hash, max length of 32
+
+# endregion
+####################################################################################################
+####################################################################################################
 # region Base Directories
 PYBIRD_HOME_DIRNAME = '.pybird'
 PYBIRD_SRC_DIRNAME = 'src'
 PYBIRD_LOG_DIRNAME = 'log'
 PYBIRD_CONFIG_DIRNAME = 'config'
-PYBIRD_APP_LOCAL_DIRNAME = 'pybird_local_apps'
+PYBIRD_APP_LOCAL_DIRNAME = 'PYBIRD_APPS'
 PYBIRD_DATA_DIRNAME = 'data'
 PYBIRD_SESSION_DIRNAME = 'session'
 PYBIRD_APPDATA_DIRNAME = 'appdata'
@@ -170,7 +178,8 @@ PLATFORM_CHECK_WSL: str = "microsoft-standard"
 PYBIRD_PLATFORM_WINDOWS: str = 'windows'  # windows 10/11
 PYBIRD_PLATFORM_LINUX: str = 'linux'  # general linux
 PYBIRD_PLATFORM_MACOS: str = "macos"  # MacOS
-PYBIRD_PLATFORM_AWS_EC2: str = "aws-ec2"  # AWS EC2 (Unable to detect, platform must be declared)
+PYBIRD_PLATFORM_AWS_EC2_LINUX2: str = "aws-ec2-linux2"  # AWS EC2 (Amazon Linux 2)  (Unable to detect, platform must be declared)
+PYBIRD_PLATFORM_AWS_EC2_LINUX2023: str = "aws-ec2-linux2023"  # AWS EC2 (Amazon Linux 2023) (Unable to detect, platform must be declared)
 PYBIRD_PLATFORM_WSL: str = "wsl"  # Windows Subsystem for linux
 PYBIRD_PLATFORM_PI32: str = "pi32"  # Raspberry Pi 32-bit platform (Unable to detect, platform must be declared)
 PYBIRD_PLATFORM_PI64: str = "pi64"  # Raspberry Pi 64-bit platform (Unable to detect, platform must be declared)
@@ -182,7 +191,7 @@ try:
     if TEMP_PLATFORM in [PYBIRD_PLATFORM_WINDOWS,
                          PYBIRD_PLATFORM_LINUX,
                          PYBIRD_PLATFORM_MACOS,
-                         PYBIRD_PLATFORM_AWS_EC2,
+                         PYBIRD_PLATFORM_AWS_EC2_LINUX2,
                          PYBIRD_PLATFORM_WSL,
                          PYBIRD_PLATFORM_PI32,
                          PYBIRD_PLATFORM_PI64]:
@@ -253,7 +262,12 @@ elif PYBIRD_PLATFORM == PYBIRD_PLATFORM_WSL:  # Windows Subsystem for Linux
     PLATFORM_FORCE_TEST_MODE = False
     PLATFORM_FORCE_DEBUG_MODE = True
 
-elif PYBIRD_PLATFORM == PYBIRD_PLATFORM_AWS_EC2:  # AWS EC2 Server
+elif PYBIRD_PLATFORM == PYBIRD_PLATFORM_AWS_EC2_LINUX2:  # AWS EC2 (Amazon Linux 2) Server
+    PLATFORM_HAS_CLI = False
+    PLATFORM_FORCE_TEST_MODE = False
+    PLATFORM_FORCE_DEBUG_MODE = False
+
+elif PYBIRD_PLATFORM == PYBIRD_PLATFORM_AWS_EC2_LINUX2023:  # AWS EC2 (Amazon Linux 2) Server
     PLATFORM_HAS_CLI = False
     PLATFORM_FORCE_TEST_MODE = False
     PLATFORM_FORCE_DEBUG_MODE = False

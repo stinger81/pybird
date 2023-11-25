@@ -20,8 +20,8 @@
 #
 # ##########################################################################
 # project specific
-*.html
-*.key
+.html
+.key
 key/
 .key/
 log/
@@ -29,11 +29,14 @@ data/
 .private
 private/
 appRemote/
-*.old
+.old
 .idea/
 docs/__temp__/
 *.csv
 !config/N000_NODE_CONFIG.csv
+#!config/PYBIRD_NODE_CONFIG.csv
+.todo
+DEV_APPS/
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

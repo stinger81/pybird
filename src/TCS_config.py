@@ -57,6 +57,7 @@ class TCS_config:
         self._agrv = None
 
         self.system: system_config = system_config()
+        self.logging: logging_config = logging_config()
         self.console: console_config = console_config()
         self.twitter: twitter_config = twitter_config()
         self.platform: platform = platform()
@@ -73,12 +74,16 @@ class TCS_config:
         if self.system.test_mode:
             self.system.debug_mode = True
 
+        if not self.logging.enable_master_log and not self.logging.enable_session_log:
+            self.logging.enable_session_log = True
+
     def _read_config(self):
         # file = open(self.file, "r")
         # self._config = json.load(file)
         # file.close()
 
         self.system._read(self._config)
+        self.logging._read(self._config)
         self.console._read(self._config)
         self.twitter._read(self._config)
         self.status._read(self._config)
@@ -141,6 +146,30 @@ class system_config:
         string_out += f"test_mode: {self.test_mode}\n"
         string_out += f"debug_mode: {self.debug_mode}\n"
         string_out += f"remote_app_enabled: {self.remote_app_enabled}\n"
+
+        return string_out
+
+
+class logging_config:
+    def __init__(self) -> None:
+        self._raw = None
+
+        self.enable_master_log = False
+        self.enable_session_log = True
+        self.enable_app_log = False
+
+    def _read(self, _config):
+        self._raw = _config["logging"]
+
+        self.enable_master_log = self._raw["enable_master_log"]
+        self.enable_session_log = self._raw["enable_session_log"]
+        self.enable_app_log = self._raw["enable_app_log"]
+
+    def __str__(self) -> str:
+        string_out = ""
+        string_out += f"enable_master_log: {self.enable_master_log}\n"
+        string_out += f"enable_session_log: {self.enable_session_log}\n"
+        string_out += f"enable_app_log: {self.enable_app_log}\n"
 
         return string_out
 

@@ -107,21 +107,34 @@ class interface:
         self._app = node
 
     def update_dir(self):
-        self.master_log: str = os.path.join(
-            TCS_variables.PYBIRD_DATA_LOG_DIRECTORY, "MASTER_LOG.csv")
-        if not os.path.exists(self.master_log):
-            with open(self.master_log, "w", encoding="utf-8") as f:
-                f.write(LOG_HEADER)
-            if sys.platform.startswith(TCS_variables.PLATFORM_CHECK_LINUX):
-                subprocess.call(['chmod', '666', self.master_log])
+        if self._config.logging.enable_master_log:
+            self.master_log: str = os.path.join(
+                TCS_variables.PYBIRD_DATA_LOG_DIRECTORY, "MASTER_LOG.csv")
+            if not os.path.exists(self.master_log):
+                with open(self.master_log, "w", encoding="utf-8") as f:
+                    f.write(LOG_HEADER)
+                if sys.platform.startswith(TCS_variables.PLATFORM_CHECK_LINUX):
+                    subprocess.call(['chmod', '666', self.master_log])
 
-        self.app_log: str = os.path.join(
-            TCS_variables.PYBIRD_DATA_LOG_DIRECTORY, str("APP_" + self.sourceName + "_LOG.csv"))
-        if not os.path.exists(self.app_log):
-            with open(self.app_log, "w", encoding="utf-8") as f:
-                f.write(LOG_HEADER)
-            if sys.platform.startswith(TCS_variables.PLATFORM_CHECK_LINUX):
-                subprocess.call(['chmod', '666', self.app_log])
+        if self._config.logging.enable_session_log:
+            self.session_log: str = os.path.join(
+                TCS_variables.PYBIRD_DATA_LOG_DIRECTORY,
+                str("SESSION_" + str(int(self.startUp)) + "_" + self.sessionID + "_LOG.csv")
+            )
+            if not os.path.exists(self.session_log):
+                with open(self.session_log, "w", encoding="utf-8") as f:
+                    f.write(LOG_HEADER)
+                if sys.platform.startswith(TCS_variables.PLATFORM_CHECK_LINUX):
+                    subprocess.call(['chmod', '666', self.session_log])
+
+        if self._config.logging.enable_app_log:
+            self.app_log: str = os.path.join(
+                TCS_variables.PYBIRD_DATA_LOG_DIRECTORY, str("APP_" + self.sourceName + "_LOG.csv"))
+            if not os.path.exists(self.app_log):
+                with open(self.app_log, "w", encoding="utf-8") as f:
+                    f.write(LOG_HEADER)
+                if sys.platform.startswith(TCS_variables.PLATFORM_CHECK_LINUX):
+                    subprocess.call(['chmod', '666', self.app_log])
 
     def _add_collection(self, collection):
         self._log_to_db_collection = collection
@@ -162,6 +175,112 @@ class interface:
             shutil.copyfile(os.path.join(TCS_variables.PYBIRD_DATA_LOG_DIRECTORY, file),
                             os.path.join(TCS_variables.PYBIRD_LOG_DIRECTORY, date + "_" + file))
             print("EXPORT TO:", TCS_variables.PYBIRD_LOG_DIRECTORY + "/" + date + "_" + file)
+
+    def export_master_log(self):
+
+        log_file = os.listdir(TCS_variables.PYBIRD_DATA_LOG_DIRECTORY)
+        to_exp = []
+        for file in log_file:
+            if "MASTER" in file:
+                to_exp.append(file)
+        date = datetime.now(timezone.utc).strftime("%Y%m%d_%H%M%S")
+        self.log("FILES TO EXPORT - " + date)
+        self.log_list(to_exp, "To export")
+
+        dir_out = input("Enter the export location / separated[" + TCS_variables.PYBIRD_LOG_DIRECTORY + "]: ")
+        if dir_out == "":
+            dir_out = TCS_variables.PYBIRD_LOG_DIRECTORY
+        else:
+            temp = dir_out.split("/")
+            dir_out = os.path.join("/", *temp)
+
+        for file in to_exp:
+            if "MASTER" in file:
+                shutil.copyfile(os.path.join(TCS_variables.PYBIRD_DATA_LOG_DIRECTORY, file),
+                                os.path.join(TCS_variables.PYBIRD_LOG_DIRECTORY, date + "_" + file))
+                print("EXPORT TO:", TCS_variables.PYBIRD_LOG_DIRECTORY + "/" + date + "_" + file)
+
+    def export_session_log(self):
+        log_file = os.listdir(TCS_variables.PYBIRD_DATA_LOG_DIRECTORY)
+        to_exp = []
+        for file in log_file:
+            if "SESSION" in file:
+                to_exp.append(file)
+        date = datetime.now(timezone.utc).strftime("%Y%m%d_%H%M%S")
+        self.log("FILES TO EXPORT - " + date)
+        self.log_list(log_file, "To export")
+
+        dir_out = input("Enter the export location / separated[" + TCS_variables.PYBIRD_LOG_DIRECTORY + "]: ")
+        if dir_out == "":
+            dir_out = TCS_variables.PYBIRD_LOG_DIRECTORY
+        else:
+            temp = dir_out.split("/")
+            dir_out = os.path.join("/", *temp)
+
+        for file in to_exp:
+            if "SESSION" in file:
+                shutil.copyfile(os.path.join(TCS_variables.PYBIRD_DATA_LOG_DIRECTORY, file),
+                                os.path.join(TCS_variables.PYBIRD_LOG_DIRECTORY, date + "_" + file))
+                print("EXPORT TO:", TCS_variables.PYBIRD_LOG_DIRECTORY + "/" + date + "_" + file)
+
+    def export_app_log(self):
+        log_file = os.listdir(TCS_variables.PYBIRD_DATA_LOG_DIRECTORY)
+        to_exp = []
+        for file in log_file:
+            if "APP" in file:
+                to_exp.append(file)
+        date = datetime.now(timezone.utc).strftime("%Y%m%d_%H%M%S")
+        self.log("FILES TO EXPORT - " + date)
+        self.log_list(log_file, "To export")
+
+        dir_out = input("Enter the export location / separated[" + TCS_variables.PYBIRD_LOG_DIRECTORY + "]: ")
+        if dir_out == "":
+            dir_out = TCS_variables.PYBIRD_LOG_DIRECTORY
+        else:
+            temp = dir_out.split("/")
+            dir_out = os.path.join("/", *temp)
+
+        for file in to_exp:
+            if "APP" in file:
+                shutil.copyfile(os.path.join(TCS_variables.PYBIRD_DATA_LOG_DIRECTORY, file),
+                                os.path.join(TCS_variables.PYBIRD_LOG_DIRECTORY, date + "_" + file))
+                print("EXPORT TO:", TCS_variables.PYBIRD_LOG_DIRECTORY + "/" + date + "_" + file)
+
+    def build_master_from_session_logs(self):
+        log_file = os.listdir(TCS_variables.PYBIRD_DATA_LOG_DIRECTORY)
+        to_exp = []
+        for file in log_file:
+            if "SESSION" in file:
+                to_exp.append(file)
+        date = datetime.now(timezone.utc).strftime("%Y%m%d_%H%M%S")
+        self.log("FILES TO EXPORT - " + date)
+        self.log_list(to_exp, "To export")
+
+        dir_out = input("Enter the export location / separated[" + TCS_variables.PYBIRD_LOG_DIRECTORY + "]: ")
+        if dir_out == "":
+            dir_out = TCS_variables.PYBIRD_LOG_DIRECTORY
+        else:
+            temp = dir_out.split("/")
+            dir_out = os.path.join("/", *temp)
+
+        file_name = date + "_MASTER_COMBINED_SES_LOG.csv"
+
+        file_path = os.path.join(dir_out, file_name)
+        TCS_utils.append_text_file(file_path, LOG_HEADER.strip())
+        len_header = len(LOG_HEADER.split(","))
+
+        for file in to_exp:
+            if "SESSION" in file:
+                with open(os.path.join(TCS_variables.PYBIRD_DATA_LOG_DIRECTORY, file), "r", encoding="utf-8") as f:
+                    lines = f.readlines()
+                    lines = lines[1:]
+                    TCS_utils.append_text_file(file_path, str(("," * (
+                                len_header - 1)) + "*********START OF " + file + "*********"))
+                    for line in lines:
+                        TCS_utils.append_text_file(file_path, line.strip())
+                    TCS_utils.append_text_file(file_path,
+                                               str(("," * (len_header - 1)) + "*********END OF " + file + "*********"))
+                    print("Finished with: ", file_path)
 
     def export_and_clear(self):
         self.export_log()
@@ -388,19 +507,29 @@ class interface:
         :param msg: message to be logged
         :return: None
         """
-        try:
-            with open(self.master_log, "a", encoding="utf-8") as f:
-                f.write(msg)
-                f.write("\n")
-        except Exception as e:
-            raise TCS_variables.PYBIRDIOError("_log_to_file error on primary method only (MASTER LOG)")
+        if self._config.logging.enable_master_log:
+            try:
+                with open(self.master_log, "a", encoding="utf-8") as f:
+                    f.write(msg)
+                    f.write("\n")
+            except Exception as e:
+                raise TCS_variables.PYBIRDIOError("_log_to_file error on primary method only (MASTER LOG)")
 
-        try:
-            with open(self.app_log, "a", encoding="utf-8") as f:
-                f.write(msg)
-                f.write("\n")
-        except Exception as e:
-            raise TCS_variables.PYBIRDIOError("_log_to_file error on primary method only (APP LOG)")
+        if self._config.logging.enable_session_log:
+            try:
+                with open(self.session_log, "a", encoding="utf-8") as f:
+                    f.write(msg)
+                    f.write("\n")
+            except Exception as e:
+                raise TCS_variables.PYBIRDIOError("_log_to_file error on primary method only (SESSION LOG)")
+
+        if self._config.logging.enable_app_log:
+            try:
+                with open(self.app_log, "a", encoding="utf-8") as f:
+                    f.write(msg)
+                    f.write("\n")
+            except Exception as e:
+                raise TCS_variables.PYBIRDIOError("_log_to_file error on primary method only (APP LOG)")
 
     def _log_to_db(self, msg: str, type: str) -> None:
         """
@@ -513,7 +642,7 @@ class interface:
         """
         header = ""
         header += datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M:%S")
-        header += "," + str(self.version)
+        header += "," + self.version.short_str()
         header += "," + self.sessionID
         header += "," + self.sourceName
         uptime = str(self.get_uptime())
@@ -609,16 +738,17 @@ def write_state_file(nodeName):
     # full hash
     # session ID
     pid = str(os.getpid())
-    date = str(datetime.now(timezone.utc).strftime("%Y%m%d%H%M%S%f%z"))
+    date = str(datetime.now(timezone.utc).strftime(TCS_variables.SESSION_DATETIME_FORMAT))
     s_str: str = nodeName + pid + date
     b_str = s_str.encode()
     my_hash = hashlib.md5(b_str).hexdigest()
-    sessionID = nodeName + "-" + my_hash[:8]
+    sessionID = nodeName + "-" + my_hash[:TCS_variables.SESSION_UNIQUE_ID_LENGTH]
 
     file_path = os.path.join(TCS_variables.PYBIRD_DATA_SESSION_DIRECTORY, pid)
     if not os.path.exists(file_path):
         os.mkdir(file_path)
-    file = os.path.join(file_path, "session_info.id")
+    fileName = pid + TCS_variables.SESSION_FILE_EXTENSION
+    file = os.path.join(file_path, fileName)
 
     with open(file, "w") as f:
         f.write(nodeName + "\n")
@@ -632,7 +762,8 @@ def write_state_file(nodeName):
 def read_state_file():
     pid = str(os.getpid())
     file_path = os.path.join(TCS_variables.PYBIRD_DATA_SESSION_DIRECTORY, pid)
-    file = os.path.join(file_path, "session_info.id")
+    fileName = pid + TCS_variables.SESSION_FILE_EXTENSION
+    file = os.path.join(file_path, fileName)
     with open(file, "r") as f:
         lines = f.readlines()
         nodeName = lines[0].strip()
@@ -642,7 +773,7 @@ def read_state_file():
         full_hash = lines[4].strip()
         sessionID = lines[5].strip()
 
-    start = datetime.strptime(startTime, "%Y%m%d%H%M%S%f%z").timestamp()
+    start = datetime.strptime(startTime, TCS_variables.SESSION_DATETIME_FORMAT).timestamp()
     return sessionID, start
 
 

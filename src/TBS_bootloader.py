@@ -22,11 +22,11 @@
 # ##########################################################################
 
 import multiprocessing
-import time
 from typing import List
 
-import TNS_run
 from TBS_bootloader_vars import *
+
+time.sleep(0.5)
 
 PROCESS: List[multiprocessing.Process] = []
 bootMode = CONFIG["nodes"]["bootMode"]
@@ -40,6 +40,7 @@ def launchNodes():
 
 
 def _launchNode(nodeName: str, daemon: bool = False):
+    import TNS_run  # DO NOT MOVE
     PROCESS.append(multiprocessing.Process(name=nodeName,
                                            target=TNS_run.run,
                                            args=(nodeName, True,),  # comma required after vars

@@ -43,6 +43,8 @@ LICENSE = """
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
 """
+
+
 class _version:
     def __init__(self):
         self.major: int = 0
@@ -69,6 +71,43 @@ class _version:
             version_string += f".{self.patch}"
         if self.build > 0:
             version_string += f".{self.build}"
+
+        if self.pre:
+            version_string += "-pre"
+
+        if self.release_candidate:
+            version_string += "-rc"
+        elif self.beta:
+            version_string += "-beta"
+        elif self.alpha:
+            version_string += "-alpha"
+        elif self.dev:
+            version_string += "-dev"
+
+        return version_string
+
+    def short_str(self):
+        version_string = f"{self.major}.{self.minor}"
+        if self.patch > 0 or self.build != 0:
+            version_string += f".{self.patch}"
+        if self.build > 0:
+            version_string += f".{self.build}"
+
+        if self.dev:
+            version_string += "-DEV"
+        elif self.pre and self.alpha:
+            version_string += "-PA"
+        elif self.alpha:
+            version_string += "-A"
+        elif self.beta:
+            version_string += "-B"
+        elif self.release_candidate:
+            version_string += "-RC"
+
+        return version_string
+
+    def full_str(self):
+        version_string = f"{self.major}.{self.minor}.{self.patch}.{self.build}"
 
         if self.pre:
             version_string += "-pre"

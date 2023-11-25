@@ -248,26 +248,31 @@ class keychain:
             TCS_utils.copy_file_to_old(file)
             TCS_utils.delete_file(file)
 
+        key_encode = keys.encode(TCS_variables.AES_ENCODING)
+
         if self.config.encryption.encrypt_app_key:
             keys_enc = self.AES.encrypt(keys).decode(TCS_variables.AES_ENCODING)
+            keys_enc_encode = keys_enc.encode(TCS_variables.AES_ENCODING)
             TCS_utils.append_text_file(file, keys_enc)
-            TCS_utils.append_text_file(file, hashlib.sha256(keys_enc).hexdigest())
-            TCS_utils.append_text_file(file, hashlib.sha256(keys).hexdigest())
+            TCS_utils.append_text_file(file, hashlib.sha256(keys_enc_encode).hexdigest())
+            TCS_utils.append_text_file(file, hashlib.sha256(key_encode).hexdigest())
         else:
             TCS_utils.append_text_file(file, keys)
-            TCS_utils.append_text_file(file, hashlib.sha256(keys).hexdigest())
+            TCS_utils.append_text_file(file, hashlib.sha256(key_encode).hexdigest())
 
     def _read_key_from_file(self, file: str):
         with open(file, "r") as f:
             keys = f.readlines()
-            key = keys[0]
-            save_hash = keys[1]
-            if hashlib.sha256(key).hexdigest() != save_hash:
+            key = keys[0].strip()
+            save_hash = keys[1].strip()
+            if hashlib.sha256(key.encode(TCS_variables.AES_ENCODING)).hexdigest() != save_hash:
+                self.interface.log("File " + file + " is corrupted! FAILED INITIAL HASH CHECK ", "ERROR")
                 return None
             if self.config.encryption.encrypt_app_key:
-                decrypt_key_hash = keys[2]
-                key = self.AES.decrypt(keys).decode(TCS_variables.AES_ENCODING)
-                if hashlib.sha256(key).hexdigest() != decrypt_key_hash:
+                decrypt_key_hash = keys[2].strip()
+                key = self.AES.decrypt(key).decode(TCS_variables.AES_ENCODING)
+                if hashlib.sha256(key.encode(TCS_variables.AES_ENCODING)).hexdigest() != decrypt_key_hash:
+                    self.interface.log("File " + file + " is corrupted! FAILED SECOND HASH CHECK ", "ERROR")
                     return None
         return key
 

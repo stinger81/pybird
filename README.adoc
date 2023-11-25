@@ -1,6 +1,6 @@
 = PYBIRD
 
-Current Version: V0.8.4-DEV
+Current Version: V0.8.6-DEV
 
 == License
 
@@ -82,8 +82,37 @@ python -m pip install toml pycryptodome tweepy pymongo
 
 [source,commandline]
 ----
+sudo apt install -y python3-pip
+sudo apt install -y python3-psutil
+python -m pip install -U pip
+python -m pip install  numpy
 python -m pip install toml pycryptodome tweepy pymongo
 ----
+
+=== AWS EC2
+
+. Install dependencies
+
+[source,commandline]
+----
+sudo yum install -y python3-pip
+sudo yum install -y python3-psutil
+python3 -m pip install -U pip
+python3 -m pip install  numpy
+python3 -m pip install toml pycryptodome tweepy pymongo
+----
+NOTE: if you are using the service to run PYBIRD you will need to install everything with admin privileges
+
+[source,commandline]
+----
+sudo yum install -y python3-pip
+sudo yum install -y python3-psutil
+sudo python3 -m pip install -U pip
+sudo python3 -m pip install  numpy
+sudo python3 -m pip install toml pycryptodome tweepy pymongo
+----
+
+
 [#_platform-setup]
 == Platform Setup
 
@@ -95,8 +124,12 @@ python -m pip install toml pycryptodome tweepy pymongo
 
 Tested using Python 3.9:
 
-- Windows 11 Pro w/ and w/o Anaconda
-- Ubuntu for WSL
-- AWS EC2
-- Raspberry Pi OS (32 and 64 bit)
+* Windows 11 Pro w/ and w/o Anaconda (Python 3.9)
+* Ubuntu for WSL (Python 3.9)
+* AWS EC2
+** Amazon Linux 2 (Python 3.7)
+*** PYBIRD Support Deprecated December 2023 (Final Version PYBIRD v0.8.6-PA)
+** Amazon Linux 2023 (Python 3.9)
+* Raspberry Pi OS (32 and 64 bit)
+** Buster (Python 3.9)
 

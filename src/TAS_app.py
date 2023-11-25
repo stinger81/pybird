@@ -35,7 +35,6 @@ import TCS_variables
 import TDS_NVM
 import TDS_database_atlas
 import TWM_key_manager
-import TWM_tweet_manger_APIv1_1
 import TWM_tweet_manger_APIv2
 
 
@@ -108,16 +107,6 @@ class app(TCS_core.core):
         self.plugins = TAS_app_plugins.plugins()
         self.interface.dlog(
             f"{self.name} v{self.version} : APP-BASE INITIALIZED", logType="INFO")
-
-    def use_twitter_v1_1(self):
-        self.interface.dlog("using api v1.1", "API VERSION")
-        if self.tweet_enabled:
-            self.tweet = TWM_tweet_manger_APIv1_1.Bot(self, self.key)
-            self.tweet.access_twitter = True
-            self.tweet.post_allowed = True
-            self.tweet.init_account()
-        else:
-            self.interface.log("Tweeting disabled", "ERROR")
 
     def _run_base(self):
         pass

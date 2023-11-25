@@ -23,6 +23,7 @@
 
 import os
 import sys
+import time
 from pathlib import Path
 
 import toml
@@ -72,3 +73,5 @@ except:
 
 # add nodes to environment variables
 os.environ["PYBIRDnodes"] = node_env
+
+time.sleep(1)

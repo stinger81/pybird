@@ -1,6 +1,30 @@
 # PYBIRD
 
 ## Change Log
+
+### Version 0.8.6-PA
+- moved session ID parameters to `TCS_variables.py`
+- removed support for api v1.1
+- changed EC2 platform code
+  - `aws-ec2` --> `aws-ec2-linux2`
+- added support for AWS-EC2 Amazon Linux 2023
+  - Platform code - `aws-ec2-linux2023`
+- Added Session Logging to Logs
+- Fixed error in encryption and key storage
+- fixed bootloader errors on AWS EC2
+- Added options in config for what types of logs should be generated 
+- cleaned up code across all files
+- updated service for new naming scheme
+- added log export functionality
+  - Export Master Log
+    - Will only export the master log
+  - Export Session Log
+    - Will only export session logs
+  - Export App Log
+    - Will only export app logs
+  - Build Master Log From Session Logs
+    -  Will take all the session logs and export as a single fill
+
 ### Version 0.8.3-Dev
 - Optimized all imports
 - cleaned up all files

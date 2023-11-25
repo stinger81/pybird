@@ -22,12 +22,13 @@
 # ##########################################################################
 
 import TCS_UIutils
+import TCS_utils
 import TCS_variables
 import TKS_encryption
 import TKS_keychain
-import TCS_utils
 
 print(TCS_utils.LICENSE)
+
 
 def _UI():
     keys = TKS_keychain.keychain()
