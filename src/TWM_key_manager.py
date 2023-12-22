@@ -1,7 +1,7 @@
 # /bin/python3
 # ##########################################################################
 #
-#   Copyright (C) 2022-2023 Michael Dompke (https://github.com/stinger81)
+#   Copyright (C) 2022-2024 Michael Dompke (https://github.com/stinger81)
 #
 #    This program is free software: you can redistribute it and/or modify
 #    it under the terms of the GNU General Public License as published by
@@ -66,10 +66,6 @@ class keys:
                 self.access_token_secret = keys[4]
                 self.client_id = keys[5]
                 self.client_secret = keys[6]
-
-
-
-
 
                 self._app.interface.dlog("Validating Keys")
 

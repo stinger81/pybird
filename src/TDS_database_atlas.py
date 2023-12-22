@@ -1,7 +1,7 @@
 # /bin/python3
 # ##########################################################################
 #
-#   Copyright (C) 2022-2023 Michael Dompke (https://github.com/stinger81)
+#   Copyright (C) 2022-2024 Michael Dompke (https://github.com/stinger81)
 #
 #    This program is free software: you can redistribute it and/or modify
 #    it under the terms of the GNU General Public License as published by
@@ -39,7 +39,7 @@ class mongodb_atlas:
         keychain = TKS_keychain.keychain()
         self.valid = True
         try:
-            keys = keychain.load_atlas_keys(app.name,DB_name)
+            keys = keychain.load_atlas_keys(app.name, DB_name)
 
             self.app_name = keys.app_name
             self.uri = keys.uri

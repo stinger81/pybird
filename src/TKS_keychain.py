@@ -1,7 +1,7 @@
 # /bin/python3
 # ##########################################################################
 #
-#   Copyright (C) 2022-2023 Michael Dompke (https://github.com/stinger81)
+#   Copyright (C) 2022-2024 Michael Dompke (https://github.com/stinger81)
 #
 #    This program is free software: you can redistribute it and/or modify
 #    it under the terms of the GNU General Public License as published by
@@ -155,7 +155,7 @@ class keychain:
             self.interface.log("No keys found in " + _app_key_path, "ERROR")
             return
         key_cat_to_remove = TCS_utils.getUserInput_listChoice(in_prompt="Select Category",
-                                                          in_options=_app_key_categories)
+                                                              in_options=_app_key_categories)
         key_cat_path = os.path.join(_app_key_path, key_cat_to_remove)
         _app_keys = os.listdir(key_cat_path)
         if len(_app_keys) == 0:
@@ -164,9 +164,10 @@ class keychain:
         key_to_remove = TCS_utils.getUserInput_listChoice(in_prompt="Select Key to Remove",
                                                           in_options=_app_keys)
         # confirm removal
-        confirm = TCS_utils.getUserInput_Confirm(in_prompt="Are you sure you want to remove " + key_to_remove + " from " + app_to_remove_key_from + " keys?",
-                                                    in_confirmation_code="CONFIRM",
-                                                    case_sensitive=True)
+        confirm = TCS_utils.getUserInput_Confirm(
+            in_prompt="Are you sure you want to remove " + key_to_remove + " from " + app_to_remove_key_from + " keys?",
+            in_confirmation_code="CONFIRM",
+            case_sensitive=True)
         if confirm:
             self.interface.log("Removing " + key_to_remove + " from " + app_to_remove_key_from + " keys")
             key_path = os.path.join(key_cat_path, key_to_remove)
@@ -183,7 +184,7 @@ class keychain:
 
         keys = ""
         keys += self._keys[app_name]["api_key"]
-        keys += "," +self._keys[app_name]["api_secret"]
+        keys += "," + self._keys[app_name]["api_secret"]
         keys += "," + self._keys[app_name]["bearer_token"]
         keys += "," + self._keys[app_name]["access_token"]
         keys += "," + self._keys[app_name]["access_token_secret"]
@@ -194,11 +195,10 @@ class keychain:
 
         self.interface.dlog("Credentials for " + app_name + " added!")
 
-    def load_twitter_keys(self, app_name)-> str:
+    def load_twitter_keys(self, app_name) -> str:
         file = TCS_variables.PYBIRD_APP_X_KEY(app_name)
         self.interface.dlog("Twitter Creds File: " + file, "FILE LOC")
         return self._read_key_from_file(file).strip()
-
 
     # endregion
     ################################################################################################
@@ -224,7 +224,7 @@ class keychain:
 
     def _add_atlas_key(self, creds: atlas_credentials):
         if creds.dedicated:
-            file = TCS_variables.PYBIRD_APP_ATLAS_KEY(creds.app_name,creds.dedicated_name)
+            file = TCS_variables.PYBIRD_APP_ATLAS_KEY(creds.app_name, creds.dedicated_name)
 
             keys = creds.app_name
             keys += "," + self._encode_key(creds.uri)
@@ -234,7 +234,7 @@ class keychain:
             self._save_key_to_file(file, keys)
 
         if creds.shared:
-            file = TCS_variables.PYBIRD_APP_ATLAS_KEY(creds.app_name,creds.shared_name)
+            file = TCS_variables.PYBIRD_APP_ATLAS_KEY(creds.app_name, creds.shared_name)
 
             keys = creds.app_name
             keys += "," + self._encode_key(creds.uri)
@@ -243,7 +243,7 @@ class keychain:
 
             self._save_key_to_file(file, keys)
 
-    def load_atlas_keys(self,app_name, db_name) -> atlas_credentials_loaded:
+    def load_atlas_keys(self, app_name, db_name) -> atlas_credentials_loaded:
         file = TCS_variables.PYBIRD_APP_ATLAS_KEY(app_name, db_name)
         creds = self.atlas_credentials_loaded()
         self.interface.dlog("Atlas Creds File: " + file, "FILE LOC")
