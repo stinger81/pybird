@@ -29,5 +29,5 @@ setup(name='PYBIRD',
       author='Michael Dompke',
       author_email='michael@dompke.dev',
       url='michael.dompke.dev',
-      install_requires=["tweepy", "pycryptodome", "pymongo", "toml","os","sys","json","csv"]
-     )
+      install_requires=["tweepy", "pycryptodome", "pymongo", "toml", "os", "sys", "json", "csv"]
+      )

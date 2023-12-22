@@ -23,7 +23,9 @@
 
 import os
 import shutil
-TEMP_LIST = ["__pycache__","log","data","__temp__"]
+
+TEMP_LIST = ["__pycache__", "log", "data", "__temp__"]
+
 
 def remove_pybird_temp_directories(root_directory):
     for root, dirs, files in os.walk(root_directory):

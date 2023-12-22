@@ -68,7 +68,11 @@ conda activate pybird
 +
 [source,commandline]
 ----
-python -m pip install toml pycryptodome tweepy pymongo
+conda install -y -c conda-forge numpy
+conda install -y -c conda-forge toml
+conda install -y -c conda-forge pycryptodome
+conda install -y -c conda-forge tweepy
+conda install -y -c conda-forge pymongo
 ----
 
 . Finish General PYBIRD Setup: <<finish-setupall-platforms,Finish Setup(All Platforms)>>
@@ -111,6 +115,24 @@ sudo python3 -m pip install -U pip
 sudo python3 -m pip install  numpy
 sudo python3 -m pip install toml pycryptodome tweepy pymongo
 ----
+
+=== ANACONDA
+==== Windows
+Environment set up
+
+[source,commandline]
+----
+conda create --name pybird python=3.9
+conda activate pybird
+----
+
+. Required dependencies
+[source,commandline]
+----
+
+python -m pip install toml pycryptodome tweepy pymongo
+----
+
 
 
 [#_platform-setup]

@@ -2,6 +2,27 @@
 
 ## Change Log
 
+### Version 0.8.7-PA
+- **ALL PREVIOUSLY ADDED KEYS WILL NEED TO BE RE-ADDED TO BE COMPLIANT WITH NEW KEY SYSTEM**
+- Added log length limitation
+  - configured through pybird config
+- Added support for generic key files
+  - Must be named appName.keyIdentifier.GEN.txt to be used with the key upload system
+  - the appName and keyIdentifier will be unique to each key
+- Updated the .pybird structure
+  - .pybird
+    - .aes
+    - .app
+      - APPNAME
+        - .atlas
+        - .x
+        - .general
+- Added command to PYBIRDMgrUI.py to remove all keys for an app
+- Added command to PYBIRDMgrUI.py to remove a specific key for an app
+- Upgraded twitter key manager to be more compliant with new generic key system
+- Updated TCS_variables.py to support new key system and provide paths based off of app names and key identifiers
+
+
 ### Version 0.8.6-PA
 - moved session ID parameters to `TCS_variables.py`
 - removed support for api v1.1

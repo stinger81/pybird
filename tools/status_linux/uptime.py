@@ -21,16 +21,21 @@
 #
 # ##########################################################################
 
-import os, sys
-sys.path.append(os.path.join(os.environ["PYBIRD"],"src"))
+import os
+import sys
+
+sys.path.append(os.path.join(os.environ["PYBIRD"], "src"))
 import TCS_variables as VAR
 
 import datetime
+
+
 def get_uptime():
     with open(VAR.SYS_LINUX_UPTIME, 'r') as f:
         uptime_seconds = float(f.readline().split()[0])
 
-    return datetime.timedelta(seconds = uptime_seconds)
+    return datetime.timedelta(seconds=uptime_seconds)
+
 
 if __name__ == "__main__":
-    print("Uptime:", get_uptime(),"\n")
+    print("Uptime:", get_uptime(), "\n")

@@ -39,7 +39,7 @@ class mongodb_atlas:
         keychain = TKS_keychain.keychain()
         self.valid = True
         try:
-            keys = keychain.load_atlas_keys(DB_name)
+            keys = keychain.load_atlas_keys(app.name,DB_name)
 
             self.app_name = keys.app_name
             self.uri = keys.uri

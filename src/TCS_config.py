@@ -158,18 +158,28 @@ class logging_config:
         self.enable_session_log = True
         self.enable_app_log = False
 
+        self.master_log_length = 250000
+        self.session_log_length = -1
+        self.app_log_length = 100000
+
     def _read(self, _config):
         self._raw = _config["logging"]
 
         self.enable_master_log = self._raw["enable_master_log"]
         self.enable_session_log = self._raw["enable_session_log"]
         self.enable_app_log = self._raw["enable_app_log"]
+        self.master_length = self._raw["master_log_length"]
+        self.session_length = self._raw["session_log_length"]
+        self.app_length = self._raw["app_log_length"]
 
     def __str__(self) -> str:
         string_out = ""
         string_out += f"enable_master_log: {self.enable_master_log}\n"
         string_out += f"enable_session_log: {self.enable_session_log}\n"
         string_out += f"enable_app_log: {self.enable_app_log}\n"
+        string_out += f"master_length: {self.master_length}\n"
+        string_out += f"session_length: {self.session_length}\n"
+        string_out += f"app_length: {self.app_length}\n"
 
         return string_out
 

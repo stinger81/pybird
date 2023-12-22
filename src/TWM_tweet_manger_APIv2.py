@@ -33,20 +33,16 @@ class Bot:
 
         self._app = app
 
-        self._bearer_token = keys.bearer_token
-        self._consumer_key = keys.api_key
-        self._consumer_secret = keys.api_secret
-        self._access_token = keys.access_token
-        self._access_secret = keys.access_token_secret
+        self.keys = keys
 
         self.post_allowed = False
         self.access_twitter = False
 
-        self.client = tweepy.Client(bearer_token=self._bearer_token,
-                                    consumer_key=self._consumer_key,
-                                    consumer_secret=self._consumer_secret,
-                                    access_token=self._access_token,
-                                    access_token_secret=self._access_secret)
+        self.client = tweepy.Client(bearer_token=self.keys.bearer_token,
+                                    consumer_key=self.keys.api_key,
+                                    consumer_secret=self.keys.api_secret,
+                                    access_token=self.keys.access_token,
+                                    access_token_secret=self.keys.access_token_secret)
 
     def post_tweet(self, tweet):
         self._post_tweet(tweet)

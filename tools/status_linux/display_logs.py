@@ -22,14 +22,12 @@
 # ##########################################################################
 
 
-
 import os
 import sys
-sys.path.append(os.path.join(os.environ["PYBIRD"],"src"))
+
+sys.path.append(os.path.join(os.environ["PYBIRD"], "src"))
 import TCS_variables as VAR
 import TCS_config
-
-
 
 logs = os.listdir(VAR.PYBIRD_DATA_LOG_DIRECTORY)
 
@@ -43,18 +41,16 @@ for l in logs:
     if os.path.isdir(temp_path):
         report = os.listdir(temp_path)
     else:
-        with open(temp_path,"r") as f:
+        with open(temp_path, "r") as f:
             report = f.readlines()
-    print(l+" -> Total Log Messages: "+str(len(report)))
+    print(l + " -> Total Log Messages: " + str(len(report)))
     if report == []:
-        print("No Log Messages ("+l+")")
+        print("No Log Messages (" + l + ")")
     elif (len(report) < report_len):
         for i in range(len(report)):
             print(report[i].strip())
     else:
         for i in range(report_len):
-            print(report[-report_len+i].strip())
+            print(report[-report_len + i].strip())
 
     print()
-
-

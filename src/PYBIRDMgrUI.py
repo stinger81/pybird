@@ -36,12 +36,13 @@ def _UI():
     atlas_creds = TKS_keychain.keychain()
 
     ui = TCS_UIutils.userInterface("Main Menu", "Command in the UI are NOT Reversible")
-
-    ui.addOption("0", "Add/Update App Key", keys.add_twitter_key_ui)
-    ui.addOption("1", "Add/Update AES-256 Key", aes_keychain._ui)
-    ui.addOption("2", "Add/Update MongoDB Atlas Credentials", atlas_creds.add_atlas_key_ui)
-    ui.addOption("3", "Upload credentials in " + TCS_variables.PYBIRD_ADD_CRED_DIRECTORY, keys.check_new_creds,
+    ui.addOption("aes", "Add/Update AES-256 Key", aes_keychain._ui)
+    ui.addOption("app", "Add/Update App Key", keys.add_twitter_key_ui)
+    ui.addOption("atlas", "Add/Update MongoDB Atlas Credentials", atlas_creds.add_atlas_key_ui)
+    ui.addOption("upload", "Upload credentials in " + TCS_variables.PYBIRD_ADD_CRED_DIRECTORY, keys.check_new_creds,
                  requireConfirmation=True)
+    ui.addOption("rmapp", "Remove App Key", keys.remove_entire_app_keys_ui)
+    ui.addOption("rmsk", "Remove Specific Key from App", keys.remove_specific_key_ui)
     ui.addQuit(isDefault=True)
     while True:
         userChoice = ui.getUserResponse()

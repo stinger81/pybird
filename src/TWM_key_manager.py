@@ -38,26 +38,45 @@ class keys:
 
         self._app: TAS_app.app = app
 
+        self.keys = None
+
+        self.client = None
+
+        self.api_key = None
+        self.api_secret = None
+        self.bearer_token = None
+        self.access_token = None
+        self.access_token_secret = None
+        self.client_id = None
+        self.client_secret = None
+
     def load_keys(self):
 
         try:
             key_loader = TKS_keychain.keychain()
             self.keys = key_loader.load_twitter_keys(self._app.name)
-            self._load_keys()
+            # self._load_keys()
             try:
-                self._app.interface.dlog("Validating Keys")
-                self._bearer_token = self.bearer_token
-                self._consumer_key = self.api_key
-                self._consumer_secret = self.api_secret
-                self._access_token = self.access_token
-                self._access_secret = self.access_token_secret
+                self._app.interface.dlog("Loading Keys")
+                keys = self.keys.strip().split(",")
+                self.api_key = keys[0]
+                self.api_secret = keys[1]
+                self.bearer_token = keys[2]
+                self.access_token = keys[3]
+                self.access_token_secret = keys[4]
+                self.client_id = keys[5]
+                self.client_secret = keys[6]
 
-                auth = tweepy.OAuthHandler(self._consumer_key, self._consumer_secret)
-                auth.set_access_token(self._access_token, self._access_secret)
+
+
+
+
+                self._app.interface.dlog("Validating Keys")
+
+                auth = tweepy.OAuthHandler(self.api_key, self.api_secret)
+                auth.set_access_token(self.access_token, self.access_token_secret)
 
                 self.client = tweepy.API(auth)
-
-                # print(self.client.verify_credentials()._json)
                 self._client_id = self.client.verify_credentials().id
             except Exception as e:
                 self._app.interface.log("Invalid Keys")
@@ -74,43 +93,3 @@ class keys:
             for i in e_mod:
                 self._app.interface.log(i)
             return False
-
-    def _load_keys(self):
-
-        try:
-            self.api_key = self.keys['api_key']
-        except:
-            self._app.interface.log("No api_key found", logType="WARNING")
-            self.api_key = None
-        try:
-            self.api_secret = self.keys['api_secret']
-        except:
-            self._app.interface.log("No api_secret found", logType="WARNING")
-            self.api_secret = None
-        try:
-            self.bearer_token = self.keys['bearer_token']
-        except:
-            self._app.interface.log("No bearer_token found", logType="WARNING")
-            self.bearer_token = None
-        try:
-            self.access_token = self.keys['access_token']
-        except:
-            self._app.interface.log("No access_token found", logType="WARNING")
-            self.access_token = None
-        try:
-            self.access_token_secret = self.keys['access_token_secret']
-        except:
-            self._app.interface.log(
-                "No access_token_secret found", logType="WARNING")
-            self.access_token_secret = None
-        try:
-            self.client_id = self.keys['client_id']
-        except:
-            self._app.interface.log("No client_id found", logType="WARNING")
-            self.client_id = None
-        try:
-            self.client_secret = self.keys['client_secret']
-        except:
-            self._app.interface.log("No client_secret found", logType="WARNING")
-            self.client_secret = None
-        return True

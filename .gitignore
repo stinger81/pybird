@@ -37,6 +37,8 @@ docs/__temp__/
 #!config/PYBIRD_NODE_CONFIG.csv
 .todo
 DEV_APPS/
+dev_testing/
+add_cred/
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

@@ -61,6 +61,10 @@ bootMode = true
         enable_master_log=false
         enable_session_log=false
         enable_app_log=true
+        # Log length
+        master_log_length = 250000 # logs
+        session_log_length = -1 # logs
+        app_log_length = 10000
     
     [system_config.console]
         show_console=true
@@ -76,4 +80,4 @@ bootMode = true
 
     [system_config.credentials]
         delete_dir_after_upload=true # if true all setting below will be ignored, the entire directory will be deleted. Strongly recommended to increase security and prevent accidental unencoded key leaks
-        delete_file_after_upload=true # it is strongly recommended that this is deleted after upload for security reasons 
+        delete_file_after_upload=true # it is strongly recommended that this is deleted after upload for security reasons

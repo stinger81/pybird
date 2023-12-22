@@ -21,11 +21,12 @@
 #
 # ##########################################################################
 
-import os, sys
-sys.path.append(os.path.join(os.environ["PYBIRD"],"src"))
+import os
+import sys
+
+sys.path.append(os.path.join(os.environ["PYBIRD"], "src"))
 import TCS_variables as VAR
 
 with open(VAR.SYS_LINUX_BOOT_LOG, "r") as f:
     times = f.readlines()
-    print("Last Boot:",times[-1].strip())
-
+    print("Last Boot:", times[-1].strip())

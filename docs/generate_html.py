@@ -37,7 +37,7 @@ for file in files:
         content = f.read()
         for k, v in replace.items():
             content = content.replace(k, v)
-        temp_name = file.replace("../","")
+        temp_name = file.replace("../", "")
         with open("__temp__/_temp_" + temp_name, "w") as f:
             f.write(content)
 
@@ -45,5 +45,3 @@ for file in files:
     os.system(command)
     move_html = f"mv __temp__/_temp_{temp_name.replace('.adoc', '.html')} {file.replace('.adoc', '.html')}"
     os.system(move_html)
-
-

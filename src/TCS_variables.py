@@ -36,7 +36,7 @@ from TCS_variables_error import *
 
 PYBIRD_VER_MAJOR = 0
 PYBIRD_VER_MINOR = 8
-PYBIRD_VER_PATCH = 6
+PYBIRD_VER_PATCH = 7
 PYBIRD_VER_BUILD = 0
 PYBIRD_VER_PRE = True
 PYBIRD_VER_RC = False
@@ -94,9 +94,29 @@ PYBIRD_SESSION_DIRNAME = 'session'
 PYBIRD_APPDATA_DIRNAME = 'appdata'
 PYBIRD_ADD_CRED_DIRNAME = "add_cred"
 
-PYBIRD_HOME_APP_DIR = '.app'
 PYBIRD_HOME_AES_DIR = '.aes'
+PYBIRD_HOME_APP_DIR = '.app'
+
 PYBIRD_HOME_ATLAS_DIR = '.atlas'
+PYBIRD_HOME_X_DIR = '.x'
+PYBIRD_HOME_GENERAL_DIR = '.general'
+
+# EXTENSIONS
+
+EXT_PY = '.py'
+EXT_JSON = '.json'
+EXT_TXT = '.txt'
+EXT_CSV = '.csv'
+EXT_LOG = '.log'
+EXT_SESSION = '.sessionID'
+EXT_KEY_AES = '.aes.key'
+EXT_KEY_ATLAS = '.atlas.key'
+EXT_KEY_X = '.x.key'
+EXT_KEY_GENERAL = '.general.key'
+EXT_UPLOAD_ATLAS = '.atlas.json'
+EXT_UPLOAD_X = '.x.json'
+EXT_UPLOAD_GENERAL = '.gen.txt'
+
 try:
     PYBIRD_DIRECTORY = os.environ[PYBIRD_TAG]
 except KeyError:
@@ -138,22 +158,58 @@ if not os.path.exists(PYBIRD_DATA_APPDATA_DIRECTORY):
 PYBIRD_ADD_CRED_DIRECTORY: str = os.path.join(PYBIRD_DIRECTORY, PYBIRD_ADD_CRED_DIRNAME)  # DO NOT MAKE DIR
 
 # .pybird
-PYBIRD_HOME_DATA_DIRECTORY: str = os.path.join(HOME_DIRECTORY, PYBIRD_HOME_DIRNAME)
+PYBIRD_HOME_DIRECTORY: str = os.path.join(HOME_DIRECTORY, PYBIRD_HOME_DIRNAME)
+if not os.path.exists(PYBIRD_HOME_DIRECTORY):
+    os.mkdir(PYBIRD_HOME_DIRECTORY)
 
-if not os.path.exists(PYBIRD_HOME_DATA_DIRECTORY):
-    os.mkdir(PYBIRD_HOME_DATA_DIRECTORY)
-
-PYBIRD_HOME_APP_DIRECTORY: str = os.path.join(PYBIRD_HOME_DATA_DIRECTORY, PYBIRD_HOME_APP_DIR)
+PYBIRD_HOME_APP_DIRECTORY: str = os.path.join(PYBIRD_HOME_DIRECTORY, PYBIRD_HOME_APP_DIR)
 if not os.path.exists(PYBIRD_HOME_APP_DIRECTORY):
     os.mkdir(PYBIRD_HOME_APP_DIRECTORY)
 
-PYBIRD_HOME_AES_DIRECTORY: str = os.path.join(PYBIRD_HOME_DATA_DIRECTORY, PYBIRD_HOME_AES_DIR)
+PYBIRD_HOME_AES_DIRECTORY: str = os.path.join(PYBIRD_HOME_DIRECTORY, PYBIRD_HOME_AES_DIR)
 if not os.path.exists(PYBIRD_HOME_AES_DIRECTORY):
     os.mkdir(PYBIRD_HOME_AES_DIRECTORY)
 
-PYBIRD_HOME_ATLAS_DIRECTORY: str = os.path.join(PYBIRD_HOME_DATA_DIRECTORY, PYBIRD_HOME_ATLAS_DIR)
-if not os.path.exists(PYBIRD_HOME_ATLAS_DIRECTORY):
-    os.mkdir(PYBIRD_HOME_ATLAS_DIRECTORY)
+
+def PYBIRD_APP_HOME_DIR(app_name: str) -> str:
+    path = os.path.join(PYBIRD_HOME_APP_DIRECTORY, app_name.upper())
+    if not os.path.exists(path):
+        os.mkdir(path)
+    return path
+
+
+def PYBIRD_APP_ATLAS_DIR(app_name: str) -> str:
+    path = os.path.join(PYBIRD_APP_HOME_DIR(app_name), PYBIRD_HOME_ATLAS_DIR)
+    if not os.path.exists(path):
+        os.mkdir(path)
+    return path
+
+
+def PYBIRD_APP_X_DIR(app_name: str) -> str:
+    path = os.path.join(PYBIRD_APP_HOME_DIR(app_name), PYBIRD_HOME_X_DIR)
+    if not os.path.exists(path):
+        os.mkdir(path)
+    return path
+
+
+def PYBIRD_APP_GENERAL_DIR(app_name: str) -> str:
+    path = os.path.join(PYBIRD_APP_HOME_DIR(app_name), PYBIRD_HOME_GENERAL_DIR)
+    if not os.path.exists(path):
+        os.mkdir(path)
+    return path
+
+
+def PYBIRD_APP_ATLAS_KEY(app_name: str, key_name: str) -> str:
+    return os.path.join(PYBIRD_APP_ATLAS_DIR(app_name), key_name.upper() + EXT_KEY_ATLAS)
+
+
+def PYBIRD_APP_X_KEY(app_name: str) -> str:
+    return os.path.join(PYBIRD_APP_X_DIR(app_name), app_name.upper() + EXT_KEY_X)
+
+
+def PYBIRD_APP_GENERAL_KEY(app_name: str, key_name: str) -> str:
+    return os.path.join(PYBIRD_APP_GENERAL_DIR(app_name), key_name.upper() + EXT_KEY_GENERAL)
+
 
 # endregion
 ####################################################################################################
@@ -192,6 +248,7 @@ try:
                          PYBIRD_PLATFORM_LINUX,
                          PYBIRD_PLATFORM_MACOS,
                          PYBIRD_PLATFORM_AWS_EC2_LINUX2,
+                         PYBIRD_PLATFORM_AWS_EC2_LINUX2023,
                          PYBIRD_PLATFORM_WSL,
                          PYBIRD_PLATFORM_PI32,
                          PYBIRD_PLATFORM_PI64]:

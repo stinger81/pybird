@@ -87,7 +87,7 @@ class interface:
         self._console_available = self._config.console.show_console
         try:
             self.sessionID, self.startUp = read_state_file()
-        except:
+        except FileNotFoundError:
             write_state_file(nodeName=self.sourceName)
             self.sessionID, self.startUp = read_state_file()
 
@@ -139,6 +139,8 @@ class interface:
     def _add_collection(self, collection):
         self._log_to_db_collection = collection
 
+    ################################################################################################
+    # region Log Exports
     def clear_log(self):
         header_str = "Date,Source Name, Uptime(s),Step Count,Log Type,Log Message\n"
         # confirm clear
@@ -275,7 +277,7 @@ class interface:
                     lines = f.readlines()
                     lines = lines[1:]
                     TCS_utils.append_text_file(file_path, str(("," * (
-                                len_header - 1)) + "*********START OF " + file + "*********"))
+                            len_header - 1)) + "*********START OF " + file + "*********"))
                     for line in lines:
                         TCS_utils.append_text_file(file_path, line.strip())
                     TCS_utils.append_text_file(file_path,
@@ -286,6 +288,8 @@ class interface:
         self.export_log()
         self.clear_log()
 
+    # endregion
+    ################################################################################################
     ################################################################################################
     # region Standard Logging Methods
 
@@ -477,9 +481,8 @@ class interface:
 
     # endregion
     ################################################################################################
-
     ################################################################################################
-    # Log
+    # region Log
     def _to_console(self, msg: str, msgType="") -> None:
         """
         :param msg: message to be logged
@@ -509,25 +512,35 @@ class interface:
         """
         if self._config.logging.enable_master_log:
             try:
-                with open(self.master_log, "a", encoding="utf-8") as f:
-                    f.write(msg)
-                    f.write("\n")
+                # TCS_utils.append_text_file(self.master_log,msg)
+                TCS_utils.append_text_file_restricted_file_length(self.master_log,
+                                                                  msg,
+                                                                  self._config.logging.master_log_length)
+                # with open(self.master_log, "a", encoding="utf-8") as f:
+                #     f.write(msg)
+                #     f.write("\n")
             except Exception as e:
                 raise TCS_variables.PYBIRDIOError("_log_to_file error on primary method only (MASTER LOG)")
 
         if self._config.logging.enable_session_log:
             try:
-                with open(self.session_log, "a", encoding="utf-8") as f:
-                    f.write(msg)
-                    f.write("\n")
+                TCS_utils.append_text_file_restricted_file_length(self.session_log,
+                                                                  msg,
+                                                                  self._config.logging.session_log_length)
+                # with open(self.session_log, "a", encoding="utf-8") as f:
+                #     f.write(msg)
+                #     f.write("\n")
             except Exception as e:
                 raise TCS_variables.PYBIRDIOError("_log_to_file error on primary method only (SESSION LOG)")
 
         if self._config.logging.enable_app_log:
             try:
-                with open(self.app_log, "a", encoding="utf-8") as f:
-                    f.write(msg)
-                    f.write("\n")
+                TCS_utils.append_text_file_restricted_file_length(self.app_log,
+                                                                  msg,
+                                                                  self._config.logging.app_log_length)
+                # with open(self.app_log, "a", encoding="utf-8") as f:
+                #     f.write(msg)
+                #     f.write("\n")
             except Exception as e:
                 raise TCS_variables.PYBIRDIOError("_log_to_file error on primary method only (APP LOG)")
 
@@ -590,6 +603,8 @@ class interface:
             num += 1
         return num
 
+    # endregion
+    ################################################################################################
     ################################################################################################
     # region Private Methods - Logging Methods
 

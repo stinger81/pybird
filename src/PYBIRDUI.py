@@ -37,7 +37,7 @@ def _UI():
     ui.addOption("exs", "Export Session Log", export.export_session_log)
     ui.addOption("exa", "Export App Log", export.export_app_log)
     ui.addOption("bm", "Build Master Log From Session Logs", export.build_master_from_session_logs)
-    ui.addOption("exc", "Export and Clear Logs", export.export_and_clear)
+    ui.addOption("exc", "Export and Clear Logs", export.export_and_clear, requireConfirmation=True)
 
     ui.addQuit(isDefault=True)
     ui.run()
