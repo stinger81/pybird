@@ -80,10 +80,10 @@ class TAS_apps_config:
                     self.configs[-1].main_app = row[5]
                     self.configs[-1].app_config = row[6]
                     self.configs[-1].dependencies = TCS_utils.delimitated_to_list_str(row[7], "|")
-                    self.configs[-1].DB_dedicated_access = TCS_utils.str_to_bool(row[8])
-                    self.configs[-1].DB_dedicated_name = row[9]
-                    self.configs[-1].DB_shared_access = TCS_utils.str_to_bool(row[10])
-                    self.configs[-1].DB_shared_name = row[11]
+                    # self.configs[-1].DB_dedicated_access = TCS_utils.str_to_bool(row[8])
+                    # self.configs[-1].DB_dedicated_name = row[9]
+                    # self.configs[-1].DB_shared_access = TCS_utils.str_to_bool(row[10])
+                    # self.configs[-1].DB_shared_name = row[11]
 
                     # print(self.configs[-1])
                 i += 1
@@ -105,7 +105,11 @@ class TAS_apps_config:
                     config.step_on_shutdown = config._json["step_on_shutdown"]
                     config.json_debug_mode = config._json["debug_mode"]
                     config.app_parameters = config._json["app_parameters"]
-                    config.log_to_DB = config._json["log_to_DB"]
+                    config.database_primary_active = config._json["atlas_databases"]["primary"]["active"]
+                    config.database_primary_name = config._json["atlas_databases"]["primary"]["DB_Name"]
+                    config.log_to_DB = config._json["atlas_databases"]["primary"]["log_to_DB"]
+                    config.database_secondary_active = config._json["atlas_databases"]["secondary"]["active"]
+                    config.database_secondary_name = config._json["atlas_databases"]["secondary"]["DB_Name"]
                     config.checksum_sha256 = config._json["checksum_sha256"]
 
     def _post_process_config(self):
@@ -153,10 +157,10 @@ class _app_config:
         self.main_app: str = "unknown"
         self.app_config: str = "unknown"
         self.dependencies: list[str] = ["unknown"]
-        self.DB_dedicated_access: bool = False
-        self.DB_dedicated_name: str = "unknown"
-        self.DB_shared_access: bool = False
-        self.DB_shared_name: str = "unknown"
+        # self.DB_dedicated_access: bool = False
+        # self.DB_dedicated_name: str = "unknown"
+        # self.DB_shared_access: bool = False
+        # self.DB_shared_name: str = "unknown"
         # json
         self._json: dict = {}
         self.json_debug_mode: bool = False
@@ -164,7 +168,11 @@ class _app_config:
         self.step_on_boot: bool = False
         self.step_on_shutdown: bool = False
         self.app_parameters: dict = {}
-        self.log_to_DB: bool = False
+        self.database_primary_active = False
+        self.database_primary_name = ""
+        self.log_to_DB = False
+        self.database_secondary_active = False
+        self.database_secondary_name = False
         self.checksum_sha256: str = ""
         # post processing
         self.debug_mode: bool = False

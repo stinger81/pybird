@@ -39,7 +39,7 @@ class data_interface:
         _nvm._init_write_only(data)
 
     def load_data(self, data_name):
-        temp = NVM_data(self.app_code, data_name, readOnly=True)
+        temp = NVM_data(self.app_code, data_name)
         temp._init_read_only()
         return temp.data
 

@@ -2,6 +2,18 @@
 
 ## Change Log
 
+### Version 0.8.8-PA
+- **ALL PREVIOUSLY ADDED KEYS WILL NEED TO BE RE-ADDED TO BE COMPLIANT WITH NEW KEY SYSTEM**
+  - Keychain was heavily updated, old atlas keys will not work
+- ATLAS DB
+  - Moved atlas db names to app config file from node config file
+  - Added support for the primary and secondary atlas db to use a different uri
+- PYBIRDUI
+  - added support to export specific app and session logs
+- PYBIRDMgrUI
+  - updated the twitter and atlas UI
+
+
 ### Version 0.8.7-PA
 - **ALL PREVIOUSLY ADDED KEYS WILL NEED TO BE RE-ADDED TO BE COMPLIANT WITH NEW KEY SYSTEM**
 - Added log length limitation

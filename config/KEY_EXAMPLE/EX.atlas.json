@@ -1,14 +1,14 @@
 {
-    "EX": {
+    "EX": [
+      {
         "uri":"",
         "api_version":"1",
-        "dedicated": {
-            "dedicated_allowed": false,
-            "dedicated_name": ""
-        },
-        "shared": {
-            "shared_allowed": false,
-            "shared_name": ""
-        }
-    }
+        "database_name":"test_0"
+      },
+      {
+        "uri":"",
+        "api_version":"1",
+        "database_name":"test_1"
+      }
+    ]
 }

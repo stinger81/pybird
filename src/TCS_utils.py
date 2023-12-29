@@ -147,6 +147,37 @@ class app_version(_version):
 
 ####################################################################################################
 # region file management
+
+def tree(path: str = '.', level: int = 0, max_level: int = -1):
+    """
+    Display a tree of the files and folders in a path
+    :param path: str - Path to display
+    :param level: int - Level of the tree
+    :param max_level: int - Max level of the tree (-1 == no limit)
+    :return: None
+    """
+    if max_level == -1 or level <= max_level:
+        for f in os.listdir(path):
+            print('|   ' * level + '|-> ' + f)
+            if os.path.isdir(os.path.join(path, f)):
+                tree(os.path.join(path, f), level + 1, max_level)
+
+def pybird_keychain_tree():
+    """
+    Display a tree of the files and folders in the keychain
+    :return:
+    """
+    my_path = TCS_variables.PYBIRD_HOME_DIRECTORY
+    tree(my_path, 0, -1)
+
+def pybird_data_tree():
+    """
+    Display a tree of the files and folders in the data directory
+    :return:
+    """
+    my_path = TCS_variables.PYBIRD_DATA_DIRECTORY
+    tree(my_path, 0, -1)
+
 def rename_file(in_filename: str = '', in_new_filename: str = ''):
     """
     Rename a file
@@ -483,7 +514,7 @@ def getUserInput_listChoice(in_prompt: str = '', in_options: list = [], in_defau
     return in_options[my_input]
 
 
-def getUserInput_Confirm(in_prompt: str = '', in_confirmation_code: str = 'y', case_sensitive: bool = False) -> bool:
+def getUserInput_Confirm(in_prompt: str = '', in_confirmation_code: str = 'y', in_case_sensitive: bool = False) -> bool:
     """
     Get user input
     :param in_prompt: str - Prompt to display
@@ -492,10 +523,10 @@ def getUserInput_Confirm(in_prompt: str = '', in_confirmation_code: str = 'y', c
     :return: bool - User input
     """
     my_prompt = in_prompt + ' (' + in_confirmation_code + ')'
-    if case_sensitive:
+    if in_case_sensitive:
         my_prompt += ' CASE-SENSITIVE'
     my_input = getUserInput(my_prompt, '')
-    if case_sensitive:
+    if in_case_sensitive:
         if my_input == in_confirmation_code:
             return True
         else:
@@ -506,9 +537,42 @@ def getUserInput_Confirm(in_prompt: str = '', in_confirmation_code: str = 'y', c
         else:
             return False
 
+def getUserInput_required_length(in_prompt: str = '', in_length: int = 0) -> str:
+    """
+    Get user input
+    :param in_prompt: str - Prompt to display
+    :param in_length: int - Required length
+    :return: str - User input
+    """
+    while True:
+        my_input = getUserInput(in_prompt, '')
+        if len(my_input) == in_length:
+            break
+        else:
+            print("Invalid input must be " + str(in_length) + " characters")
+    return my_input
+
+def getUserInput_required_minimum_length(in_prompt: str = '', in_length: int = 0) -> str:
+    """
+    Get user input
+    :param in_prompt: str - Prompt to display
+    :param in_length: int - Required length
+    :return: str - User input
+    """
+    while True:
+        my_input = getUserInput(in_prompt, '')
+        if len(my_input) >= in_length:
+            break
+        else:
+            print("Invalid input must be at least " + str(in_length) + " characters")
+    return my_input
+
 
 # endregion
 ####################################################################################################
+
+####################################################################################################
+
 if __name__ == '__main__':
     # v = version()
     # v.major = 1
@@ -517,11 +581,13 @@ if __name__ == '__main__':
     # v.build = 4
     # print(v)
 
-    import os
+    tree()
 
-    test_file = 'test.txt'
-    test_file = os.path.join(os.getcwd(), test_file)
-    for i in range(10):
-        #     append_text_file(test_file, str('test'+str(i)))
-        append_text_file_restricted_file_length(test_file, str('test' + str(i)), 5)
-        time.sleep(5)
+    # import os
+    #
+    # test_file = 'test.txt'
+    # test_file = os.path.join(os.getcwd(), test_file)
+    # for i in range(10):
+    #     #     append_text_file(test_file, str('test'+str(i)))
+    #     append_text_file_restricted_file_length(test_file, str('test' + str(i)), 5)
+    #     time.sleep(5)

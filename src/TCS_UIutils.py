@@ -39,6 +39,9 @@ class userInterface:
             self.default = len(self.options)
         self.options.append((command, description, functionToCall, requireConfirmation, confirmationCode))
 
+    def addHeader(self, header: str):
+        self.options.append(("header", header, None, False, ""))
+
     def addQuit(self, isDefault: bool = False):
         self.hasQuit = True
         self.addOption("q", "Quit", None, isDefault)
@@ -49,7 +52,17 @@ class userInterface:
         if self.message != "":
             print(self.message)
         for choice in self.options:
-            print(choice[0], " - ", choice[1])
+            if choice[0] == "header":
+                print()
+                print(choice[1])
+            elif self.hasQuit and choice[0] == "q":
+                pass
+            else:
+                print(choice[0], " - ", choice[1])
+
+        if self.hasQuit:
+            print()
+            print("q - Quit")
 
     def getUserResponse(self):
         """

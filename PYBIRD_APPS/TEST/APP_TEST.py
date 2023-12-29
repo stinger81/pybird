@@ -35,8 +35,8 @@ class TUAapp(TAS_app.app):
         super().__init__("TEST", parameters, test)
         self.name = "TEST"
         self.version = TCS_utils.app_version()
-        self.version.major = 0
-        self.version.minor = 1
+        self.version.major = 1
+        self.version.minor = 0
         self.version.patch = 0
 
         self.description = "TEST app"
@@ -45,7 +45,7 @@ class TUAapp(TAS_app.app):
         """
         This should be used to set all variables that need to be initialized when the app starts
         """
-        self.tweets_DB = self.data_pool.get_collection("Tweets")
+        self.tweets_DB = self.primary_database.get_collection("Tweets")
         self.passcount = 0
         self.maxpass = 4
 

@@ -58,7 +58,7 @@ class keys:
             # self._load_keys()
             try:
                 self._app.interface.dlog("Loading Keys")
-                keys = self.keys.strip().split(",")
+                keys = self.keys
                 self.api_key = keys[0]
                 self.api_secret = keys[1]
                 self.bearer_token = keys[2]

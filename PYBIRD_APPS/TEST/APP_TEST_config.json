@@ -7,7 +7,16 @@
   "app_parameters": {
     "": ""
   },
-  "log_to_DB": true,
-  "LOG TO DB NOTE": "logging to a database is a user toggle option. However, a dedicated database must be set up. Contact your sales representative to enable the dedicated database",
+  "atlas_databases":{
+    "primary":{
+      "active": true,
+      "DB_Name": "TEST_DB",
+      "log_to_DB": true
+    },
+    "secondary": {
+      "active": false,
+      "DB_Name": ""
+    }
+  },
   "checksum_sha256": ""
 }

@@ -81,26 +81,27 @@ class app(TCS_core.core):
             self.interface.log("Tweeting disabled", "ERROR")
 
         #  database initial set up
-        if self._app_config.DB_dedicated_access:
-            self._data_pool = TDS_database_atlas.mongodb_atlas(self, self._app_config.DB_dedicated_name)
-            if self._data_pool.valid:
-                self.data_pool = self._data_pool.db
+        if self._app_config.database_primary_active:
+            self._primary_database = TDS_database_atlas.mongodb_atlas(self, self._app_config.database_primary_name)
+            if self._primary_database.valid:
+                self.primary_database = self._primary_database.db
             else:
-                self.data_pool = None
-                self.interface.log("Dedicated Data Pool Disabled", "ERROR")
-                self._app_config.DB_dedicated_access = False
+                self.primary_database = None
+                self.interface.log("Primary Database Disabled", "ERROR")
+                self._app_config.database_primary_active = False
                 self.interface.log("setting log to db to disabled", "ERROR")
+                self._app_config.log_to_DB = False
 
-        if self._app_config.DB_shared_access:
-            self._shared_data_pool = TDS_database_atlas.mongodb_atlas(self, self._app_config.DB_shared_name)
-            if self._shared_data_pool.valid:
-                self.shared_data_pool = self._shared_data_pool.db
+        if self._app_config.database_secondary_active:
+            self._secondary_database = TDS_database_atlas.mongodb_atlas(self, self._app_config.database_secondary_name)
+            if self._secondary_database.valid:
+                self.secondary_database = self._secondary_database.db
             else:
-                self.shared_data_pool = None
+                self.secondary_database = None
                 self.interface.log("Shared Data Pool Disabled", "ERROR")
 
-        if self._app_config.DB_dedicated_access and self._app_config.log_to_DB:
-            self.interface._add_collection(self.data_pool.get_collection(TCS_variables.ATLAS_LOG_COLLECTION))
+        if self._app_config.database_primary_active and self._app_config.log_to_DB:
+            self.interface._add_collection(self.primary_database.get_collection(TCS_variables.ATLAS_LOG_COLLECTION))
 
         self.data_interface = TDS_NVM.data_interface(self.name)
 

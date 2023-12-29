@@ -210,7 +210,7 @@ class interface:
                 to_exp.append(file)
         date = datetime.now(timezone.utc).strftime("%Y%m%d_%H%M%S")
         self.log("FILES TO EXPORT - " + date)
-        self.log_list(log_file, "To export")
+        self.log_list(to_exp, "To export")
 
         dir_out = input("Enter the export location / separated[" + TCS_variables.PYBIRD_LOG_DIRECTORY + "]: ")
         if dir_out == "":
@@ -233,7 +233,7 @@ class interface:
                 to_exp.append(file)
         date = datetime.now(timezone.utc).strftime("%Y%m%d_%H%M%S")
         self.log("FILES TO EXPORT - " + date)
-        self.log_list(log_file, "To export")
+        self.log_list(to_exp, "To export")
 
         dir_out = input("Enter the export location / separated[" + TCS_variables.PYBIRD_LOG_DIRECTORY + "]: ")
         if dir_out == "":
@@ -284,7 +284,66 @@ class interface:
                                                str(("," * (len_header - 1)) + "*********END OF " + file + "*********"))
                     print("Finished with: ", file_path)
 
+    def export_specific_app_log(self):
+        log_file = os.listdir(TCS_variables.PYBIRD_DATA_LOG_DIRECTORY)
+        to_exp = []
+        for file in log_file:
+            if "APP" in file:
+                to_exp.append(file)
+        date = datetime.now(timezone.utc).strftime("%Y%m%d_%H%M%S")
+
+        to_export = TCS_utils.getUserInput_listChoice(in_prompt="Select App Log to Export",
+                                                      in_options=to_exp,
+                                                      in_default=0
+                                                      )
+        self.log("FILES TO EXPORT - " + date)
+        self.log(to_export, "To export")
+
+        file = to_export
+        shutil.copyfile(os.path.join(TCS_variables.PYBIRD_DATA_LOG_DIRECTORY, file),
+                        os.path.join(TCS_variables.PYBIRD_LOG_DIRECTORY, date + "_" + file))
+        print("EXPORT TO:", TCS_variables.PYBIRD_LOG_DIRECTORY + "/" + date + "_" + file)
+
+    def export_specific_session_log(self):
+        log_file = os.listdir(TCS_variables.PYBIRD_DATA_LOG_DIRECTORY)
+        to_exp = []
+        for file in log_file:
+            if "SESSION" in file:
+                to_exp.append(file)
+        date = datetime.now(timezone.utc).strftime("%Y%m%d_%H%M%S")
+
+        to_export = TCS_utils.getUserInput_listChoice(in_prompt="Select App Log to Export",
+                                                      in_options=to_exp,
+                                                      in_default=0
+                                                      )
+        self.log("FILES TO EXPORT - " + date)
+        self.log(to_export, "To export")
+
+        file = to_export
+        shutil.copyfile(os.path.join(TCS_variables.PYBIRD_DATA_LOG_DIRECTORY, file),
+                        os.path.join(TCS_variables.PYBIRD_LOG_DIRECTORY, date + "_" + file))
+        print("EXPORT TO:", TCS_variables.PYBIRD_LOG_DIRECTORY + "/" + date + "_" + file)
+
+        # self.log("FILES TO EXPORT - " + date)
+        # self.log_list(to_exp, "To export")
+        #
+        # dir_out = input("Enter the export location / separated[" + TCS_variables.PYBIRD_LOG_DIRECTORY + "]: ")
+        # if dir_out == "":
+        #     dir_out = TCS_variables.PYBIRD_LOG_DIRECTORY
+        # else:
+        #     temp = dir_out.split("/")
+        #     dir_out = os.path.join("/", *temp)
+        #
+        # for file in to_exp:
+        #     if "APP" in file:
+        #         shutil.copyfile(os.path.join(TCS_variables.PYBIRD_DATA_LOG_DIRECTORY, file),
+        #                         os.path.join(TCS_variables.PYBIRD_LOG_DIRECTORY, date + "_" + file))
+        #         print("EXPORT TO:", TCS_variables.PYBIRD_LOG_DIRECTORY + "/" + date + "_" + file)
+
     def export_and_clear(self):
+        TCS_utils.getUserInput_Confirm(in_prompt="Confirm Export and Clear",
+                                       in_confirmation_code="CONFIRM",
+                                       in_case_sensitive=True)
         self.export_log()
         self.clear_log()
 

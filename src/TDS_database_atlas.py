@@ -41,10 +41,10 @@ class mongodb_atlas:
         try:
             keys = keychain.load_atlas_keys(app.name, DB_name)
 
-            self.app_name = keys.app_name
-            self.uri = keys.uri
-            self.server_api = keys.api_version
-            self.database_name = keys.db_name
+            self.app_name = keys[0]
+            self.uri = keys[1]
+            self.server_api = keys[2]
+            self.database_name = keys[3]
 
             self.client = MongoClient(self.uri, server_api=ServerApi(self.server_api))
 

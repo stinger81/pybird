@@ -52,7 +52,7 @@ bootMode = true
 # PYBIRD config
 [system_config]
     [system_config.system]
-        test_mode=false
+        test_mode=true
         debug_mode=true
         remote_app_enabled=true
 
@@ -64,7 +64,7 @@ bootMode = true
         # Log length
         master_log_length = 250000 # logs
         session_log_length = -1 # logs
-        app_log_length = 10000
+        app_log_length = 10000 # logs
     
     [system_config.console]
         show_console=true
@@ -79,5 +79,5 @@ bootMode = true
         encrypt_app_keys=false
 
     [system_config.credentials]
-        delete_dir_after_upload=true # if true all setting below will be ignored, the entire directory will be deleted. Strongly recommended to increase security and prevent accidental unencoded key leaks
-        delete_file_after_upload=true # it is strongly recommended that this is deleted after upload for security reasons
+        delete_dir_after_upload=false # if true all setting below will be ignored, the entire directory will be deleted. Strongly recommended to increase security and prevent accidental unencoded key leaks
+        delete_file_after_upload=false # it is strongly recommended that this is deleted after upload for security reasons
