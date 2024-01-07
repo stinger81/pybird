@@ -4,6 +4,8 @@
   "step_on_boot": true,
   "step_on_shutdown": false,
   "debug_mode": false,
+  "save_key": "1234",
+  "SAVE_KEY_NOTES": "A hash of the save key is used to encrypt all data realating to this app. Make it secure.",
   "app_parameters": {
     "": ""
   },

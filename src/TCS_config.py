@@ -50,7 +50,7 @@ class TCS_config:
                 self._fullConfig = toml.load(self.file)
                 self._config = self._fullConfig["system_config"]
             except:
-                self.file = os.path.join(TCS_variables.PYBIRD_CONFIG_DIRECTORY, "PYBIRD_SERVER_CONFIG.toml")
+                self.file = os.path.join(TCS_variables.PYBIRD_DIRECTORIES.CONFIG, "PYBIRD_SERVER_CONFIG.toml")
                 self._fullConfig = toml.load(self.file)
                 self._config = self._fullConfig["system_config"]
 

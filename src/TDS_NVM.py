@@ -23,38 +23,45 @@
 
 import os
 import pickle
+import hashlib
 
 import TCS_variables
+import TCS_utils
+import TKS_encryption
+
 
 
 class data_interface:
-    def __init__(self, app_code: str) -> None:
+    def __init__(self, app_code: str, save_key : str) -> None:
         self.app_code = app_code
-        self._app_dir = os.path.join(TCS_variables.PYBIRD_DATA_APPDATA_DIRECTORY, app_code.upper())
+
+        self.save_key = save_key
+
+        self._app_dir = os.path.join(TCS_variables.PYBIRD_DIRECTORIES.DATA_APPDATA, app_code.upper())
         if not os.path.exists(self._app_dir):
             os.makedirs(self._app_dir)
 
     def save_data(self, data_name: str, data):
-        _nvm = NVM_data(self.app_code, data_name=data_name)
+        _nvm = NVM_data(self.app_code, data_name=data_name, save_key=self.save_key)
         _nvm._init_write_only(data)
-
     def load_data(self, data_name):
-        temp = NVM_data(self.app_code, data_name)
+        temp = NVM_data(self.app_code, data_name, save_key=self.save_key)
         temp._init_read_only()
         return temp.data
 
     def live_data(self, data_name: str):
-        temp = NVM_data(self.app_code, data_name)
+        temp = NVM_data(self.app_code, data_name, save_key=self.save_key)
         temp._init_live()
         return temp
 
 
 class NVM_data:
-    def __init__(self, app_code: str, data_name: str) -> None:
+    def __init__(self, app_code: str, data_name: str, save_key:str) -> None:
         self._app_code = app_code
         self._data_name = data_name
+        self._save_key = save_key
         self.data = None
-        self._app_dir = os.path.join(TCS_variables.PYBIRD_DATA_APPDATA_DIRECTORY, app_code.upper())
+        self._app_dir = os.path.join(TCS_variables.PYBIRD_DIRECTORIES.DATA_APPDATA, app_code.upper())
 
         if not os.path.exists(self._app_dir):
             os.makedirs(self._app_dir)
@@ -67,6 +74,9 @@ class NVM_data:
         fileName += ".pkl"
 
         self._file = os.path.join(self._app_dir, fileName)
+        self._file_enc = self.file_enc_name(self._file)
+
+        self._my_aes = TKS_encryption.AES_savekey(app_name=self._app_code, save_key=self._save_key)
 
     def _init_read_only(self):
         if os.path.isfile(self._file):
@@ -91,16 +101,23 @@ class NVM_data:
         reloads data
         :return:
         """
-        with open(self._file, 'rb') as f:
-            self.data = pickle.load(f)
+        with open(self._file_enc, 'r') as f:
+            my_data_enc = f.read()
+            my_data_hex = self._my_aes.decrypt(my_data_enc).decode(TCS_variables.AES.ENCODING)
+            my_data = bytes.fromhex(my_data_hex)
+            self.data = pickle.loads(bytes(my_data))
+
 
     def save(self):
         """
         saves the data
         :return:
         """
-        with open(self._file, 'wb') as f:
-            pickle.dump(self.data, f)
+        with open(self._file_enc, 'w') as f:
+            my_data = pickle.dumps(self.data)
+            my_data_hex = my_data.hex()
+            my_data_enc = self._my_aes.encrypt(my_data_hex).decode(TCS_variables.AES.ENCODING)
+            f.write(my_data_enc)
 
     def update(self):
         self.load()
@@ -113,8 +130,21 @@ class NVM_data:
         self.save()
         del self
 
+    def file_enc_name(self, file_name):
+        return self._file + ".enc"
+
 
 if __name__ == "__main__":
     app = "new"
     name = "1"
-    DI = data_interface(app_code=app)
+    DI = NVM_data(app_code=app, save_key="TEST!@#", data_name=name)
+
+
+    DI.data = ["test"]
+    for i in range(1000):
+        DI.data.append(str(i)+"test")
+
+    print(DI.data)
+    DI.save()
+    DI.load()
+    print(DI.data)

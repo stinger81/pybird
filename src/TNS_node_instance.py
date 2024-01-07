@@ -84,9 +84,9 @@ class TWnode(TNS_node.node):
 
     def _sys_path(self, app_info):
         if app_info.local_app:
-            sys.path.append(os.path.join(TCS_variables.PYBIRD_APP_LOCAL_DIRECTORY, app_info.app_code))
+            sys.path.append(os.path.join(TCS_variables.PYBIRD_DIRECTORIES.APP_LOCAL, app_info.app_code))
         elif not app_info.local_app:
-            sys.path.append(os.path.join(TCS_variables.PYBIRD_REMOTE_APP_DIRECTORY, app_info.app_code))
+            sys.path.append(os.path.join(TCS_variables.PYBIRD_DIRECTORIES.PYBIRD_REMOTE_APP_DIRECTORY, app_info.app_code))
 
     def myStart(self):
         pass

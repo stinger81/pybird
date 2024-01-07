@@ -152,6 +152,89 @@ class PYBIRD_DIRECTORIES:
                             key_name.upper() + FILE_EXTENSIONS.KEY_GENERAL)
 
 
+# PYBIRD_SRC_DIRECTORY: str = os.path.join(PYBIRD_DIRECTORY, DIRECTORY_NAME.SRC)
+# PYBIRD_CONFIG_DIRECTORY: str = os.path.join(PYBIRD_DIRECTORY, DIRECTORY_NAME.CONFIG)
+# PYBIRD_ADD_CRED_DIRECTORY: str = os.path.join(PYBIRD_DIRECTORY, DIRECTORY_NAME.ADD_CRED)  # DO NOT MAKE DIR
+
+#
+# PYBIRD_LOG_DIRECTORY: str = os.path.join(PYBIRD_DIRECTORY, DIRECTORY_NAME.LOG)
+# if not os.path.exists(PYBIRD_LOG_DIRECTORY):
+#     os.mkdir(PYBIRD_LOG_DIRECTORY)
+#
+# PYBIRD_APP_LOCAL_DIRECTORY: str = os.path.join(PYBIRD_DIRECTORY, DIRECTORY_NAME.APP_LOCAL)
+# if not os.path.exists(PYBIRD_APP_LOCAL_DIRECTORY):
+#     os.mkdir(PYBIRD_APP_LOCAL_DIRECTORY)
+#
+# PYBIRD_DATA_DIRECTORY: str = os.path.join(PYBIRD_DIRECTORY, DIRECTORY_NAME.DATA)
+# if not os.path.exists(PYBIRD_DATA_DIRECTORY):
+#     os.mkdir(PYBIRD_DATA_DIRECTORY)
+#
+# PYBIRD_DATA_LOG_DIRECTORY: str = os.path.join(PYBIRD_DATA_DIRECTORY, DIRECTORY_NAME.LOG)
+# if not os.path.exists(PYBIRD_DATA_LOG_DIRECTORY):
+#     os.mkdir(PYBIRD_DATA_LOG_DIRECTORY)
+#
+# PYBIRD_DATA_SESSION_DIRECTORY: str = os.path.join(PYBIRD_DATA_DIRECTORY, DIRECTORY_NAME.SESSION)
+# if not os.path.exists(PYBIRD_DATA_SESSION_DIRECTORY):
+#     os.mkdir(PYBIRD_DATA_SESSION_DIRECTORY)
+#
+# PYBIRD_DATA_APPDATA_DIRECTORY: str = os.path.join(PYBIRD_DATA_DIRECTORY, DIRECTORY_NAME.APPDATA)
+# if not os.path.exists(PYBIRD_DATA_APPDATA_DIRECTORY):
+#     os.mkdir(PYBIRD_DATA_APPDATA_DIRECTORY)
+#
+#
+# # .pybird
+# PYBIRD_HOME_DIRECTORY: str = os.path.join(HOME_DIRECTORY, DIRECTORY_NAME.HOME_DATA)
+# if not os.path.exists(PYBIRD_HOME_DIRECTORY):
+#     os.mkdir(PYBIRD_HOME_DIRECTORY)
+#
+# PYBIRD_HOME_APP_DIRECTORY: str = os.path.join(PYBIRD_HOME_DIRECTORY, DIRECTORY_NAME.HOME_DATA_APP)
+# if not os.path.exists(PYBIRD_HOME_APP_DIRECTORY):
+#     os.mkdir(PYBIRD_HOME_APP_DIRECTORY)
+#
+# PYBIRD_HOME_AES_DIRECTORY: str = os.path.join(PYBIRD_HOME_DIRECTORY, DIRECTORY_NAME.HOME_DATA_AES)
+# if not os.path.exists(PYBIRD_HOME_AES_DIRECTORY):
+#     os.mkdir(PYBIRD_HOME_AES_DIRECTORY)
+#
+#
+# def PYBIRD_APP_HOME_DIR(app_name: str) -> str:
+#     path = os.path.join(PYBIRD_HOME_APP_DIRECTORY, app_name.upper())
+#     if not os.path.exists(path):
+#         os.mkdir(path)
+#     return path
+#
+#
+# def PYBIRD_APP_ATLAS_DIR(app_name: str) -> str:
+#     path = os.path.join(PYBIRD_APP_HOME_DIR(app_name), DIRECTORY_NAME.HOME_DATA_ATLAS)
+#     if not os.path.exists(path):
+#         os.mkdir(path)
+#     return path
+#
+#
+# def PYBIRD_APP_X_DIR(app_name: str) -> str:
+#     path = os.path.join(PYBIRD_APP_HOME_DIR(app_name), DIRECTORY_NAME.HOME_DATA_X)
+#     if not os.path.exists(path):
+#         os.mkdir(path)
+#     return path
+#
+#
+# def PYBIRD_APP_GENERAL_DIR(app_name: str) -> str:
+#     path = os.path.join(PYBIRD_APP_HOME_DIR(app_name), DIRECTORY_NAME.HOME_DATA_GENERAL)
+#     if not os.path.exists(path):
+#         os.mkdir(path)
+#     return path
+#
+#
+# def PYBIRD_APP_ATLAS_KEY(app_name: str, key_name: str) -> str:
+#     return os.path.join(PYBIRD_APP_ATLAS_DIR(app_name), key_name.upper() + FILE_EXTENSIONS.KEY_ATLAS)
+#
+#
+# def PYBIRD_APP_X_KEY(app_name: str) -> str:
+#     return os.path.join(PYBIRD_APP_X_DIR(app_name), app_name.upper() + FILE_EXTENSIONS.KEY_X)
+#
+#
+# def PYBIRD_APP_GENERAL_KEY(app_name: str, key_name: str) -> str:
+#     return os.path.join(PYBIRD_APP_GENERAL_DIR(app_name), key_name.upper() + FILE_EXTENSIONS.KEY_GENERAL)
+#
 
 # endregion
 ####################################################################################################
@@ -213,6 +296,12 @@ AES_KEY_FILE = os.path.join(PYBIRD_DIRECTORIES.PYBIRD_HOME_AES, AES.KEY_FILE_NAM
 # endregion
 ####################################################################################################
 
+####################################################################################################
+# region database names
+# ATLAS_LOG_COLLECTION = "log"
+
+# endregion
+####################################################################################################
 
 ####################################################################################################
 # region OS Specific Settings

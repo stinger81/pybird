@@ -53,6 +53,7 @@ class TUAapp(TAS_app.app):
         """
         override step
         """
+
         tweet = str(datetime.now(timezone.utc)) + "-TEST ID: "
         testID = ""
         for i in range(0, random.randrange(8, 64)):
@@ -72,6 +73,8 @@ class TUAapp(TAS_app.app):
         # silently log a message to the database/local
         self.interface.log_db(tweet, "TWEET")
         self.tweet.post_tweet(tweet)
+
+        self.data_interface.save_data("test", tweet)
 
         self.passcount += 1
         if self.passcount >= self.maxpass:

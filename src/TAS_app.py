@@ -54,6 +54,7 @@ class app(TCS_core.core):
         self._app_config: TCS_configApp._app_config = parameters
         self.name: str = self._app_config.app_code
         self._config: TCS_config.TCS_config = TCS_config.TCS_config()
+        self.save_key = self._app_config.save_key
 
         # interface initial set up
         self.description: str = "TWapp"
@@ -101,9 +102,9 @@ class app(TCS_core.core):
                 self.interface.log("Shared Data Pool Disabled", "ERROR")
 
         if self._app_config.database_primary_active and self._app_config.log_to_DB:
-            self.interface._add_collection(self.primary_database.get_collection(TCS_variables.ATLAS_LOG_COLLECTION))
+            self.interface._add_collection(self.primary_database.get_collection(TCS_variables.ATLAS.LOG_COLLECTION))
 
-        self.data_interface = TDS_NVM.data_interface(self.name)
+        self.data_interface = TDS_NVM.data_interface(self.name,save_key=self.save_key)
 
         self.plugins = TAS_app_plugins.plugins()
         self.interface.dlog(

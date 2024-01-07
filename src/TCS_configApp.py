@@ -37,8 +37,8 @@ class TAS_apps_config:
     def __init__(self, nodeName="N000") -> None:
         self.version = TCS_utils.version()
         self.file = os.path.join(
-            TCS_variables.PYBIRD_CONFIG_DIRECTORY,
-            str(nodeName + TCS_variables.PYBIRD_NODE_CONFIG_ENDING))
+            TCS_variables.PYBIRD_DIRECTORIES.CONFIG,
+            str(nodeName + TCS_variables.FILE_EXTENSIONS.NODE_CONFIG))
 
         self.configs: list[_app_config] = []
 
@@ -92,10 +92,10 @@ class TAS_apps_config:
         for config in self.configs:
             if not config._full_disable:
                 if config.local_app:
-                    json_address = os.path.join(TCS_variables.PYBIRD_APP_LOCAL_DIRECTORY, config.app_code,
+                    json_address = os.path.join(TCS_variables.PYBIRD_DIRECTORIES.APP_LOCAL, config.app_code,
                                                 config.app_config)
                 else:
-                    json_address = os.path.join(TCS_variables.PYBIRD_REMOTE_APP_DIRECTORY, config.app_code,
+                    json_address = os.path.join(TCS_variables.PYBIRD_DIRECTORIES.PYBIRD_REMOTE_APP_DIRECTORY, config.app_code,
                                                 config.app_config)
                 # print(json_address)
                 with open(json_address, "r") as json_file:
@@ -104,6 +104,7 @@ class TAS_apps_config:
                     config.step_on_boot = config._json["step_on_boot"]
                     config.step_on_shutdown = config._json["step_on_shutdown"]
                     config.json_debug_mode = config._json["debug_mode"]
+                    config.save_key = config._json["save_key"]
                     config.app_parameters = config._json["app_parameters"]
                     config.database_primary_active = config._json["atlas_databases"]["primary"]["active"]
                     config.database_primary_name = config._json["atlas_databases"]["primary"]["DB_Name"]
@@ -167,6 +168,7 @@ class _app_config:
         self.step_time: int = 0  # seconds
         self.step_on_boot: bool = False
         self.step_on_shutdown: bool = False
+        self.save_key:str = ""
         self.app_parameters: dict = {}
         self.database_primary_active = False
         self.database_primary_name = ""

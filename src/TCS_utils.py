@@ -129,15 +129,15 @@ class _version:
 class version(_version):
     def __init__(self):
         super().__init__()
-        self.major = TCS_variables.PYBIRD_VER_MAJOR
-        self.minor = TCS_variables.PYBIRD_VER_MINOR
-        self.patch = TCS_variables.PYBIRD_VER_PATCH
-        self.build = TCS_variables.PYBIRD_VER_BUILD
-        self.pre = TCS_variables.PYBIRD_VER_PRE
-        self.release_candidate = TCS_variables.PYBIRD_VER_RC
-        self.beta = TCS_variables.PYBIRD_VER_BETA
-        self.alpha = TCS_variables.PYBIRD_VER_ALPHA
-        self.dev = TCS_variables.PYBIRD_VER_DEV
+        self.major = TCS_variables.PYBIRD_VER.MAJOR
+        self.minor = TCS_variables.PYBIRD_VER.MINOR
+        self.patch = TCS_variables.PYBIRD_VER.PATCH
+        self.build = TCS_variables.PYBIRD_VER.BUILD
+        self.pre = TCS_variables.PYBIRD_VER.PRE
+        self.release_candidate = TCS_variables.PYBIRD_VER.RC
+        self.beta = TCS_variables.PYBIRD_VER.BETA
+        self.alpha = TCS_variables.PYBIRD_VER.ALPHA
+        self.dev = TCS_variables.PYBIRD_VER.DEV
 
 
 class app_version(_version):
@@ -147,6 +147,22 @@ class app_version(_version):
 
 ####################################################################################################
 # region file management
+
+# def list_tree(path: str = '.', level: int = 0, max_level: int = -1) -> list:
+#     """
+#     List a tree of the files and folders in a path
+#     :param path: str - Path to display
+#     :param level: int - Level of the tree
+#     :param max_level: int - Max level of the tree (-1 == no limit)
+#     :return: list - list of files and folders
+#     """
+#     my_list = []
+#     if max_level == -1 or level <= max_level:
+#         for f in os.listdir(path):
+#             my_list.append('|   ' * level + '|-> ' + f)
+#             if os.path.isdir(os.path.join(path, f)):
+#                 my_list.extend(list_tree(os.path.join(path, f), level + 1, max_level))
+#     return my_list
 
 def tree(path: str = '.', level: int = 0, max_level: int = -1):
     """
@@ -167,7 +183,7 @@ def pybird_keychain_tree():
     Display a tree of the files and folders in the keychain
     :return:
     """
-    my_path = TCS_variables.PYBIRD_HOME_DIRECTORY
+    my_path = TCS_variables.PYBIRD_DIRECTORIES.PYBIRD_DIRECTORY
     tree(my_path, 0, -1)
 
 def pybird_data_tree():
@@ -175,7 +191,7 @@ def pybird_data_tree():
     Display a tree of the files and folders in the data directory
     :return:
     """
-    my_path = TCS_variables.PYBIRD_DATA_DIRECTORY
+    my_path = TCS_variables.PYBIRD_DIRECTORIES.DATA
     tree(my_path, 0, -1)
 
 def rename_file(in_filename: str = '', in_new_filename: str = ''):

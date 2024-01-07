@@ -73,6 +73,7 @@ conda install -y -c conda-forge toml
 conda install -y -c conda-forge pycryptodome
 conda install -y -c conda-forge tweepy
 conda install -y -c conda-forge pymongo
+conda install -c conda-forge pyaescrypt
 ----
 
 . Finish General PYBIRD Setup: <<finish-setupall-platforms,Finish Setup(All Platforms)>>
