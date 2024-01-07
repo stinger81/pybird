@@ -34,12 +34,15 @@ from TCS_variables_const import *
 
 def _make_path(path):
     path = os.path.normpath(path)
+    # print(path)
     split = path.split(os.sep)
-    base = split.pop(0)
+    # print(split)
+    base = split.pop(0) + os.sep
     for i in split:
         if '.' in i:
             break
         base = os.path.join(base, i)
+        # print(base)
         if not os.path.exists(base):
             os.mkdir(base)
 
