@@ -29,8 +29,9 @@ import sys
 from pathlib import Path
 from platform import uname
 
-from TCS_variables_error import *
 from TCS_variables_const import *
+from TCS_variables_error import *
+
 
 def _make_path(path):
     path = os.path.normpath(path)
@@ -46,15 +47,14 @@ def _make_path(path):
         if not os.path.exists(base):
             os.mkdir(base)
 
-
 ####################################################################################################
 # region init home
 HOME = ""
 for i in range(len(sys.argv)):
-    if sys.argv[i] == SYS_ARG.BOOT:
+    if sys.argv[i] in SYS_ARG.HOME:
         _home_list = sys.argv[i + 1].split("/")
         HOME = os.path.join("/", *_home_list)
-        print("WARNING: -boot is only supported on Linux")
+        # print("WARNING: -boot is only supported on Linux")
 if HOME == "":
     HOME = Path.home()
 HOME_DIRECTORY = HOME
@@ -153,7 +153,6 @@ class PYBIRD_DIRECTORIES:
     def PYBIRD_APP_GENERAL_KEY(app_name: str, key_name: str) -> str:
         return os.path.join(PYBIRD_DIRECTORIES.PYBIRD_APP_GENERAL_DIR(app_name),
                             key_name.upper() + FILE_EXTENSIONS.KEY_GENERAL)
-
 
 
 # endregion
@@ -261,5 +260,3 @@ elif PYBIRD_PLATFORM == PLATFORM.PI64:  # Raspberry Pi OS 64 Bit
 
 # endregion
 ####################################################################################################
-
-print(PYBIRD_DIRECTORIES.LOG)

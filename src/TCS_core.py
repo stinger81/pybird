@@ -151,10 +151,14 @@ class core:
 
     ##############################################################################
     # Step Region
+    def preStep(self):
+        pass
     def step(self):
         self.step_count += 1
+        self.preStep()
         self._step_base()
         self.myStep()
+        self.postStep()
 
     def _step_base(self):
         """
@@ -166,6 +170,8 @@ class core:
         """
         Override this function to add your own step
         """
+        pass
+    def postStep(self):
         pass
     # End Region
     ##############################################################################

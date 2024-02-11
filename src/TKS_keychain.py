@@ -40,9 +40,11 @@ class keychain:
 
         # self._keys: dict = dict()
         self.AES = TKS_encryption.AES_ENC()
+        self.AES_saveKey = TKS_encryption.AES_savekey_ENC
         self.config = TCS_config.TCS_config()
 
-        self.interface = TCS_interface.interface("keychain")
+        self.interface = TCS_interface.interface("keychain",pybird_app=True)
+        # self.interface.log("TESTTSTS")
 
 
     ################################################################################################
@@ -449,7 +451,7 @@ class keychain:
     ################################################################################################
     ################################################################################################
     # region file system
-    def _save_key_to_file(self, file: str, keys: str):
+    def _save_key_to_file(self, file: str, keys: str) -> None:
         """
         Save keys to file
         :param file:

@@ -21,16 +21,17 @@
 #
 # ##########################################################################
 
+import os
 # region imports
 import shutil
-import time
-import os
+import sys
+from typing import Union, List
 
 import TCS_variables
 
 LICENSE = """
     PYBIRD a app based framework for social media management.
-    Copyright (C) 2022-2023  Michael Dompke (https://github.com/stinger81)
+    Copyright (C) 2022-2024  Michael Dompke (https://github.com/stinger81)
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -349,8 +350,10 @@ def append_text_file(in_filename: str, in_string: str):
     try:
         with open(in_filename, "a") as my_file:
             my_file.write(in_string + '\n')
-    except (IOError, OSError):
-        pass
+    except (IOError, OSError) as e:
+        if TCS_variables.SYS_ARG.RAISE[0] in sys.argv:
+            raise e
+
 
 
 def append_text_file_restricted_file_length(in_filename: str, in_string: str, max_length: int = -1):
@@ -528,6 +531,39 @@ def getUserInput_listChoice(in_prompt: str = '', in_options: list = [], in_defau
         except ValueError:
             print("Invalid input must be an integer")
     return in_options[my_input]
+def getUserInput_listChoiceMulti(in_prompt: str = '', in_options: list = [], in_default: int = 0):
+    """
+    Get user input
+    :param in_prompt: str - Prompt to display
+    :param in_options: list - list of options
+    :param in_default: int - Default value
+    :return: int - User input
+    """
+    in_prompt += " (comma separated list)"
+    if len(in_options) == 0:
+        return None
+    while True:
+        for i in range(len(in_options)):
+            print(str(i) + " - " + in_options[i])
+        my_input:str = getUserInput(in_prompt, str(in_default))
+        # print(my_input)
+        my_input_list = my_input.split(',')
+        my_output_list = []
+        # print(my_input_list)
+        all_pass = True
+        try:
+            for i in my_input_list:
+                if int(i) >= len(in_options):
+                    print("Value out of range: " + str(i))
+                    raise ValueError
+                else:
+                    my_output_list.append(in_options[int(i)])
+        except ValueError:
+            all_pass = False
+            print("Invalid input must be an integer")
+        if all_pass:
+            break
+    return my_output_list
 
 
 def getUserInput_Confirm(in_prompt: str = '', in_confirmation_code: str = 'y', in_case_sensitive: bool = False) -> bool:
@@ -588,7 +624,85 @@ def getUserInput_required_minimum_length(in_prompt: str = '', in_length: int = 0
 ####################################################################################################
 
 ####################################################################################################
+# region sys args reader
 
+def arg_in_sys_args(in_arg: List) -> bool:
+    """
+    Check if an argument is in sys.args
+    :param in_arg: str - Argument to check
+    :return: bool - True if argument is in sys.args
+    """
+    for arg in in_arg:
+        if arg in sys.argv:
+            return True
+    return False
+
+def get_arg_value(in_arg: List, in_default: str = None) -> Union[None,str]:
+    """
+    Get the value of an argument
+    :param in_arg: str - Argument to check
+    :return: str - Value of the argument
+    """
+    for arg in in_arg:
+        if arg in sys.argv:
+            try:
+                return sys.argv[sys.argv.index(arg) + 1]
+            except IndexError:
+                return in_default
+    return in_default
+
+def get_arg_value_int(in_arg: List, in_default: int = None) -> Union[None,int]:
+    """
+    Get the value of an argument
+    :param in_arg: str - Argument to check
+    :return: int - Value of the argument
+    """
+    my_val = get_arg_value(in_arg)
+    try:
+        return int(my_val)
+    except ValueError:
+        return in_default
+
+def get_arg_value_float(in_arg: List, in_default : float = None) -> Union[None,float]:
+    """
+    Get the value of an argument
+    :param in_arg: str - Argument to check
+    :return: float - Value of the argument
+    """
+    my_val = get_arg_value(in_arg)
+    try:
+        return float(my_val)
+    except ValueError:
+        return in_default
+
+def get_arg_value_bool(in_arg: List,
+                       in_if_exist_default: bool = True,
+                       in_if_not_exist_default: bool= False) -> Union[None,bool]:
+    """
+    Get the value of an argument
+    :param in_arg: str - Argument to check
+    :return: bool - Value of the argument
+    """
+    exist = arg_in_sys_args(in_arg)
+    if exist:
+        my_val = get_arg_value(in_arg)
+        try:
+            if my_val.lower() in ['true', 't', 'yes', 'y']:
+                return True
+            elif my_val.lower() in ['false', 'f', 'no', 'n']:
+                return False
+            else:
+                return in_if_exist_default
+        except ValueError:
+            return in_if_exist_default
+        except AttributeError:
+            return in_if_exist_default
+    else:
+        return in_if_not_exist_default
+
+
+# endregion
+###W###############################################################################################
 if __name__ == '__main__':
     # v = version()
     # v.major = 1

@@ -21,6 +21,7 @@
 #
 # ##########################################################################
 
+
 import multiprocessing
 from typing import List
 
@@ -29,10 +30,6 @@ from TBS_bootloader_vars import *
 time.sleep(0.5)
 
 PROCESS: List[multiprocessing.Process] = []
-bootMode = CONFIG["nodes"]["bootMode"]
-
-print("boot", sys.argv)
-
 
 def launchNodes():
     for node in os.environ["PYBIRDnodes"].split("|"):

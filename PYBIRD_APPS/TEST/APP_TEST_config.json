@@ -5,19 +5,15 @@
   "step_on_shutdown": false,
   "debug_mode": false,
   "save_key": "1234",
-  "SAVE_KEY_NOTES": "A hash of the save key is used to encrypt all data realating to this app. Make it secure.",
+  "SAVE_KEY_NOTES": "A hash of the save key is used to encrypt all data relating to this app. Make it secure.",
   "app_parameters": {
     "": ""
   },
   "atlas_databases":{
-    "primary":{
+    "enabled": true,
+    "log_to_DB": {
       "active": true,
-      "DB_Name": "TEST_DB",
-      "log_to_DB": true
-    },
-    "secondary": {
-      "active": false,
-      "DB_Name": ""
+      "DB_Name": "TEST_DB"
     }
   },
   "checksum_sha256": ""

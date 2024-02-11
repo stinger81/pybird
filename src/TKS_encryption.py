@@ -34,6 +34,7 @@ from Crypto.Cipher import AES as _aes
 import TCS_utils
 import TCS_variables
 
+
 class _AES:
     def __init__(self, key: str) -> None:
         self.version = TCS_utils.version()

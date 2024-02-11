@@ -23,6 +23,8 @@
 
 from dataclasses import dataclass
 
+
+
 @dataclass
 class PYBIRD_VER:
     """
@@ -31,7 +33,7 @@ class PYBIRD_VER:
     MAJOR = 0
     MINOR = 9
     PATCH = 0
-    BUILD = 1
+    BUILD = 2
     PRE: bool = False
     RC: bool = False
     BETA: bool = False
@@ -54,7 +56,51 @@ class SYS_ARG:
     """
     System arguments
     """
-    BOOT = '-boot'
+    # info
+    HELP = ['--help'] # will print the help information and then exit
+    VERSION = ['--version'] # will print the version information and then exit
+
+    # run declarations
+    HOME = ['-H', '--home'] # a flag for listing where the home directory is
+    NODE = ['-n', '--node'] # a flag for running a specific node
+    APP = ['-a', '--app'] # a flag for running a specific app
+
+    # standard modes
+    BOOT = ['-b', '--boot'] # a flag for the system starting from a service on boot
+    DEBUG = ['-d', '--debug'] # a flag for running the system in debug mode
+    OPERATIONS = ['-o', '--operations'] # a flag for running the system in operations mode (Override debug and test to f)
+    HEADLESS = ['-h', '--headless'] # a flag for running the system in headless mode
+
+    # development modes
+    DEV = ['--dev'] # a flag for running the system in dev mode
+    TEST = ['-t', '--test'] # a flag for running the system in test mode
+    RAISE = ['--raise'] # a flag for raising an exception
+
+    _help_msg = """
+    Information:
+    --help           Print this help message and exit
+    --version        Print version information and exit
+    
+    Run Declarations:
+    -H|--home        Set the home directory
+    -n|--node        Run a specific node
+    -a|--app         Run a specific app
+    
+    Standard Modes:
+    -b|--boot        Declare that the system is starting from a service on boot
+    -d|--debug       Run the system in debug mode
+    -o|--operations  Run the system in operations mode (Override debug and test to false)
+    -h|--headless    Run the system in headless mode
+    
+    Development Modes:
+    --dev            Run the system in dev mode
+    -t|--test        Run the system in test mode
+    --raise          Raise all exceptions so that error tracebacks are printed
+    """
+
+
+
+
 
 
 @dataclass
@@ -151,4 +197,11 @@ class DEFAULT:
 @dataclass
 class ATLAS:
     LOG_COLLECTION = "log"
+
+
+HELP = """
+    PYBIRD
+    A python based server for app based systems
+
+    """ + SYS_ARG._help_msg
 

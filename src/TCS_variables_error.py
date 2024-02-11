@@ -24,6 +24,7 @@
 ####################################################################################################
 # region Exceptions
 
+
 class PYBIRDError(Exception):
     """
     Exception raised while working with PYBIRD
