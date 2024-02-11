@@ -80,9 +80,10 @@ class TCS_config:
             self.logging.enable_session_log = True
 
     def _read_config(self):
-        # file = open(self.file, "r")
-        # self._config = json.load(file)
-        # file.close()
+        """
+        Read the config file
+        :return:
+        """
 
         self.system._read(self._config)
         self.logging._read(self._config)
@@ -93,6 +94,10 @@ class TCS_config:
         self.credentials._read(self._config)
 
     def _read_sys_argv(self):
+        """
+        Read the system arguments
+        :return:
+        """
         self._agrv = sys.argv
 
         # handle test mode
@@ -142,57 +147,6 @@ class TCS_config:
             self.session_log_length = -1
             self.app_log_length = -1
 
-        # for i in range(len(self._agrv)):
-        #     arg = self._agrv[i]
-        #     if arg in TCS_variables.SYS_ARG.TEST:
-        #         if not TCS_utils.get_arg_value_bool():
-        #             self.system.test_mode = False
-        #         else:
-        #             self.system.test_mode = True
-        #     elif arg in TCS_variables.SYS_ARG.DEBUG:
-        #         if self._agrv[i+1].lower == "false":
-        #             self.system.debug_mode = False
-        #         else:
-        #             self.system.debug_mode = True
-        #     elif arg in TCS_variables.SYS_ARG.HEADLESS:
-        #         if self._agrv[i+1].lower == "false":
-        #             self.console.show_console = True
-        #         else:
-        #             self.console.show_console = False
-        #             self.system.headless = True
-        #     elif arg in TCS_variables.SYS_ARG.OPERATIONS:
-        #         if self._agrv[i+1].lower == "false":
-        #             pass
-        #         else:
-        #             self.system.operations = True
-        #             self.system.debug_mode = False
-        #             self.system.test_mode = False
-
-
-
-
-
-        # for arg in self._agrv:
-        #     if arg == "-test" or arg == "-t":
-        #         self.system.test_mode = True
-        #     elif arg == "-debug" or arg == "-d":
-        #         self.system.debug_mode = True
-        #     elif arg == "-null_test":
-        #         self.system.test_mode = False
-        #     elif arg == "-null_debug":
-        #         self.system.debug_mode = False
-        #     elif arg == "-aws_test":
-        #         self.platform.has_cli = False
-        #         self.system.debug_mode = False
-        #         self.system.test_mode = False
-        #     elif arg == "-null_aws":
-        #         self.platform.has_cli = True
-        #     elif arg == "-boot":
-        #         self.platform.has_cli = False
-        #         self.system.test_mode = False
-        #         self.system.debug_mode = False
-        #     elif arg == "-null_boot":
-        #         self.platform.has_cli = True
 
     def __str__(self) -> str:
         string_out = ""
@@ -206,6 +160,9 @@ class TCS_config:
 
 
 class system_config:
+    """
+    System configuration
+    """
     def __init__(self) -> None:
         self._raw = None
 
@@ -218,6 +175,11 @@ class system_config:
         self.inter_step_delay = 0
 
     def _read(self, _config):
+        """
+        Read the config
+        :param _config:
+        :return:
+        """
         self._raw = _config["system"]
 
         self.test_mode = self._raw["test_mode"]
@@ -227,6 +189,7 @@ class system_config:
 
 
     def __str__(self) -> str:
+
         string_out = ""
         string_out += f"test_mode: {self.test_mode}\n"
         string_out += f"debug_mode: {self.debug_mode}\n"
@@ -240,6 +203,9 @@ class system_config:
 
 
 class logging_config:
+    """
+    Logging configuration
+    """
     def __init__(self) -> None:
         self._raw = None
 
@@ -252,6 +218,11 @@ class logging_config:
         self.app_log_length = 100000
 
     def _read(self, _config):
+        """
+        Read the config
+        :param _config:
+        :return:
+        """
         self._raw = _config["logging"]
 
         self.enable_master_log = self._raw["enable_master_log"]
@@ -274,12 +245,20 @@ class logging_config:
 
 
 class console_config:
+    """
+    Console configuration
+    """
     def __init__(self) -> None:
         self._raw = None
 
         self.show_console: bool = True
 
     def _read(self, _config):
+        """
+        Read the config
+        :param _config:
+        :return:
+        """
         self._raw = _config["console"]
 
         self.show_console = self._raw["show_console"]
@@ -292,12 +271,20 @@ class console_config:
 
 
 class twitter_config:
+    """
+    Twitter configuration
+    """
     def __init__(self) -> None:
         self._raw = None
 
         self.max_char: int = 280
 
     def _read(self, _config):
+        """
+        Read the config
+        :param _config:
+        :return:
+        """
         self._raw = _config["twitter"]
 
         self.max_char = self._raw["max_char"]
@@ -309,6 +296,9 @@ class twitter_config:
 
 
 class platform:
+    """
+    Platform configuration
+    """
     def __init__(self) -> None:
         self.has_cli = TCS_variables.PLATFORM_HAS_CLI
         self.force_test_mode = TCS_variables.PLATFORM_FORCE_TEST_MODE
@@ -321,11 +311,19 @@ class platform:
 
 
 class status:
+    """
+    Status configuration
+    """
     def __init__(self) -> None:
         self._raw = None
         self.log_length = None
 
     def _read(self, _config):
+        """
+        Read the config
+        :param _config:
+        :return:
+        """
         self._raw = _config["status"]
         self.log_length = self._raw["log_length"]
 
@@ -336,11 +334,19 @@ class status:
 
 
 class encryption:
+    """
+    Encryption configuration
+    """
     def __init__(self) -> None:
         self._raw = None
         self.encrypt_app_key = None
 
     def _read(self, _config):
+        """
+        Read the config
+        :param _config:
+        :return:
+        """
         self._raw = _config["encryption"]
         self.encrypt_app_key = self._raw["encrypt_app_keys"]
 
@@ -351,12 +357,20 @@ class encryption:
 
 
 class credentials:
+    """
+    Credentials configuration
+    """
     def __init__(self) -> None:
         self._raw = None
         self.delete_dir_after_upload = True
         self.delete_file_after_upload = True
 
     def _read(self, _config):
+        """
+        Read the config
+        :param _config:
+        :return:
+        """
         self._raw = _config["credentials"]
         self.delete_dir_after_upload = self._raw["delete_dir_after_upload"]
         self.delete_file_after_upload = self._raw["delete_file_after_upload"]

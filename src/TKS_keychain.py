@@ -83,22 +83,6 @@ class keychain:
         else:
             self.interface.log("Key not saved")
 
-        # app_name = str(input("Enter App Name: "))
-        #
-        # _keys = dict()
-        # _keys[app_name] = dict()
-        # print("Consumer Keys")
-        # _keys[app_name]["api_key"] = input("Enter API key: ")
-        # _keys[app_name]["api_secret"] = input("Enter API secret: ")
-        # print("authentication token")
-        # _keys[app_name]["bearer_token"] = input("Enter Bearer Token: ")
-        # _keys[app_name]["access_token"] = input("Enter Access Token: ")
-        # _keys[app_name]["access_token_secret"] = input("Enter Access token secret: ")
-        # print("oAuth2")
-        # _keys[app_name]["client_id"] = input("Enter client ID: ")
-        # _keys[app_name]["client_secret"] = input("Enter Client Secret: ")
-        #
-        # self._add_twitter_key(app_name, in_keys=_keys)
 
     def add_atlas_key_ui(self)->None:
         """
@@ -125,42 +109,7 @@ class keychain:
         else:
             self.interface.log("Key not saved")
 
-        # self._add_atlas_key(in_appname=app_name,
-        #                     in_uri=uri,
-        #                     in_api_version=api_version,
-        #                     in_db_name=db_name)
 
-        # info = self.atlas_credentials()
-        #
-        # info.app_name = str(input("Enter App Name: ")).upper()
-        #
-        # info.uri = str(input("Enter Atlas URI (Username/Password MUST be included): "))
-        #
-        # info.api_version = str(input("Enter Atlas API Version [1]: "))
-        # if info.api_version == "":
-        #     info.api_version = "1"
-        #
-        # dedicated = str(input("Is this information for a dedicated database? (y/n)[n]: "))
-        # if dedicated.lower() == "":
-        #     info.dedicated = False
-        # elif dedicated.lower() == "y":
-        #     info.dedicated = True
-        #     info.dedicated_name = str(input("Enter Dedicated Database Name: [" + info.app_name + "_DB]"))
-        #     if info.dedicated_name == "":
-        #         info.dedicated_name = info.app_name + "_DB"
-        # else:
-        #     info.dedicated = False
-        #
-        # shared = str(input("Is this information for a shared database? (y/n)[n]: "))
-        # if shared.lower() == "":
-        #     info.shared = False
-        # elif shared.lower() == "y":
-        #     info.shared = True
-        #     info.shared_name = str(input("Enter Shared Database Name [" + info.app_name + "_ShareDB]: "))
-        # else:
-        #     info.shared = False
-        #
-        # self._add_atlas_key(info)
 
     # endregion 
     ################################################################################################
@@ -265,21 +214,7 @@ class keychain:
         self._save_key_to_file(my_save_file, keys)
         self.interface.dlog("Credentials for " + in_app_name + " added!")
 
-    # def _add_twitter_key(self, in_app_name: str, in_keys: dict):
-    #     file = TCS_variables.PYBIRD_DIRECTORIES.PYBIRD_APP_X_DIR(in_app_name)
-    #
-    #     keys = ""
-    #     keys += in_keys[in_app_name]["api_key"]
-    #     keys += "," + in_keys[in_app_name]["api_secret"]
-    #     keys += "," + in_keys[in_app_name]["bearer_token"]
-    #     keys += "," + in_keys[in_app_name]["access_token"]
-    #     keys += "," + in_keys[in_app_name]["access_token_secret"]
-    #     keys += "," + in_keys[in_app_name]["client_id"]
-    #     keys += "," + in_keys[in_app_name]["client_secret"]
-    #
-    #     self._save_key_to_file(file, keys)
-    #
-    #     self.interface.dlog("Credentials for " + in_app_name + " added!")
+
 
     def load_twitter_keys(self, in_app_name) -> list:
         """
@@ -297,22 +232,7 @@ class keychain:
     ################################################################################################
     # region mongodb credentials
 
-    # class atlas_credentials:
-    #     def __init__(self):
-    #         self.app_name = ""
-    #         self.uri = ""
-    #         self.api_version = ""
-    #         self.dedicated = False
-    #         self.dedicated_name = ""
-    #         self.shared = False
-    #         self.shared_name = ""
 
-    # class atlas_credentials_loaded:
-    #     def __init__(self):
-    #         self.app_name = ""
-    #         self.uri = ""
-    #         self.api_version = ""
-    #         self.db_name = ""
 
     def _add_atlas_key(self,
                        in_appname: str,
@@ -331,32 +251,11 @@ class keychain:
         my_save_file = TCS_variables.PYBIRD_DIRECTORIES.PYBIRD_APP_ATLAS_KEY(in_appname, in_db_name)
 
         keys = ",".join([in_appname, in_uri, in_api_version, in_db_name])
-        # keys += in_appname
-        # keys += "," + in_uri
-        # keys += "," + in_api_version
-        # keys += "," + in_db_name
+
 
         self._save_key_to_file(my_save_file, keys)
         self.interface.dlog("Credentials for atlas " + in_appname + " added!")
-        # if creds.dedicated:
-        #     file = TCS_variables.PYBIRD_DIRECTORIES.PYBIRD_APP_ATLAS_KEY(creds.app_name, creds.dedicated_name)
-        #
-        #     keys = creds.app_name
-        #     keys += "," + creds.uri
-        #     keys += "," + creds.api_version
-        #     keys += "," + creds.dedicated_name
-        #
-        #     self._save_key_to_file(file, keys)
-        #
-        # if creds.shared:
-        #     file = TCS_variables.PYBIRD_DIRECTORIES.PYBIRD_APP_ATLAS_KEY(creds.app_name, creds.shared_name)
-        #
-        #     keys = creds.app_name
-        #     keys += "," + creds.uri
-        #     keys += "," + creds.api_version
-        #     keys += "," + creds.shared_name
-        #
-        #     self._save_key_to_file(file, keys)
+
 
     def load_atlas_keys(self, app_name: str, db_name: str) -> list:
         """
@@ -367,18 +266,9 @@ class keychain:
         [appname, uri, api_version, db_name]
         """
         file = TCS_variables.PYBIRD_DIRECTORIES.PYBIRD_APP_ATLAS_KEY(app_name, db_name)
-        # creds = self.atlas_credentials_loaded()
+
         self.interface.dlog("Atlas Creds File: " + file, "FILE LOC")
-        # if not os.path.exists(file):
-        #     raise TCS_variables.PYBIRDAPPkeyERROR("Unable to find key file for " + db_name + "!")
-        # else:
-        #     k = self._read_key_from_file(file)
-        #     raw = k.strip().split(",")
-        #     # creds.app_name = raw[0]
-        #     # creds.uri = self._decode_key(raw[1])
-        #     # creds.api_version = self._decode_key(raw[2])
-        #     # creds.db_name = self._decode_key(raw[3])
-        #     return raw
+
         return self._read_key_from_file(file).strip().split(",")
 
     # endregion
@@ -567,23 +457,7 @@ class keychain:
 
                 self.interface.log(str("Added twitter credentials for " + appName + " from " + file))
 
-                # try:
-                #     _keys = dict()
-                #     _keys[appName] = dict()
-                #     _keys[appName]["api_key"] = new_cred_base["consumer_key"]["api_key"]
-                #     _keys[appName]["api_secret"] = new_cred_base["consumer_key"]["api_secret"]
-                #     _keys[appName]["bearer_token"] = new_cred_base["authentication_token"]["bearer_token"]
-                #     _keys[appName]["access_token"] = new_cred_base["authentication_token"]["access_token"]
-                #     _keys[appName]["access_token_secret"] = new_cred_base["authentication_token"]["access_token_secret"]
-                #     _keys[appName]["client_id"] = new_cred_base["oAuth2"]["client_id"]
-                #     _keys[appName]["client_secret"] = new_cred_base["oAuth2"]["client_secret"]
-                # except:
-                #     self.interface.log(str("unable to read twitter credentials for " + appName + " from " + file),
-                #                        logType='ERROR')
-                #     continue
-                #
-                # self._add_twitter_key(in_app_name=appName, keys=_keys)
-                # self.interface.log(str("Added twitter credentials for " + appName + " from " + file))
+
 
                 if self.config.credentials.delete_file_after_upload:
                     self.interface.log(str("deleting: " + file_path), "DELETING")
@@ -620,22 +494,6 @@ class keychain:
                                            logType='ERROR')
                         continue
 
-                # try:
-                #     creds = self.atlas_credentials()
-                #     creds.app_name = appName
-                #     creds.uri = new_cred_base["uri"]
-                #     creds.api_version = new_cred_base["api_version"]
-                #     creds.dedicated = new_cred_base["dedicated"]["dedicated_allowed"]
-                #     creds.dedicated_name = new_cred_base["dedicated"]["dedicated_name"]
-                #     creds.shared = new_cred_base["shared"]["shared_allowed"]
-                #     creds.shared_name = new_cred_base["shared"]["shared_name"]
-                # except:
-                #     self.interface.log(str("unable to read atlas credentials for " + appName + " from " + file),
-                #                        logType='ERROR')
-                #     continue
-                #
-                # self._add_atlas_key(creds)
-                # self.interface.log(str("Added atlas credentials for " + appName + " from " + file))
 
                 if self.config.credentials.delete_file_after_upload:
                     self.interface.log(str("deleting: " + file_path), "DELETING")

@@ -95,10 +95,7 @@ def goodbye():
 
 
 if __name__ == "__main__":
-    # print license
-    # inter = TCS_interface.interface("SYS_LICENSE")
-    # inter.log_multiline(TCS_utils.LICENSE, "LICENSE")
-    # del inter
+
 
     signal(SIGINT, handler)
     argv = sys.argv

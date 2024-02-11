@@ -48,13 +48,15 @@ class TAS_apps_config:
         self._post_process_config()
 
     def _read_config_csv(self):
+        """
+        read the configuration file
+        :return:
+        """
         # read configuration file
         with open(self.file, mode='r', encoding='UTF-8', newline='') as config_file:
-            # print(config_file)
             csv_read = csv.reader(config_file)
             i = 0
             for row in csv_read:
-                # print(row)
                 if i != 0:
                     self.configs.append(_app_config())
                     self.configs[-1]._csv = row
@@ -81,15 +83,14 @@ class TAS_apps_config:
                     self.configs[-1].main_app = row[5]
                     self.configs[-1].app_config = row[6]
                     self.configs[-1].dependencies = TCS_utils.delimitated_to_list_str(row[7], "|")
-                    # self.configs[-1].DB_dedicated_access = TCS_utils.str_to_bool(row[8])
-                    # self.configs[-1].DB_dedicated_name = row[9]
-                    # self.configs[-1].DB_shared_access = TCS_utils.str_to_bool(row[10])
-                    # self.configs[-1].DB_shared_name = row[11]
 
-                    # print(self.configs[-1])
                 i += 1
 
     def _read_configtoml(self):
+        """
+        read the toml file
+        :return:
+        """
         for config in self.configs:
             if not config._full_disable:
                 if config.local_app:
@@ -121,13 +122,13 @@ class TAS_apps_config:
                     config.log_to_DB_name = config.toml["app_config"]["atlas"]["logging"]["DB_Name"]
 
                     config.app_parameters = config.toml["app_parameters"]
-                    # config.database_primary_active = config.toml["app_config"]["atlas_databases"]["primary"]["active"]
-                    # config.database_primary_name = config.toml["app_config"]["atlas_databases"]["primary"]["DB_Name"]
-                    # config.log_to_DB = config.toml["app_config"]["atlas_databases"]["primary"]["log_to_DB"]
-                    # config.database_secondary_active = config.toml["app_config"]["atlas_databases"]["secondary"]["active"]
-                    # config.database_secondary_name = config.toml["app_config"]["atlas_databases"]["secondary"]["DB_Name"]
+
 
     def _post_process_config(self):
+        """
+        post process the configuration
+        :return:
+        """
         for config in self.configs:
             if config.csv_debug_mode or config.toml_debug_mode:
                 config.debug_mode = True
@@ -136,6 +137,11 @@ class TAS_apps_config:
 
     @staticmethod
     def step_time_handle(in_step_time: str):
+        """
+        handle the step time
+        :param in_step_time:
+        :return:
+        """
         accepted_vals = "dhms"
         split_time = in_step_time.split()
         if len(split_time) == 1:
@@ -187,12 +193,6 @@ class _app_config:
         self.atlas_dbs_enabled: bool = False
         self.log_to_DB_enabled: bool = False
         self.log_to_DB_name: str = ""
-        # self.database_primary_active = False
-        # self.database_primary_name = ""
-        # self.log_to_DB = False
-        # self.database_secondary_active = False
-        # self.database_secondary_name = False
-        # post processing
         self.debug_mode: bool = False
 
     def __str__(self) -> str:

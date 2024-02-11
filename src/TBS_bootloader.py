@@ -32,11 +32,21 @@ time.sleep(0.5)
 PROCESS: List[multiprocessing.Process] = []
 
 def launchNodes():
+    """
+    Launch all nodes
+    :return:
+    """
     for node in os.environ["PYBIRDnodes"].split("|"):
         _launchNode(node)
 
 
 def _launchNode(nodeName: str, daemon: bool = False):
+    """
+    Launch a node
+    :param nodeName:
+    :param daemon:
+    :return:
+    """
     import TNS_run  # DO NOT MOVE
     PROCESS.append(multiprocessing.Process(name=nodeName,
                                            target=TNS_run.run,
@@ -46,6 +56,10 @@ def _launchNode(nodeName: str, daemon: bool = False):
 
 
 def watchdog():
+    """
+    Watchdog for nodes
+    :return:
+    """
     while True:
         for i in range(len(PROCESS)):
             # print(PROCESS[i].pid)
@@ -60,6 +74,10 @@ def watchdog():
 
 
 def shutdown():
+    """
+    Shutdown all nodes
+    :return:
+    """
     for p in PROCESS:
         p.kill()
     exit()

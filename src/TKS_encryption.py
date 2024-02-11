@@ -67,49 +67,33 @@ class _AES:
     def unpad(self, s):
         return s[:-ord(s[len(s) - 1:])]
 
-# class AES:
-#     def __init__(self) -> None:
-#         self.version = TCS_utils.version()
-#
-#         self.aes = _aes
-#         self._aes_keychain = _AES_keychain()
-#
-#     def encrypt(self, raw):
-#         private_key = self._aes_keychain._read_key().encode(TCS_variables.AES_ENCODING)
-#         # print(private_key.decode())
-#         raw = self.pad(raw)
-#         iv = Random.new().read(_aes.block_size)
-#         cipher = self.aes.new(private_key, _aes.MODE_CBC, iv)
-#         return base64.b64encode(iv + cipher.encrypt(raw.encode(TCS_variables.AES_ENCODING)))
-#
-#     def decrypt(self, enc):
-#         private_key = self._aes_keychain._read_key().encode(TCS_variables.AES_ENCODING)
-#         enc = base64.b64decode(enc)
-#         iv = enc[:16]
-#         cipher = _aes.new(private_key, _aes.MODE_CBC, iv)
-#         return self.unpad(cipher.decrypt(enc[16:]))
-#
-#     def pad(self, s):
-#         return s + (TCS_variables.AES_BLOCK_SIZE - len(s) % TCS_variables.AES_BLOCK_SIZE) * chr(
-#             TCS_variables.AES_BLOCK_SIZE - len(s) % TCS_variables.AES_BLOCK_SIZE)
-#
-#     def unpad(self, s):
-#         return s[:-ord(s[len(s) - 1:])]
-
 class AES_ENC(_AES):
     def __init__(self):
+        """
+        This class is used to encrypt the AES key using a saved key
+        """
         self._aes_keychain = _AES_keychain()
         self._key = self._aes_keychain._read_key()
         super().__init__(self._key)
 
 class AES_savekey(_AES):
     def __init__(self, app_name:str, save_key:str) -> None:
+        """
+        This class is used to encrypt the AES key using a saved key
+        :param app_name:
+        :param save_key:
+        """
         encoded_key = str(app_name+save_key).encode(TCS_variables.AES.ENCODING)
         self._key = hashlib.sha256(encoded_key).hexdigest()[0:32]
         super().__init__(self._key)
 
 class AES_savekey_ENC(_AES):
     def __init__(self, app_name:str, save_key:str) -> None:
+        """
+        This class is used to encrypt the AES key using a saved key that is encrypted
+        :param app_name:
+        :param save_key:
+        """
         key_aes = AES_ENC()
         my_key = app_name+save_key
         my_key_enc = key_aes.encrypt(my_key)

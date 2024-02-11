@@ -89,35 +89,20 @@ class app(TCS_core.core):
             else:
                 self.interface._add_collection(self._logging_db.get_collection(TCS_variables.ATLAS.LOG_COLLECTION))
 
-        # if self._app_config.database_primary_active:
-        #     self._primary_database = TDS_database_atlas.mongodb_atlas(self, self._app_config.database_primary_name)
-        #     if self._primary_database.valid:
-        #         self.primary_database = self._primary_database.db
-        #     else:
-        #         self.primary_database = None
-        #         self.interface.log("Primary Database Disabled", "ERROR")
-        #         self._app_config.database_primary_active = False
-        #         self.interface.log("setting log to db to disabled", "ERROR")
-        #         self._app_config.log_to_DB = False
-
-        # if self._app_config.database_secondary_active:
-        #     self._secondary_database = TDS_database_atlas.mongodb_atlas(self, self._app_config.database_secondary_name)
-        #     if self._secondary_database.valid:
-        #         self.secondary_database = self._secondary_database.db
-        #     else:
-        #         self.secondary_database = None
-        #         self.interface.log("Shared Data Pool Disabled", "ERROR")
-
-        # if self._app_config.database_primary_active and self._app_config.log_to_DB:
-        #     self.interface._add_collection(self.primary_database.get_collection(TCS_variables.ATLAS.LOG_COLLECTION))
-
+        # NVM initial set up
         self.data_interface = TDS_NVM.NVM_dataInterface(self.name,save_key=self.save_key)
 
+        # plugins initial set up
         self.plugins = TAS_app_plugins.plugins()
         self.interface.dlog(
             f"{self.name} v{self.version} : APP-BASE INITIALIZED", logType="INFO")
 
     def connect_to_database(self, database_name: str):
+        """
+        Connect to the database
+        :param database_name:
+        :return:
+        """
         if self._app_config.atlas_dbs_enabled:
             temp_db = TDS_database_atlas.mongodb_atlas(self, database_name)
             if temp_db.valid:
@@ -146,10 +131,18 @@ class app(TCS_core.core):
         # to be overridden in parent class
         pass
     def preStep(self):
+        """
+        Pre step
+        :return:
+        """
         if self._app_config.load_before_each_step:
             self.myLoad()
 
     def postStep(self):
+        """
+        Post step
+        :return:
+        """
         if self._app_config.save_after_each_step:
             self.mySave()
 

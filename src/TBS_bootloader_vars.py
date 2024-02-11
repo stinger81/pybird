@@ -38,6 +38,11 @@ if HOME == "":
 
 
 def joinToHome(path: str):
+    """
+    Join path to home
+    :param path:
+    :return:
+    """
     paths = path.split("/")
     outPath = os.path.join(HOME, *paths)
     return outPath

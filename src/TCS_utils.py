@@ -90,6 +90,10 @@ class _version:
         return version_string
 
     def short_str(self):
+        """
+        Short version string
+        :return:
+        """
         version_string = f"{self.major}.{self.minor}"
         if self.patch > 0 or self.build != 0:
             version_string += f".{self.patch}"
@@ -110,6 +114,10 @@ class _version:
         return version_string
 
     def full_str(self):
+        """
+        Full version string
+        :return:
+        """
         version_string = f"{self.major}.{self.minor}.{self.patch}.{self.build}"
 
         if self.pre:
@@ -149,21 +157,7 @@ class app_version(_version):
 ####################################################################################################
 # region file management
 
-# def list_tree(path: str = '.', level: int = 0, max_level: int = -1) -> list:
-#     """
-#     List a tree of the files and folders in a path
-#     :param path: str - Path to display
-#     :param level: int - Level of the tree
-#     :param max_level: int - Max level of the tree (-1 == no limit)
-#     :return: list - list of files and folders
-#     """
-#     my_list = []
-#     if max_level == -1 or level <= max_level:
-#         for f in os.listdir(path):
-#             my_list.append('|   ' * level + '|-> ' + f)
-#             if os.path.isdir(os.path.join(path, f)):
-#                 my_list.extend(list_tree(os.path.join(path, f), level + 1, max_level))
-#     return my_list
+
 
 def tree(path: str = '.', level: int = 0, max_level: int = -1):
     """
@@ -400,6 +394,11 @@ def append_text_file_restricted_file_length(in_filename: str, in_string: str, ma
 
 # str to bool conversion
 def str_to_bool(in_str: str) -> bool:
+    """
+    Convert a string to a bool
+    :param in_str:
+    :return:
+    """
     if in_str.lower().strip() == 'true':
         return True
     else:
@@ -408,6 +407,11 @@ def str_to_bool(in_str: str) -> bool:
 
 # bool to str conversion
 def bool_to_str(in_bool: bool) -> str:
+    """
+    Convert a bool to a string
+    :param in_bool:
+    :return:
+    """
     if in_bool:
         return "True"
     else:
@@ -416,21 +420,43 @@ def bool_to_str(in_bool: bool) -> str:
 
 # str to int conversion
 def str_to_int(in_str: str) -> int:
+    """
+    Convert a string to an int
+    :param in_str:
+    :return:
+    """
     return int(in_str)
 
 
 # int to string conversion
 def int_to_str(in_int: int) -> str:
+    """
+    Convert an int to a string
+    :param in_int:
+    :return:
+    """
     return str(in_int)
 
 
 # delimitated list to python list str
 def delimitated_to_list_str(in_list: str, in_delimiter: str = ','):
+    """
+    Convert a delimited list to a python list
+    :param in_list:
+    :param in_delimiter:
+    :return:
+    """
     return in_list.split(in_delimiter)
 
 
 # delimited list to python list int
 def delimitated_to_list_int(in_list: str, in_delimiter: str = ','):
+    """
+    Convert a delimited list to a python list
+    :param in_list:
+    :param in_delimiter:
+    :return:
+    """
     return [int(x) for x in in_list.split(in_delimiter)]
 
 

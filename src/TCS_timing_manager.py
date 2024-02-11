@@ -1,3 +1,26 @@
+# /bin/python3
+# ##########################################################################
+#
+#   Copyright (C) 2022-2024 Michael Dompke (https://github.com/stinger81)
+#
+#    This program is free software: you can redistribute it and/or modify
+#    it under the terms of the GNU General Public License as published by
+#    the Free Software Foundation, either version 3 of the License, or
+#    any later version.
+#
+#    This program is distributed in the hope that it will be useful,
+#    but WITHOUT ANY WARRANTY; without even the implied warranty of
+#    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#    GNU General Public License for more details
+#
+#    You should have received a copy of the GNU General Public License
+#    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#
+#   Michael Dompke (https://github.com/stinger81)
+#   michael@dompke.dev
+#
+# ##########################################################################
+
 import datetime
 import time
 
@@ -44,17 +67,33 @@ class TimingManager:
             self._next_time = self._next_time_request
 
     def get_cur_time(self):
+        """
+        Get the current step time
+        :return:
+        """
         return self.last_time
 
     def set_next_time(self):
+        """
+        Set the next time
+        :return:
+        """
         next_time = self._next_time()
         self.last_time = next_time
         return next_time
 
     def _next_time_test(self):
+        """
+        Get the next time for the test mode
+        :return:
+        """
         return self.last_time + datetime.timedelta(seconds=60)
 
     def _next_time_step(self):
+        """
+        Get the next time for the step mode
+        :return:
+        """
         if self._app_config.timing_step_skip_missed:
             delta = datetime.datetime.utcnow().timestamp() - self.last_time.timestamp()
             if delta < self.step_duration:
@@ -66,6 +105,10 @@ class TimingManager:
             return self.last_time + datetime.timedelta(seconds=self.step_duration)
 
     def _next_time_time(self):
+        """
+        Get the next time for the time mode
+        :return:
+        """
         # build a list of times
         time_list = []
         for time in self.timing_time_list:
@@ -94,12 +137,25 @@ class TimingManager:
                 return time
 
     def _next_time_cont(self):
+        """
+        Get the next time for the cont mode
+        :return:
+        """
         return self.last_time
 
     def _next_time_request(self):
+        """
+        Get the next time for the request mode
+        :return:
+        """
         return 'request'
 
     def _step_duration_decode(self, duration: str):
+        """
+        Decode the step duration
+        :param duration:
+        :return:
+        """
         accepted_vals = "dhms"
         split_time = duration.split()
         if len(split_time) == 1:

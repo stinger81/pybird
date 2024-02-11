@@ -144,45 +144,7 @@ class node(TCS_core.core):
                 raise e
         return False
 
-    # def calc_step_time(self):
-    #     """
-    #     calculate the time for each step
-    #     """
-    #     if len(self.app_list) == 0:
-    #         self.interface.log("No apps to calculate step time", logType="STEP")
-    #         self.interface.log("NO APPS LOADED: EXIT CODE 2", "CRITICAL ERROR - EXIT")
-    #         exit()
-    #         return
-    #     elif len(self.app_list) == 1:
-    #         # self.app_list[0][2] = self.app_list[0][4] - self.app_list[0].step_on_start
-    #         self.interface.dlog("Step time calculated for " +
-    #                             self.app_list[0].name, logType="STEP")
-    #         self.step_time = self.app_list[0].step_time
-    #         return
-    #     else:
-    #
-    #         times = []
-    #         for app in self.app_list:
-    #             times.append(app.step_time)
-    #         # find gcd of requested step times
-    #         self.step_time = times[0]
-    #         for i in range(1, len(times)):
-    #             self.step_time = math.gcd(self.step_time, times[i])
-    #         # assign step count to each app
-    #         for app in self.app_list:
-    #             step_count = app.step_time / self.step_time
-    #             app.step_count = int(step_count)
-    #
-    #     self.interface.dlog("Step Time = " + str(self.step_time))
-    #
-    # def ProcessTable(self):
-    #     tabFormat = "|{:^16}|{:^10}|{:^10}|{:^12}|{:^12}|{:^15}|{:^16}|"
-    #     self.interface.log(tabFormat.format('APP', 'APP NAME', "STEP TIME",
-    #                                         'STEP ON BOOT', 'STEP ON END', 'STEP INTERVAL', "STATUS"))
-    #     for info in self.app_list:
-    #         self.interface.log(tabFormat.format(
-    #             str(info.app.__module__), info.name, str(info.step_time), str(info.step_on_start),
-    #             str(info.step_on_shutdown), str(info.step_count), info.status))
+
 
 
 if __name__ == "__main__":

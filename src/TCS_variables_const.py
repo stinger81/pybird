@@ -33,12 +33,12 @@ class PYBIRD_VER:
     MAJOR = 0
     MINOR = 9
     PATCH = 0
-    BUILD = 2
-    PRE: bool = False
+    BUILD = 3
+    PRE: bool = True
     RC: bool = False
     BETA: bool = False
-    ALPHA: bool = False
-    DEV: bool = True
+    ALPHA: bool = True
+    DEV: bool = False
 
 
 @dataclass

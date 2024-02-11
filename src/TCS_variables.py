@@ -34,6 +34,11 @@ from TCS_variables_error import *
 
 
 def _make_path(path):
+    """
+    Make a path
+    :param path:
+    :return:
+    """
     path = os.path.normpath(path)
     # print(path)
     split = path.split(os.sep)

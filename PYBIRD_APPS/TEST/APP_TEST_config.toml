@@ -6,11 +6,6 @@
     save_after_each_step = true
 
 
-#    [app_config.step]
-#        step_time = "1 m"
-#        step_on_boot = true
-#        step_on_shutdown = false
-
     [app_config.timing]
         mode = "test"
         # modes
