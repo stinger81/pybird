@@ -1,0 +1,39 @@
+[app_config]
+    app_code = "TEST"
+    debug_mode = false
+    save_key = "1234"
+    load_before_each_step = true
+    save_after_each_step = true
+
+
+    [app_config.timing]
+        mode = "test"
+        # modes
+        #   test = run every 1 minute
+        #   step = run every step_time
+        #   time = run at specific times
+        #   cont = run continuously (will run every pass) (not recommended)
+        #   request = run on request (app will request what time to run)
+        [app_config.timing.step]
+            step_duration = "5 s" # delta from the last start time
+            skip_missed = true # if true, will skip missed steps
+            sync_time = "1 Jan 2024 01:15:30" # time in UTC to sync with. If empty, will not sync and just run at start (EX "1 Jan 2000 00:00:00")
+        [app_config.timing.time]
+            time_list = ["02:43:00 E", "02:43:30 E"]
+            # E = EVERYDAY
+            # M = MONDAY
+            # T = TUESDAY
+            # W = WEDNESDAY
+            # R = THURSDAY
+            # F = FRIDAY
+            # S = SATURDAY
+            # U = SUNDAY
+
+    [app_config.atlas]
+        enabled = true
+        [app_config.atlas.logging]
+            enabled = true
+            DB_Name = "TEST_DB"
+[app_parameters]
+    example = "example"
+    post = true

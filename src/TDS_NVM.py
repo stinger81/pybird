@@ -23,98 +23,121 @@
 
 import os
 import pickle
+import sys
 
+import TCS_interface
 import TCS_variables
+import TKS_encryption
 
 
-class data_interface:
-    def __init__(self, app_code: str) -> None:
+class NVM_dataInterface:
+    def __init__(self, app_code: str, save_key: str = "") -> None:
         self.app_code = app_code
-        self._app_dir = os.path.join(TCS_variables.PYBIRD_DATA_APPDATA_DIRECTORY, app_code.upper())
-        if not os.path.exists(self._app_dir):
-            os.makedirs(self._app_dir)
-
-    def save_data(self, data_name: str, data):
-        _nvm = NVM_data(self.app_code, data_name=data_name)
-        _nvm._init_write_only(data)
-
-    def load_data(self, data_name):
-        temp = NVM_data(self.app_code, data_name)
-        temp._init_read_only()
-        return temp.data
-
-    def live_data(self, data_name: str):
-        temp = NVM_data(self.app_code, data_name)
-        temp._init_live()
-        return temp
-
-
-class NVM_data:
-    def __init__(self, app_code: str, data_name: str) -> None:
-        self._app_code = app_code
-        self._data_name = data_name
-        self.data = None
-        self._app_dir = os.path.join(TCS_variables.PYBIRD_DATA_APPDATA_DIRECTORY, app_code.upper())
-
-        if not os.path.exists(self._app_dir):
-            os.makedirs(self._app_dir)
-
-        fileName = ""
-        fileName += str(self._app_code)
-        fileName += "__"
-        fileName += data_name
-        fileName = fileName.upper()
-        fileName += ".pkl"
-
-        self._file = os.path.join(self._app_dir, fileName)
-
-    def _init_read_only(self):
-        if os.path.isfile(self._file):
-            self.load()
-        return self.data
-
-    def _init_write_only(self, data):
-        self.data = data
-        self.close()
-
-    def _init_live(self):
-        if os.path.isfile(self._file):
-            self.load()
+        self.save_key = save_key
+        if save_key == "":
+            self.encryption = False
         else:
-            self.save()
+            self.encryption = True
+            self._my_aes = TKS_encryption.AES_savekey(app_name=self.app_code, save_key=self.save_key)
+        self._app_dir = os.path.join(TCS_variables.PYBIRD_DIRECTORIES.DATA_APPDATA, app_code.upper())
+        if not os.path.exists(self._app_dir):
+            os.makedirs(self._app_dir)
 
-    def __del__(self):
-        pass
+    def _file_name(self, data_name: str):
+        filename = ""
+        filename += str(self.app_code)
+        filename += "__"
+        filename += data_name.replace(" ", "_")
+        filename = filename.upper()
+        filename += ".pkl"
 
-    def load(self):
+        return os.path.join(self._app_dir, filename)
+
+    def _file_enc_name(self, data_name: str):
+        return self._file_name(data_name) + ".enc"
+
+    def _get_file_name(self, data_name: str):
+        if self.encryption:
+            return self._file_enc_name(data_name)
+        else:
+            return self._file_name(data_name)
+
+    def save(self, data_name: str, data):
         """
-        reloads data
+        Save data to file
+        :param data_name:
+        :param data:
         :return:
         """
-        with open(self._file, 'rb') as f:
-            self.data = pickle.load(f)
+        file = self._get_file_name(data_name)
+        with open(file, 'wb') as f:
+            my_data = pickle.dumps(data)
+            if self.encryption:
+                my_data_hex = my_data.hex()
+                my_data_enc = self._my_aes.encrypt(my_data_hex)
+                f.write(my_data_enc)
+            else:
+                f.write(my_data)
 
-    def save(self):
+    def load(self, data_name: str):
         """
-        saves the data
+        Load data from file
+        :param data_name:
         :return:
         """
-        with open(self._file, 'wb') as f:
-            pickle.dump(self.data, f)
+        file = self._get_file_name(data_name)
+        if os.path.isfile(file):
+            with open(file, 'rb') as f:
+                if self.encryption:
+                    try:
+                        my_data_enc = f.read()
+                        my_data_hex = self._my_aes.decrypt(my_data_enc.decode()).decode(TCS_variables.AES.ENCODING)
+                        my_data = bytes.fromhex(my_data_hex)
+                        return pickle.loads(bytes(my_data))
+                    except EOFError as e:
+                        app_inter = TCS_interface.interface(self.app_code)
+                        app_inter.log("Error loading data: " + data_name, "ERROR")
+                        app_inter.log("File may be corrupted or the save key may have changed", "ERROR")
+                        del app_inter
+                        if TCS_variables.SYS_ARG.RAISE[0] in sys.argv:
+                            raise e
 
-    def update(self):
-        self.load()
+                        return None
 
-    def close(self):
-        """
-        saves and deletes self
-        :return:
-        """
-        self.save()
-        del self
+                else:
+                    try:
+                        my_data = f.read()
+                        return pickle.loads(my_data)
+                    except EOFError as e:
+                        app_inter = TCS_interface.interface(self.app_code)
+                        app_inter.log("Error loading data: " + data_name, "ERROR")
+                        app_inter.log("File may be corrupted", "ERROR")
+                        del app_inter
+                        if TCS_variables.SYS_ARG.RAISE[0] in sys.argv:
+                            raise e
+
+                        return None
+        else:
+            return None
 
 
 if __name__ == "__main__":
-    app = "new"
-    name = "1"
-    DI = data_interface(app_code=app)
+    # app = "new"
+    # name = "1"
+    # DI = NVM_data(app_code=app, save_key="TEST!@#", data_name=name)
+    #
+    #
+    # DI.data = ["test"]
+    # for i in range(1000):
+    #     DI.data.append(str(i)+"test")
+    #
+    # print(DI.data)
+    # DI.save()
+    # DI.load()
+    # print(DI.data)
+    # di = data_interface("new", "TEST!@#")
+    # di.save_data("test", "test")
+    # print(di.load_data("test"))
+    di = NVM_dataInterface("new","TEST!@#")
+    di.save("test", "test")
+    print(di.load("test"))

@@ -33,20 +33,50 @@ class userInterface:
         self.options = []
         self.hasQuit = False
 
-    def addOption(self, command: str, description: str, functionToCall=None, isDefault: bool = False,
-                  requireConfirmation: bool = False, confirmationCode="CONFIRM"):
+    def addOption(self,
+                  command: str,
+                  description: str,
+                  functionToCall=None,
+                  isDefault: bool = False,
+                  requireConfirmation: bool = False,
+                  confirmationCode: str="CONFIRM"):
+        """
+        Add an option to the user interface
+        :param command:
+        :param description:
+        :param functionToCall:
+        :param isDefault:
+        :param requireConfirmation:
+        :param confirmationCode:
+        :return:
+        """
+
         if isDefault:
             self.default = len(self.options)
         self.options.append((command, description, functionToCall, requireConfirmation, confirmationCode))
 
     def addHeader(self, header: str):
+        """
+        Add a header to the user interface
+        :param header:
+        :return:
+        """
         self.options.append(("header", header, None, False, ""))
 
     def addQuit(self, isDefault: bool = False):
+        """
+        Add a quit option to the user interface
+        :param isDefault:
+        :return:
+        """
         self.hasQuit = True
         self.addOption("q", "Quit", None, isDefault)
 
     def _generateUI(self):
+        """
+        Generate the user interface
+        :return:
+        """
         print()
         print(self.title)
         if self.message != "":
@@ -93,6 +123,10 @@ class userInterface:
             print("Invalid option - Please review the options")
 
     def run(self):
+        """
+        Run the user interface
+        :return:
+        """
         while True:
             response = self.getUserResponse()
             try:
@@ -103,6 +137,12 @@ class userInterface:
 
 
 def userInput(message: str, default: str = ""):
+    """
+    Get user input
+    :param message:
+    :param default:
+    :return:
+    """
     msg = message + " [" + default + "]: "
     response = input(msg)
     if response == "":
@@ -112,6 +152,13 @@ def userInput(message: str, default: str = ""):
 
 
 def userInputValidate(message: str, default: str = "", validList: typing.List[str] = []):
+    """
+    Get user input and validate it
+    :param message:
+    :param default:
+    :param validList:
+    :return:
+    """
     modList = validList
     if default != "":
         if default not in modList:

@@ -84,9 +84,18 @@ class mongodb_atlas:
             pass
 
     def join_collection(self, collection_name):
+        """
+        Join a collection
+        :param collection_name:
+        :return:
+        """
         return self.db.get_collection(collection_name)
 
     def database_status(self):
+        """
+        Get the database status
+        :return:
+        """
         return self.db.command({"dbStats": 1})
 
 

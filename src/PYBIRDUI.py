@@ -21,11 +21,12 @@
 #
 # ##########################################################################
 
+
 import TCS_UIutils
 import TCS_interface
 import TCS_utils
 
-export = TCS_interface.interface("EXPORT INTERFACE")
+export = TCS_interface.interface("EXPORT INTERFACE", pybird_app=True)
 print(TCS_utils.LICENSE)
 
 
@@ -36,10 +37,13 @@ def _UI():
     ui.addOption("exm", "Export ALL Master Logs", export.export_master_log)
     ui.addOption("exs", "Export ALL Session Logs", export.export_session_log)
     ui.addOption("exa", "Export ALL App Logs ", export.export_app_log)
+    ui.addOption("exsa", "Export ALL Pybird System App Logs", export.export_sysapp_log)
 
     ui.addHeader("EXPORT SPECIFIC LOGS")
-    ui.addOption("ess", "Export Specific Session Logs", export.export_specific_session_log)
-    ui.addOption("esa", "Export Specific App Logs", export.export_specific_app_log)
+    ui.addOption("ess", "Export Specific Session Logs", export.export_session_log_select)
+    ui.addOption("esa", "Export Specific App Logs", export.export_app_log_select)
+    ui.addOption("essa", "Export Specific Pybird System App Logs", export.export_sysapp_log_select)
+
 
 
     ui.addHeader("BUILD LOGS")

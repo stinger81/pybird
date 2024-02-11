@@ -22,8 +22,9 @@
 # ##########################################################################
 
 import csv
-import json
 import os
+
+import toml
 
 import TCS_utils
 import TCS_variables
@@ -37,23 +38,25 @@ class TAS_apps_config:
     def __init__(self, nodeName="N000") -> None:
         self.version = TCS_utils.version()
         self.file = os.path.join(
-            TCS_variables.PYBIRD_CONFIG_DIRECTORY,
-            str(nodeName + TCS_variables.PYBIRD_NODE_CONFIG_ENDING))
+            TCS_variables.PYBIRD_DIRECTORIES.CONFIG,
+            str(nodeName + TCS_variables.FILE_EXTENSIONS.NODE_CONFIG))
 
         self.configs: list[_app_config] = []
 
         self._read_config_csv()
-        self._read_config_json()
+        self._read_configtoml()
         self._post_process_config()
 
     def _read_config_csv(self):
+        """
+        read the configuration file
+        :return:
+        """
         # read configuration file
         with open(self.file, mode='r', encoding='UTF-8', newline='') as config_file:
-            # print(config_file)
             csv_read = csv.reader(config_file)
             i = 0
             for row in csv_read:
-                # print(row)
                 if i != 0:
                     self.configs.append(_app_config())
                     self.configs[-1]._csv = row
@@ -80,47 +83,65 @@ class TAS_apps_config:
                     self.configs[-1].main_app = row[5]
                     self.configs[-1].app_config = row[6]
                     self.configs[-1].dependencies = TCS_utils.delimitated_to_list_str(row[7], "|")
-                    # self.configs[-1].DB_dedicated_access = TCS_utils.str_to_bool(row[8])
-                    # self.configs[-1].DB_dedicated_name = row[9]
-                    # self.configs[-1].DB_shared_access = TCS_utils.str_to_bool(row[10])
-                    # self.configs[-1].DB_shared_name = row[11]
 
-                    # print(self.configs[-1])
                 i += 1
 
-    def _read_config_json(self):
+    def _read_configtoml(self):
+        """
+        read the toml file
+        :return:
+        """
         for config in self.configs:
             if not config._full_disable:
                 if config.local_app:
-                    json_address = os.path.join(TCS_variables.PYBIRD_APP_LOCAL_DIRECTORY, config.app_code,
+                    toml_address = os.path.join(TCS_variables.PYBIRD_DIRECTORIES.APP_LOCAL, config.app_code,
                                                 config.app_config)
                 else:
-                    json_address = os.path.join(TCS_variables.PYBIRD_REMOTE_APP_DIRECTORY, config.app_code,
+                    toml_address = os.path.join(TCS_variables.PYBIRD_DIRECTORIES.PYBIRD_REMOTE_APP_DIRECTORY, config.app_code,
                                                 config.app_config)
                 # print(json_address)
-                with open(json_address, "r") as json_file:
-                    config._json = json.load(json_file)
-                    config.step_time = TAS_apps_config.step_time_handle(config._json["step_time"])
-                    config.step_on_boot = config._json["step_on_boot"]
-                    config.step_on_shutdown = config._json["step_on_shutdown"]
-                    config.json_debug_mode = config._json["debug_mode"]
-                    config.app_parameters = config._json["app_parameters"]
-                    config.database_primary_active = config._json["atlas_databases"]["primary"]["active"]
-                    config.database_primary_name = config._json["atlas_databases"]["primary"]["DB_Name"]
-                    config.log_to_DB = config._json["atlas_databases"]["primary"]["log_to_DB"]
-                    config.database_secondary_active = config._json["atlas_databases"]["secondary"]["active"]
-                    config.database_secondary_name = config._json["atlas_databases"]["secondary"]["DB_Name"]
-                    config.checksum_sha256 = config._json["checksum_sha256"]
+                with open(toml_address, "r") as toml_file:
+                    config.toml = toml.load(toml_file)
+
+                    config.load_before_each_step = config.toml["app_config"]["load_before_each_step"]
+                    config.save_after_each_step = config.toml["app_config"]["save_after_each_step"]
+
+                    config.timing_mode = config.toml["app_config"]["timing"]["mode"]
+                    config.timing_step_duration = config.toml["app_config"]["timing"]["step"]["step_duration"]
+                    config.timing_step_skip_missed = config.toml["app_config"]["timing"]["step"]["skip_missed"]
+                    config.timing_step_sync_time = config.toml["app_config"]["timing"]["step"]["sync_time"]
+                    config.timing_time_list = config.toml["app_config"]["timing"]["time"]["time_list"]
+                    
+                    config.toml_debug_mode = config.toml["app_config"]["debug_mode"]
+                    config.save_key = config.toml["app_config"]["save_key"]
+
+
+
+                    config.atlas_dbs_enabled = config.toml["app_config"]["atlas"]["enabled"]
+                    config.log_to_DB_enabled = config.toml["app_config"]["atlas"]["logging"]["enabled"]
+                    config.log_to_DB_name = config.toml["app_config"]["atlas"]["logging"]["DB_Name"]
+
+                    config.app_parameters = config.toml["app_parameters"]
+
 
     def _post_process_config(self):
+        """
+        post process the configuration
+        :return:
+        """
         for config in self.configs:
-            if config.csv_debug_mode or config.json_debug_mode:
+            if config.csv_debug_mode or config.toml_debug_mode:
                 config.debug_mode = True
             elif TCS_variables.PLATFORM_FORCE_DEBUG_MODE:
                 config.debug_mode = True
 
     @staticmethod
     def step_time_handle(in_step_time: str):
+        """
+        handle the step time
+        :param in_step_time:
+        :return:
+        """
         accepted_vals = "dhms"
         split_time = in_step_time.split()
         if len(split_time) == 1:
@@ -157,24 +178,21 @@ class _app_config:
         self.main_app: str = "unknown"
         self.app_config: str = "unknown"
         self.dependencies: list[str] = ["unknown"]
-        # self.DB_dedicated_access: bool = False
-        # self.DB_dedicated_name: str = "unknown"
-        # self.DB_shared_access: bool = False
-        # self.DB_shared_name: str = "unknown"
-        # json
-        self._json: dict = {}
-        self.json_debug_mode: bool = False
-        self.step_time: int = 0  # seconds
-        self.step_on_boot: bool = False
-        self.step_on_shutdown: bool = False
+
+        self.toml: dict = {}
+        self.toml_debug_mode: bool = False
+        self.load_before_each_step: bool = False
+        self.save_after_each_step: bool = False
+        self.timing_mode = "unknown"
+        self.timing_step_duration = "1 m"
+        self.timing_step_skip_missed = True
+        self.timing_step_sync_time = ""
+        self.timing_time_list = []
+        self.save_key:str = ""
         self.app_parameters: dict = {}
-        self.database_primary_active = False
-        self.database_primary_name = ""
-        self.log_to_DB = False
-        self.database_secondary_active = False
-        self.database_secondary_name = False
-        self.checksum_sha256: str = ""
-        # post processing
+        self.atlas_dbs_enabled: bool = False
+        self.log_to_DB_enabled: bool = False
+        self.log_to_DB_name: str = ""
         self.debug_mode: bool = False
 
     def __str__(self) -> str:
@@ -188,13 +206,19 @@ class _app_config:
         string_out += "main_app: " + str(self.main_app) + "\n"
         string_out += "app_config: " + str(self.app_config) + "\n"
         string_out += "dependencies: " + str(self.dependencies) + "\n"
-        string_out += "_json: " + str(self._json) + "\n"
-        string_out += "json_debug_mode: " + str(self.json_debug_mode) + "\n"
-        string_out += "step_time: " + str(self.step_time) + "\n"
-        string_out += "step_on_boot: " + str(self.step_on_boot) + "\n"
-        string_out += "step_on_shutdown: " + str(self.step_on_shutdown) + "\n"
+        string_out += "toml: " + str(self.toml) + "\n"
+        string_out += "toml_debug_mode: " + str(self.toml_debug_mode) + "\n"
+        string_out += "load_before_each_step: " + str(self.load_before_each_step) + "\n"
+        string_out += "save_after_each_step: " + str(self.save_after_each_step) + "\n"
+        string_out += "timing_mode: " + str(self.timing_mode) + "\n"
+        string_out += "timing_step_duration: " + str(self.timing_step_duration) + "\n"
+        string_out += "timing_step_skip_missed: " + str(self.timing_step_skip_missed) + "\n"
+        string_out += "timing_step_sync_time: " + str(self.timing_step_sync_time) + "\n"
+        string_out += "timing_time_list: " + str(self.timing_time_list) + "\n"
         string_out += "app_parameters: " + str(self.app_parameters) + "\n"
-        string_out += "checksum_sha256: " + str(self.checksum_sha256) + "\n"
+        string_out += "atlas_dbs_enabled: " + str(self.atlas_dbs_enabled) + "\n"
+        string_out += "log_to_DB_enabled: " + str(self.log_to_DB_enabled) + "\n"
+        string_out += "log_to_DB_name: " + str(self.log_to_DB_name) + "\n"
         string_out += "debug_mode: " + str(self.debug_mode) + "\n"
 
         return string_out

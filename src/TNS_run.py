@@ -29,6 +29,7 @@ from signal import signal, SIGINT
 import TCS_core
 import TCS_interface
 import TCS_utils
+import TCS_variables
 import TNS_node
 import TNS_node_instance
 
@@ -47,12 +48,15 @@ class run(TCS_core.core):
             self.autoStart()
 
     def run(self):
-        print("THE RUN METHOD")
+        self._run()
+
+    def start(self):
+        self._start()
 
     def autoStart(self):
         self.interface.log("Auto Start Enabled: Starting Node", logType='info')
-        self._start()
-        self._run()
+        self.start()
+        self.run()
 
     def _start_base(self):
         self._host._start()
@@ -61,21 +65,24 @@ class run(TCS_core.core):
     def _run_base(self):
         self.interface.log(f"{self.name} v{self.version} : RUN COMMANDED", logType="INFO")
         while True:
-            start = time.time()
+            # start = time.time()
             self._run_error_handling()
-            time.sleep(self._host.step_time - (start - time.time()))
+            # time.sleep(self._host.step_time - (start - time.time()))
 
+            time.sleep(self._host._config.system.inter_step_delay)
     def _run_error_handling(self):
         try:
             self._host.step()
         except Exception as e:
-            raise e
+            self.interface.log(f"Error: {e}", logType="ERROR")
+            if TCS_variables.SYS_ARG.RAISE[0] in sys.argv:
+                raise e
 
 
 def handler(signal_received, frame):
     # Handle any cleanup here
     import TCS_interface
-    interface = TCS_interface.interface("SYS")
+    interface = TCS_interface.interface("SYS", pybird_app=True)
     interface.log('SIGINT or CTRL-C detected. Exiting gracefully', 'EXIT MSG')
     sys.exit(0)
 
@@ -83,15 +90,12 @@ def handler(signal_received, frame):
 @atexit.register
 def goodbye():
     import TCS_interface
-    interface = TCS_interface.interface("SYS")
+    interface = TCS_interface.interface("SYS", pybird_app=True)
     interface.log('EXIT SEE ABOVE IF EXIT REASON IS KNOWN', 'EXIT MSG')
 
 
 if __name__ == "__main__":
-    # print license
-    # inter = TCS_interface.interface("SYS_LICENSE")
-    # inter.log_multiline(TCS_utils.LICENSE, "LICENSE")
-    # del inter
+
 
     signal(SIGINT, handler)
     argv = sys.argv
@@ -100,7 +104,7 @@ if __name__ == "__main__":
     else:
         nodename = "N000"
     ran_instance = run(nodename)
-    ran_instance._start()
-    ran_instance._run()
+    ran_instance.start()
+    ran_instance.run()
 else:
     signal(SIGINT, handler)

@@ -30,6 +30,7 @@ data/
 private/
 appRemote/
 .old
+.py.old
 .idea/
 docs/__temp__/
 *.csv

@@ -21,16 +21,17 @@
 #
 # ##########################################################################
 
+import os
 # region imports
 import shutil
-import time
-import os
+import sys
+from typing import Union, List
 
 import TCS_variables
 
 LICENSE = """
     PYBIRD a app based framework for social media management.
-    Copyright (C) 2022-2023  Michael Dompke (https://github.com/stinger81)
+    Copyright (C) 2022-2024  Michael Dompke (https://github.com/stinger81)
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -89,6 +90,10 @@ class _version:
         return version_string
 
     def short_str(self):
+        """
+        Short version string
+        :return:
+        """
         version_string = f"{self.major}.{self.minor}"
         if self.patch > 0 or self.build != 0:
             version_string += f".{self.patch}"
@@ -109,6 +114,10 @@ class _version:
         return version_string
 
     def full_str(self):
+        """
+        Full version string
+        :return:
+        """
         version_string = f"{self.major}.{self.minor}.{self.patch}.{self.build}"
 
         if self.pre:
@@ -129,15 +138,15 @@ class _version:
 class version(_version):
     def __init__(self):
         super().__init__()
-        self.major = TCS_variables.PYBIRD_VER_MAJOR
-        self.minor = TCS_variables.PYBIRD_VER_MINOR
-        self.patch = TCS_variables.PYBIRD_VER_PATCH
-        self.build = TCS_variables.PYBIRD_VER_BUILD
-        self.pre = TCS_variables.PYBIRD_VER_PRE
-        self.release_candidate = TCS_variables.PYBIRD_VER_RC
-        self.beta = TCS_variables.PYBIRD_VER_BETA
-        self.alpha = TCS_variables.PYBIRD_VER_ALPHA
-        self.dev = TCS_variables.PYBIRD_VER_DEV
+        self.major = TCS_variables.PYBIRD_VER.MAJOR
+        self.minor = TCS_variables.PYBIRD_VER.MINOR
+        self.patch = TCS_variables.PYBIRD_VER.PATCH
+        self.build = TCS_variables.PYBIRD_VER.BUILD
+        self.pre = TCS_variables.PYBIRD_VER.PRE
+        self.release_candidate = TCS_variables.PYBIRD_VER.RC
+        self.beta = TCS_variables.PYBIRD_VER.BETA
+        self.alpha = TCS_variables.PYBIRD_VER.ALPHA
+        self.dev = TCS_variables.PYBIRD_VER.DEV
 
 
 class app_version(_version):
@@ -147,6 +156,8 @@ class app_version(_version):
 
 ####################################################################################################
 # region file management
+
+
 
 def tree(path: str = '.', level: int = 0, max_level: int = -1):
     """
@@ -167,7 +178,7 @@ def pybird_keychain_tree():
     Display a tree of the files and folders in the keychain
     :return:
     """
-    my_path = TCS_variables.PYBIRD_HOME_DIRECTORY
+    my_path = TCS_variables.PYBIRD_DIRECTORIES.PYBIRD_DIRECTORY
     tree(my_path, 0, -1)
 
 def pybird_data_tree():
@@ -175,7 +186,7 @@ def pybird_data_tree():
     Display a tree of the files and folders in the data directory
     :return:
     """
-    my_path = TCS_variables.PYBIRD_DATA_DIRECTORY
+    my_path = TCS_variables.PYBIRD_DIRECTORIES.DATA
     tree(my_path, 0, -1)
 
 def rename_file(in_filename: str = '', in_new_filename: str = ''):
@@ -333,8 +344,10 @@ def append_text_file(in_filename: str, in_string: str):
     try:
         with open(in_filename, "a") as my_file:
             my_file.write(in_string + '\n')
-    except (IOError, OSError):
-        pass
+    except (IOError, OSError) as e:
+        if TCS_variables.SYS_ARG.RAISE[0] in sys.argv:
+            raise e
+
 
 
 def append_text_file_restricted_file_length(in_filename: str, in_string: str, max_length: int = -1):
@@ -381,6 +394,11 @@ def append_text_file_restricted_file_length(in_filename: str, in_string: str, ma
 
 # str to bool conversion
 def str_to_bool(in_str: str) -> bool:
+    """
+    Convert a string to a bool
+    :param in_str:
+    :return:
+    """
     if in_str.lower().strip() == 'true':
         return True
     else:
@@ -389,6 +407,11 @@ def str_to_bool(in_str: str) -> bool:
 
 # bool to str conversion
 def bool_to_str(in_bool: bool) -> str:
+    """
+    Convert a bool to a string
+    :param in_bool:
+    :return:
+    """
     if in_bool:
         return "True"
     else:
@@ -397,21 +420,43 @@ def bool_to_str(in_bool: bool) -> str:
 
 # str to int conversion
 def str_to_int(in_str: str) -> int:
+    """
+    Convert a string to an int
+    :param in_str:
+    :return:
+    """
     return int(in_str)
 
 
 # int to string conversion
 def int_to_str(in_int: int) -> str:
+    """
+    Convert an int to a string
+    :param in_int:
+    :return:
+    """
     return str(in_int)
 
 
 # delimitated list to python list str
 def delimitated_to_list_str(in_list: str, in_delimiter: str = ','):
+    """
+    Convert a delimited list to a python list
+    :param in_list:
+    :param in_delimiter:
+    :return:
+    """
     return in_list.split(in_delimiter)
 
 
 # delimited list to python list int
 def delimitated_to_list_int(in_list: str, in_delimiter: str = ','):
+    """
+    Convert a delimited list to a python list
+    :param in_list:
+    :param in_delimiter:
+    :return:
+    """
     return [int(x) for x in in_list.split(in_delimiter)]
 
 
@@ -512,6 +557,39 @@ def getUserInput_listChoice(in_prompt: str = '', in_options: list = [], in_defau
         except ValueError:
             print("Invalid input must be an integer")
     return in_options[my_input]
+def getUserInput_listChoiceMulti(in_prompt: str = '', in_options: list = [], in_default: int = 0):
+    """
+    Get user input
+    :param in_prompt: str - Prompt to display
+    :param in_options: list - list of options
+    :param in_default: int - Default value
+    :return: int - User input
+    """
+    in_prompt += " (comma separated list)"
+    if len(in_options) == 0:
+        return None
+    while True:
+        for i in range(len(in_options)):
+            print(str(i) + " - " + in_options[i])
+        my_input:str = getUserInput(in_prompt, str(in_default))
+        # print(my_input)
+        my_input_list = my_input.split(',')
+        my_output_list = []
+        # print(my_input_list)
+        all_pass = True
+        try:
+            for i in my_input_list:
+                if int(i) >= len(in_options):
+                    print("Value out of range: " + str(i))
+                    raise ValueError
+                else:
+                    my_output_list.append(in_options[int(i)])
+        except ValueError:
+            all_pass = False
+            print("Invalid input must be an integer")
+        if all_pass:
+            break
+    return my_output_list
 
 
 def getUserInput_Confirm(in_prompt: str = '', in_confirmation_code: str = 'y', in_case_sensitive: bool = False) -> bool:
@@ -572,7 +650,85 @@ def getUserInput_required_minimum_length(in_prompt: str = '', in_length: int = 0
 ####################################################################################################
 
 ####################################################################################################
+# region sys args reader
 
+def arg_in_sys_args(in_arg: List) -> bool:
+    """
+    Check if an argument is in sys.args
+    :param in_arg: str - Argument to check
+    :return: bool - True if argument is in sys.args
+    """
+    for arg in in_arg:
+        if arg in sys.argv:
+            return True
+    return False
+
+def get_arg_value(in_arg: List, in_default: str = None) -> Union[None,str]:
+    """
+    Get the value of an argument
+    :param in_arg: str - Argument to check
+    :return: str - Value of the argument
+    """
+    for arg in in_arg:
+        if arg in sys.argv:
+            try:
+                return sys.argv[sys.argv.index(arg) + 1]
+            except IndexError:
+                return in_default
+    return in_default
+
+def get_arg_value_int(in_arg: List, in_default: int = None) -> Union[None,int]:
+    """
+    Get the value of an argument
+    :param in_arg: str - Argument to check
+    :return: int - Value of the argument
+    """
+    my_val = get_arg_value(in_arg)
+    try:
+        return int(my_val)
+    except ValueError:
+        return in_default
+
+def get_arg_value_float(in_arg: List, in_default : float = None) -> Union[None,float]:
+    """
+    Get the value of an argument
+    :param in_arg: str - Argument to check
+    :return: float - Value of the argument
+    """
+    my_val = get_arg_value(in_arg)
+    try:
+        return float(my_val)
+    except ValueError:
+        return in_default
+
+def get_arg_value_bool(in_arg: List,
+                       in_if_exist_default: bool = True,
+                       in_if_not_exist_default: bool= False) -> Union[None,bool]:
+    """
+    Get the value of an argument
+    :param in_arg: str - Argument to check
+    :return: bool - Value of the argument
+    """
+    exist = arg_in_sys_args(in_arg)
+    if exist:
+        my_val = get_arg_value(in_arg)
+        try:
+            if my_val.lower() in ['true', 't', 'yes', 'y']:
+                return True
+            elif my_val.lower() in ['false', 'f', 'no', 'n']:
+                return False
+            else:
+                return in_if_exist_default
+        except ValueError:
+            return in_if_exist_default
+        except AttributeError:
+            return in_if_exist_default
+    else:
+        return in_if_not_exist_default
+
+
+# endregion
+###W###############################################################################################
 if __name__ == '__main__':
     # v = version()
     # v.major = 1

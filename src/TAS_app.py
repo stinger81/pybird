@@ -21,10 +21,7 @@
 #
 # ##########################################################################
 
-"""
-Base class for apps
 
-"""
 import TAS_app_plugins
 import TCS_config
 import TCS_configApp
@@ -54,6 +51,7 @@ class app(TCS_core.core):
         self._app_config: TCS_configApp._app_config = parameters
         self.name: str = self._app_config.app_code
         self._config: TCS_config.TCS_config = TCS_config.TCS_config()
+        self.save_key = self._app_config.save_key
 
         # interface initial set up
         self.description: str = "TWapp"
@@ -81,33 +79,40 @@ class app(TCS_core.core):
             self.interface.log("Tweeting disabled", "ERROR")
 
         #  database initial set up
-        if self._app_config.database_primary_active:
-            self._primary_database = TDS_database_atlas.mongodb_atlas(self, self._app_config.database_primary_name)
-            if self._primary_database.valid:
-                self.primary_database = self._primary_database.db
+        if self._app_config.log_to_DB_enabled:
+            self.interface.dlog("Database Logging Enabled", "INFO")
+            self._logging_db = self.connect_to_database(self._app_config.log_to_DB_name)
+            if self._logging_db is None:
+                self.interface.log("Database Logging Disabled Unable to connect", "ERROR")
+                self._app_config.log_to_DB_enabled = False
+                self._app_config.log_to_DB_name = "unknown"
             else:
-                self.primary_database = None
-                self.interface.log("Primary Database Disabled", "ERROR")
-                self._app_config.database_primary_active = False
-                self.interface.log("setting log to db to disabled", "ERROR")
-                self._app_config.log_to_DB = False
+                self.interface._add_collection(self._logging_db.get_collection(TCS_variables.ATLAS.LOG_COLLECTION))
 
-        if self._app_config.database_secondary_active:
-            self._secondary_database = TDS_database_atlas.mongodb_atlas(self, self._app_config.database_secondary_name)
-            if self._secondary_database.valid:
-                self.secondary_database = self._secondary_database.db
-            else:
-                self.secondary_database = None
-                self.interface.log("Shared Data Pool Disabled", "ERROR")
+        # NVM initial set up
+        self.data_interface = TDS_NVM.NVM_dataInterface(self.name,save_key=self.save_key)
 
-        if self._app_config.database_primary_active and self._app_config.log_to_DB:
-            self.interface._add_collection(self.primary_database.get_collection(TCS_variables.ATLAS_LOG_COLLECTION))
-
-        self.data_interface = TDS_NVM.data_interface(self.name)
-
+        # plugins initial set up
         self.plugins = TAS_app_plugins.plugins()
         self.interface.dlog(
             f"{self.name} v{self.version} : APP-BASE INITIALIZED", logType="INFO")
+
+    def connect_to_database(self, database_name: str):
+        """
+        Connect to the database
+        :param database_name:
+        :return:
+        """
+        if self._app_config.atlas_dbs_enabled:
+            temp_db = TDS_database_atlas.mongodb_atlas(self, database_name)
+            if temp_db.valid:
+                return temp_db.db
+            else:
+                self.interface.log("Database [" + database_name + "]: Unable to connect", "ERROR")
+                return None
+        else:
+            self.interface.log("Atlas Database: Disabled", "ERROR")
+            return None
 
     def _run_base(self):
         pass
@@ -116,4 +121,31 @@ class app(TCS_core.core):
         pass
 
     def _step_base(self):
+        pass
+
+    def myLoad(self):
+        # to be overridden in parent class
+        pass
+
+    def mySave(self):
+        # to be overridden in parent class
+        pass
+    def preStep(self):
+        """
+        Pre step
+        :return:
+        """
+        if self._app_config.load_before_each_step:
+            self.myLoad()
+
+    def postStep(self):
+        """
+        Post step
+        :return:
+        """
+        if self._app_config.save_after_each_step:
+            self.mySave()
+
+    def myTimeRequest(self):
+        # to be overridden in parent class
         pass

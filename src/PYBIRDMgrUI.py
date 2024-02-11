@@ -40,7 +40,7 @@ def _UI():
     ui.addOption("aes", "Add/Update AES-256 Key", aes_keychain._ui)
     ui.addOption("app", "Add/Update App Key", keys.add_twitter_key_ui)
     ui.addOption("atlas", "Add/Update MongoDB Atlas Credentials", atlas_creds.add_atlas_key_ui)
-    ui.addOption("upload", "Upload credentials in " + TCS_variables.PYBIRD_ADD_CRED_DIRECTORY, keys.check_new_creds,
+    ui.addOption("upload", "Upload credentials in " + TCS_variables.PYBIRD_DIRECTORIES.ADD_CRED, keys.check_new_creds,
                  requireConfirmation=True)
     ui.addOption("rmapp", "Remove App Key", keys.remove_entire_app_keys_ui)
     ui.addOption("rmsk", "Remove Specific Key from App", keys.remove_specific_key_ui)

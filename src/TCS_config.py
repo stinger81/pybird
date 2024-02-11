@@ -32,25 +32,26 @@ import sys
 import toml
 
 import TCS_variables
+from src import TCS_utils
 
 
 class TCS_config:
     def __init__(self):
         self._config = None
-        if "-boot" in sys.argv:
+        if TCS_utils.arg_in_sys_args(TCS_variables.SYS_ARG.BOOT):
             try:
                 self.file = os.path.join(TCS_variables.HOME, "PYBIRD_SERVER_CONFIG.toml")
                 self._fullConfig = toml.load(self.file)
                 self._config = self._fullConfig["system_config"]
             except:
-                pass
+                raise TCS_variables.PYBIRDIOError("PYBIRD_SERVER_CONFIG.toml not found")
         if self._config == None:
             try:
                 self.file = os.path.join(TCS_variables.HOME, "PYBIRD_SERVER_CONFIG.toml")
                 self._fullConfig = toml.load(self.file)
                 self._config = self._fullConfig["system_config"]
             except:
-                self.file = os.path.join(TCS_variables.PYBIRD_CONFIG_DIRECTORY, "PYBIRD_SERVER_CONFIG.toml")
+                self.file = os.path.join(TCS_variables.PYBIRD_DIRECTORIES.CONFIG, "PYBIRD_SERVER_CONFIG.toml")
                 self._fullConfig = toml.load(self.file)
                 self._config = self._fullConfig["system_config"]
 
@@ -66,7 +67,6 @@ class TCS_config:
         self.credentials: credentials = credentials()
 
         self._read_config()
-        self._read_sys_argv()
 
         if self.platform.force_test_mode:
             self.system.test_mode = True
@@ -74,13 +74,16 @@ class TCS_config:
         if self.system.test_mode:
             self.system.debug_mode = True
 
+        self._read_sys_argv()
+
         if not self.logging.enable_master_log and not self.logging.enable_session_log:
             self.logging.enable_session_log = True
 
     def _read_config(self):
-        # file = open(self.file, "r")
-        # self._config = json.load(file)
-        # file.close()
+        """
+        Read the config file
+        :return:
+        """
 
         self.system._read(self._config)
         self.logging._read(self._config)
@@ -91,29 +94,59 @@ class TCS_config:
         self.credentials._read(self._config)
 
     def _read_sys_argv(self):
+        """
+        Read the system arguments
+        :return:
+        """
         self._agrv = sys.argv
 
-        for arg in self._agrv:
-            if arg == "-test" or arg == "-t":
+        # handle test mode
+        test_mode = TCS_utils.get_arg_value_bool(TCS_variables.SYS_ARG.TEST)
+        if test_mode is not None:
+            if test_mode:
                 self.system.test_mode = True
-            elif arg == "-debug" or arg == "-d":
+            else:
+                self.system.test_mode = False
+
+        debug_mode = TCS_utils.get_arg_value_bool(TCS_variables.SYS_ARG.DEBUG)
+        if debug_mode is not None:
+            if debug_mode:
                 self.system.debug_mode = True
-            elif arg == "-null_test":
-                self.system.test_mode = False
-            elif arg == "-null_debug":
+            else:
                 self.system.debug_mode = False
-            elif arg == "-aws_test":
-                self.platform.has_cli = False
+
+        headless = TCS_utils.get_arg_value_bool(TCS_variables.SYS_ARG.HEADLESS)
+        if headless is not None:
+            if headless:
+                self.console.show_console = False
+                self.system.headless = True
+            else:
+                self.console.show_console = True
+                self.system.headless = False
+
+        operations = TCS_utils.get_arg_value_bool(TCS_variables.SYS_ARG.OPERATIONS)
+        if operations is not None:
+            if operations:
+                self.system.operations = True
                 self.system.debug_mode = False
                 self.system.test_mode = False
-            elif arg == "-null_aws":
-                self.platform.has_cli = True
-            elif arg == "-boot":
-                self.platform.has_cli = False
-                self.system.test_mode = False
-                self.system.debug_mode = False
-            elif arg == "-null_boot":
-                self.platform.has_cli = True
+            else:
+                self.system.operations = False
+
+        dev = TCS_utils.arg_in_sys_args(TCS_variables.SYS_ARG.DEV)
+        if dev:
+            self.system.development_mode = True
+            self.system.debug_mode = True
+            self.console.show_console = True
+            self.system.headless = False
+            self.system.operations = False
+
+            self.enable_session_log = True
+            self.enable_app_log = True
+            self.master_log_length = -1
+            self.session_log_length = -1
+            self.app_log_length = -1
+
 
     def __str__(self) -> str:
         string_out = ""
@@ -127,30 +160,52 @@ class TCS_config:
 
 
 class system_config:
+    """
+    System configuration
+    """
     def __init__(self) -> None:
         self._raw = None
 
         self.test_mode = False
         self.debug_mode = False
+        self.development_mode = False
         self.remote_app_enabled = False
+        self.headless = False
+        self.operations = False
+        self.inter_step_delay = 0
 
     def _read(self, _config):
+        """
+        Read the config
+        :param _config:
+        :return:
+        """
         self._raw = _config["system"]
 
         self.test_mode = self._raw["test_mode"]
         self.debug_mode = self._raw["debug_mode"]
         self.remote_app_enabled = self._raw["remote_app_enabled"]
+        self.inter_step_delay = self._raw["inter_step_delay"]
+
 
     def __str__(self) -> str:
+
         string_out = ""
         string_out += f"test_mode: {self.test_mode}\n"
         string_out += f"debug_mode: {self.debug_mode}\n"
+        string_out += f"development_mode: {self.development_mode}\n"
         string_out += f"remote_app_enabled: {self.remote_app_enabled}\n"
+        string_out += f"headless: {self.headless}\n"
+        string_out += f"operations: {self.operations}\n"
+        string_out += f"inter_step_delay: {self.inter_step_delay}\n"
 
         return string_out
 
 
 class logging_config:
+    """
+    Logging configuration
+    """
     def __init__(self) -> None:
         self._raw = None
 
@@ -163,6 +218,11 @@ class logging_config:
         self.app_log_length = 100000
 
     def _read(self, _config):
+        """
+        Read the config
+        :param _config:
+        :return:
+        """
         self._raw = _config["logging"]
 
         self.enable_master_log = self._raw["enable_master_log"]
@@ -185,13 +245,20 @@ class logging_config:
 
 
 class console_config:
+    """
+    Console configuration
+    """
     def __init__(self) -> None:
         self._raw = None
 
-        self.mode: str = "unknown"
         self.show_console: bool = True
 
     def _read(self, _config):
+        """
+        Read the config
+        :param _config:
+        :return:
+        """
         self._raw = _config["console"]
 
         self.show_console = self._raw["show_console"]
@@ -204,12 +271,20 @@ class console_config:
 
 
 class twitter_config:
+    """
+    Twitter configuration
+    """
     def __init__(self) -> None:
         self._raw = None
 
         self.max_char: int = 280
 
     def _read(self, _config):
+        """
+        Read the config
+        :param _config:
+        :return:
+        """
         self._raw = _config["twitter"]
 
         self.max_char = self._raw["max_char"]
@@ -221,6 +296,9 @@ class twitter_config:
 
 
 class platform:
+    """
+    Platform configuration
+    """
     def __init__(self) -> None:
         self.has_cli = TCS_variables.PLATFORM_HAS_CLI
         self.force_test_mode = TCS_variables.PLATFORM_FORCE_TEST_MODE
@@ -233,11 +311,19 @@ class platform:
 
 
 class status:
+    """
+    Status configuration
+    """
     def __init__(self) -> None:
         self._raw = None
         self.log_length = None
 
     def _read(self, _config):
+        """
+        Read the config
+        :param _config:
+        :return:
+        """
         self._raw = _config["status"]
         self.log_length = self._raw["log_length"]
 
@@ -248,11 +334,19 @@ class status:
 
 
 class encryption:
+    """
+    Encryption configuration
+    """
     def __init__(self) -> None:
         self._raw = None
         self.encrypt_app_key = None
 
     def _read(self, _config):
+        """
+        Read the config
+        :param _config:
+        :return:
+        """
         self._raw = _config["encryption"]
         self.encrypt_app_key = self._raw["encrypt_app_keys"]
 
@@ -263,12 +357,20 @@ class encryption:
 
 
 class credentials:
+    """
+    Credentials configuration
+    """
     def __init__(self) -> None:
         self._raw = None
         self.delete_dir_after_upload = True
         self.delete_file_after_upload = True
 
     def _read(self, _config):
+        """
+        Read the config
+        :param _config:
+        :return:
+        """
         self._raw = _config["credentials"]
         self.delete_dir_after_upload = self._raw["delete_dir_after_upload"]
         self.delete_file_after_upload = self._raw["delete_file_after_upload"]

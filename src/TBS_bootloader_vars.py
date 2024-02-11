@@ -30,7 +30,7 @@ import toml
 
 HOME = ""
 for i in range(len(sys.argv)):
-    if sys.argv[i] == "-boot":
+    if sys.argv[i] in ["-h", "--home"]:
         HOME = sys.argv[i + 1]
         break
 if HOME == "":
@@ -38,6 +38,11 @@ if HOME == "":
 
 
 def joinToHome(path: str):
+    """
+    Join path to home
+    :param path:
+    :return:
+    """
     paths = path.split("/")
     outPath = os.path.join(HOME, *paths)
     return outPath

@@ -39,10 +39,12 @@ class keychain:
         self.version = TCS_utils.version()
 
         # self._keys: dict = dict()
-        self.AES = TKS_encryption.AES()
+        self.AES = TKS_encryption.AES_ENC()
+        self.AES_saveKey = TKS_encryption.AES_savekey_ENC
         self.config = TCS_config.TCS_config()
 
-        self.interface = TCS_interface.interface("keychain")
+        self.interface = TCS_interface.interface("keychain",pybird_app=True)
+        # self.interface.log("TESTTSTS")
 
 
     ################################################################################################
@@ -81,22 +83,6 @@ class keychain:
         else:
             self.interface.log("Key not saved")
 
-        # app_name = str(input("Enter App Name: "))
-        #
-        # _keys = dict()
-        # _keys[app_name] = dict()
-        # print("Consumer Keys")
-        # _keys[app_name]["api_key"] = input("Enter API key: ")
-        # _keys[app_name]["api_secret"] = input("Enter API secret: ")
-        # print("authentication token")
-        # _keys[app_name]["bearer_token"] = input("Enter Bearer Token: ")
-        # _keys[app_name]["access_token"] = input("Enter Access Token: ")
-        # _keys[app_name]["access_token_secret"] = input("Enter Access token secret: ")
-        # print("oAuth2")
-        # _keys[app_name]["client_id"] = input("Enter client ID: ")
-        # _keys[app_name]["client_secret"] = input("Enter Client Secret: ")
-        #
-        # self._add_twitter_key(app_name, in_keys=_keys)
 
     def add_atlas_key_ui(self)->None:
         """
@@ -123,42 +109,7 @@ class keychain:
         else:
             self.interface.log("Key not saved")
 
-        # self._add_atlas_key(in_appname=app_name,
-        #                     in_uri=uri,
-        #                     in_api_version=api_version,
-        #                     in_db_name=db_name)
 
-        # info = self.atlas_credentials()
-        #
-        # info.app_name = str(input("Enter App Name: ")).upper()
-        #
-        # info.uri = str(input("Enter Atlas URI (Username/Password MUST be included): "))
-        #
-        # info.api_version = str(input("Enter Atlas API Version [1]: "))
-        # if info.api_version == "":
-        #     info.api_version = "1"
-        #
-        # dedicated = str(input("Is this information for a dedicated database? (y/n)[n]: "))
-        # if dedicated.lower() == "":
-        #     info.dedicated = False
-        # elif dedicated.lower() == "y":
-        #     info.dedicated = True
-        #     info.dedicated_name = str(input("Enter Dedicated Database Name: [" + info.app_name + "_DB]"))
-        #     if info.dedicated_name == "":
-        #         info.dedicated_name = info.app_name + "_DB"
-        # else:
-        #     info.dedicated = False
-        #
-        # shared = str(input("Is this information for a shared database? (y/n)[n]: "))
-        # if shared.lower() == "":
-        #     info.shared = False
-        # elif shared.lower() == "y":
-        #     info.shared = True
-        #     info.shared_name = str(input("Enter Shared Database Name [" + info.app_name + "_ShareDB]: "))
-        # else:
-        #     info.shared = False
-        #
-        # self._add_atlas_key(info)
 
     # endregion 
     ################################################################################################
@@ -166,7 +117,7 @@ class keychain:
     # region remove keys
     def remove_entire_app_keys_ui(self):
         # find all apps
-        _app_path = TCS_variables.PYBIRD_HOME_APP_DIRECTORY
+        _app_path = TCS_variables.PYBIRD_DIRECTORIES.PYBIRD_HOME_APP
         _apps = os.listdir(_app_path)
         if len(_apps) == 0:
             self.interface.log("No apps found in " + _app_path, "ERROR")
@@ -184,14 +135,14 @@ class keychain:
             return
         else:
             self.interface.log("Removing " + appToRemove + " keys")
-            _app_path = TCS_variables.PYBIRD_APP_HOME_DIR(appToRemove)
+            _app_path = TCS_variables.PYBIRD_DIRECTORIES.PYBIRD_APP_HOME_DIR(appToRemove)
             # print(_app_path)
             shutil.rmtree(_app_path)
             self.interface.log("Removed " + appToRemove + " keys")
 
     def remove_specific_key_ui(self):
         # find all apps
-        _app_path = TCS_variables.PYBIRD_HOME_APP_DIRECTORY
+        _app_path = TCS_variables.PYBIRD_DIRECTORIES.PYBIRD_HOME_APP
         _apps = os.listdir(_app_path)
         if len(_apps) == 0:
             self.interface.log("No apps found in " + _app_path, "ERROR")
@@ -200,7 +151,7 @@ class keychain:
                                                                    in_options=_apps)
 
         # find all keys
-        _app_key_path = TCS_variables.PYBIRD_APP_HOME_DIR(app_to_remove_key_from)
+        _app_key_path = TCS_variables.PYBIRD_DIRECTORIES.PYBIRD_APP_HOME_DIR(app_to_remove_key_from)
         _app_key_categories = os.listdir(_app_key_path)
         if len(_app_key_categories) == 0:
             self.interface.log("No keys found in " + _app_key_path, "ERROR")
@@ -252,7 +203,7 @@ class keychain:
         :param in_client_secret:
         :return:
         """
-        my_save_file = TCS_variables.PYBIRD_APP_X_KEY(in_app_name)
+        my_save_file = TCS_variables.PYBIRD_DIRECTORIES.PYBIRD_APP_X_KEY(in_app_name)
         keys = ",".join([in_api_key,
                          in_api_secret,
                          in_bearer_token,
@@ -263,21 +214,7 @@ class keychain:
         self._save_key_to_file(my_save_file, keys)
         self.interface.dlog("Credentials for " + in_app_name + " added!")
 
-    # def _add_twitter_key(self, in_app_name: str, in_keys: dict):
-    #     file = TCS_variables.PYBIRD_APP_X_KEY(in_app_name)
-    #
-    #     keys = ""
-    #     keys += in_keys[in_app_name]["api_key"]
-    #     keys += "," + in_keys[in_app_name]["api_secret"]
-    #     keys += "," + in_keys[in_app_name]["bearer_token"]
-    #     keys += "," + in_keys[in_app_name]["access_token"]
-    #     keys += "," + in_keys[in_app_name]["access_token_secret"]
-    #     keys += "," + in_keys[in_app_name]["client_id"]
-    #     keys += "," + in_keys[in_app_name]["client_secret"]
-    #
-    #     self._save_key_to_file(file, keys)
-    #
-    #     self.interface.dlog("Credentials for " + in_app_name + " added!")
+
 
     def load_twitter_keys(self, in_app_name) -> list:
         """
@@ -286,7 +223,7 @@ class keychain:
         :return: list of keys
         [api_key, api_secret, bearer_token, access_token, access_token_secret, client_id, client_secret]
         """
-        file = TCS_variables.PYBIRD_APP_X_KEY(in_app_name)
+        file = TCS_variables.PYBIRD_DIRECTORIES.PYBIRD_APP_X_KEY(in_app_name)
         self.interface.dlog("Twitter Creds File: " + file, "FILE LOC")
         return self._read_key_from_file(file).strip().split(",")
 
@@ -295,22 +232,7 @@ class keychain:
     ################################################################################################
     # region mongodb credentials
 
-    # class atlas_credentials:
-    #     def __init__(self):
-    #         self.app_name = ""
-    #         self.uri = ""
-    #         self.api_version = ""
-    #         self.dedicated = False
-    #         self.dedicated_name = ""
-    #         self.shared = False
-    #         self.shared_name = ""
 
-    # class atlas_credentials_loaded:
-    #     def __init__(self):
-    #         self.app_name = ""
-    #         self.uri = ""
-    #         self.api_version = ""
-    #         self.db_name = ""
 
     def _add_atlas_key(self,
                        in_appname: str,
@@ -326,35 +248,14 @@ class keychain:
         :param in_db_name:
         :return:
         """
-        my_save_file = TCS_variables.PYBIRD_APP_ATLAS_KEY(in_appname, in_db_name)
+        my_save_file = TCS_variables.PYBIRD_DIRECTORIES.PYBIRD_APP_ATLAS_KEY(in_appname, in_db_name)
 
         keys = ",".join([in_appname, in_uri, in_api_version, in_db_name])
-        # keys += in_appname
-        # keys += "," + in_uri
-        # keys += "," + in_api_version
-        # keys += "," + in_db_name
+
 
         self._save_key_to_file(my_save_file, keys)
         self.interface.dlog("Credentials for atlas " + in_appname + " added!")
-        # if creds.dedicated:
-        #     file = TCS_variables.PYBIRD_APP_ATLAS_KEY(creds.app_name, creds.dedicated_name)
-        #
-        #     keys = creds.app_name
-        #     keys += "," + creds.uri
-        #     keys += "," + creds.api_version
-        #     keys += "," + creds.dedicated_name
-        #
-        #     self._save_key_to_file(file, keys)
-        #
-        # if creds.shared:
-        #     file = TCS_variables.PYBIRD_APP_ATLAS_KEY(creds.app_name, creds.shared_name)
-        #
-        #     keys = creds.app_name
-        #     keys += "," + creds.uri
-        #     keys += "," + creds.api_version
-        #     keys += "," + creds.shared_name
-        #
-        #     self._save_key_to_file(file, keys)
+
 
     def load_atlas_keys(self, app_name: str, db_name: str) -> list:
         """
@@ -364,19 +265,10 @@ class keychain:
         :return: list of parameters
         [appname, uri, api_version, db_name]
         """
-        file = TCS_variables.PYBIRD_APP_ATLAS_KEY(app_name, db_name)
-        # creds = self.atlas_credentials_loaded()
+        file = TCS_variables.PYBIRD_DIRECTORIES.PYBIRD_APP_ATLAS_KEY(app_name, db_name)
+
         self.interface.dlog("Atlas Creds File: " + file, "FILE LOC")
-        # if not os.path.exists(file):
-        #     raise TCS_variables.PYBIRDAPPkeyERROR("Unable to find key file for " + db_name + "!")
-        # else:
-        #     k = self._read_key_from_file(file)
-        #     raw = k.strip().split(",")
-        #     # creds.app_name = raw[0]
-        #     # creds.uri = self._decode_key(raw[1])
-        #     # creds.api_version = self._decode_key(raw[2])
-        #     # creds.db_name = self._decode_key(raw[3])
-        #     return raw
+
         return self._read_key_from_file(file).strip().split(",")
 
     # endregion
@@ -393,7 +285,7 @@ class keychain:
         :return:
         """
 
-        file = TCS_variables.PYBIRD_APP_GENERAL_KEY(appname, keyname)
+        file = TCS_variables.PYBIRD_DIRECTORIES.PYBIRD_APP_GENERAL_KEY(appname, keyname)
 
         self.interface.dlog("General Key File " + str(tuple((appname, keyname))) + ": " + file, "FILE LOC")
         if os.path.exists(file):
@@ -413,7 +305,7 @@ class keychain:
         :param keyname:
         :return:
         """
-        file = TCS_variables.PYBIRD_APP_GENERAL_KEY(appname, keyname)
+        file = TCS_variables.PYBIRD_DIRECTORIES.PYBIRD_APP_GENERAL_KEY(appname, keyname)
         self.interface.dlog("General Key File " + str(tuple((appname, keyname))) + ": " + file, "FILE LOC")
         if not os.path.exists(file):
             raise TCS_variables.PYBIRDAPPkeyERROR("Unable to find key file for " + str(tuple((appname, keyname))) + "!")
@@ -430,9 +322,9 @@ class keychain:
         :param key: standard string key
         :return: base64 encoded key
         """
-        _bytes = key.encode(TCS_variables.AES_ENCODING)
+        _bytes = key.encode(TCS_variables.AES.ENCODING)
         _b64_bytes = base64.b64encode(_bytes)
-        _b64 = _b64_bytes.decode(TCS_variables.AES_ENCODING)
+        _b64 = _b64_bytes.decode(TCS_variables.AES.ENCODING)
         return _b64
 
     def _decode_key(self, key: str) -> str:
@@ -440,16 +332,16 @@ class keychain:
         :param key: base 64 encoded key
         :return: standard string key
         """
-        _b64_bytes: bytes = key.encode(TCS_variables.AES_ENCODING)
+        _b64_bytes: bytes = key.encode(TCS_variables.AES.ENCODING)
         _bytes: bytes = base64.b64decode(_b64_bytes)
-        str_key = _bytes.decode(TCS_variables.AES_ENCODING)
+        str_key = _bytes.decode(TCS_variables.AES.ENCODING)
         return str_key
 
     # endregion
     ################################################################################################
     ################################################################################################
     # region file system
-    def _save_key_to_file(self, file: str, keys: str):
+    def _save_key_to_file(self, file: str, keys: str) -> None:
         """
         Save keys to file
         :param file:
@@ -461,11 +353,11 @@ class keychain:
             TCS_utils.copy_file_to_old(file)
             TCS_utils.delete_file(file)
 
-        key_encode = keys.encode(TCS_variables.AES_ENCODING)
+        key_encode = keys.encode(TCS_variables.AES.ENCODING)
 
         if self.config.encryption.encrypt_app_key:
-            keys_enc = self.AES.encrypt(keys).decode(TCS_variables.AES_ENCODING)
-            keys_enc_encode = keys_enc.encode(TCS_variables.AES_ENCODING)
+            keys_enc = self.AES.encrypt(keys).decode(TCS_variables.AES.ENCODING)
+            keys_enc_encode = keys_enc.encode(TCS_variables.AES.ENCODING)
             TCS_utils.append_text_file(file, keys_enc)
             TCS_utils.append_text_file(file, hashlib.sha256(keys_enc_encode).hexdigest())
             TCS_utils.append_text_file(file, hashlib.sha256(key_encode).hexdigest())
@@ -487,13 +379,13 @@ class keychain:
             keys = f.readlines()
             key = keys[0].strip()
             save_hash = keys[1].strip()
-            if hashlib.sha256(key.encode(TCS_variables.AES_ENCODING)).hexdigest() != save_hash:
+            if hashlib.sha256(key.encode(TCS_variables.AES.ENCODING)).hexdigest() != save_hash:
                 self.interface.log("File " + file + " is corrupted! FAILED INITIAL HASH CHECK ", "ERROR")
                 return None
             if self.config.encryption.encrypt_app_key:
                 decrypt_key_hash = keys[2].strip()
-                key = self.AES.decrypt(key).decode(TCS_variables.AES_ENCODING)
-                if hashlib.sha256(key.encode(TCS_variables.AES_ENCODING)).hexdigest() != decrypt_key_hash:
+                key = self.AES.decrypt(key).decode(TCS_variables.AES.ENCODING)
+                if hashlib.sha256(key.encode(TCS_variables.AES.ENCODING)).hexdigest() != decrypt_key_hash:
                     self.interface.log("File " + file + " is corrupted! FAILED SECOND HASH CHECK ", "ERROR")
                     return None
         return key
@@ -515,13 +407,13 @@ class keychain:
 
         :return:
         """
-        if os.path.exists(TCS_variables.PYBIRD_ADD_CRED_DIRECTORY):
+        if os.path.exists(TCS_variables.PYBIRD_DIRECTORIES.ADD_CRED):
             self.upload_twitter_keys()
             self.upload_atlas_keys()
             self.upload_generic_keys()
             if self.config.credentials.delete_dir_after_upload:
-                self.interface.log(str("deleting directory: " + TCS_variables.PYBIRD_ADD_CRED_DIRECTORY))
-                shutil.rmtree(TCS_variables.PYBIRD_ADD_CRED_DIRECTORY)
+                self.interface.log(str("deleting directory: " + TCS_variables.PYBIRD_DIRECTORIES.ADD_CRED))
+                shutil.rmtree(TCS_variables.PYBIRD_DIRECTORIES.ADD_CRED)
         else:
             self.interface.log(str("directory does not exit to upload"))
 
@@ -532,10 +424,10 @@ class keychain:
                 - EX: 'myapp.x.json'
         :return:
         """
-        for file in os.listdir(TCS_variables.PYBIRD_ADD_CRED_DIRECTORY):
-            if TCS_variables.EXT_UPLOAD_X in file:
-                appName = file.replace(TCS_variables.EXT_UPLOAD_X, "")
-                file_path = os.path.join(TCS_variables.PYBIRD_ADD_CRED_DIRECTORY, file)
+        for file in os.listdir(TCS_variables.PYBIRD_DIRECTORIES.ADD_CRED):
+            if TCS_variables.FILE_EXTENSIONS.UPLOAD_X in file:
+                appName = file.replace(TCS_variables.FILE_EXTENSIONS.UPLOAD_X, "")
+                file_path = os.path.join(TCS_variables.PYBIRD_DIRECTORIES.ADD_CRED, file)
                 with open(file_path, "r") as f:
                     new_cred = json.load(f)
                 try:
@@ -565,23 +457,7 @@ class keychain:
 
                 self.interface.log(str("Added twitter credentials for " + appName + " from " + file))
 
-                # try:
-                #     _keys = dict()
-                #     _keys[appName] = dict()
-                #     _keys[appName]["api_key"] = new_cred_base["consumer_key"]["api_key"]
-                #     _keys[appName]["api_secret"] = new_cred_base["consumer_key"]["api_secret"]
-                #     _keys[appName]["bearer_token"] = new_cred_base["authentication_token"]["bearer_token"]
-                #     _keys[appName]["access_token"] = new_cred_base["authentication_token"]["access_token"]
-                #     _keys[appName]["access_token_secret"] = new_cred_base["authentication_token"]["access_token_secret"]
-                #     _keys[appName]["client_id"] = new_cred_base["oAuth2"]["client_id"]
-                #     _keys[appName]["client_secret"] = new_cred_base["oAuth2"]["client_secret"]
-                # except:
-                #     self.interface.log(str("unable to read twitter credentials for " + appName + " from " + file),
-                #                        logType='ERROR')
-                #     continue
-                #
-                # self._add_twitter_key(in_app_name=appName, keys=_keys)
-                # self.interface.log(str("Added twitter credentials for " + appName + " from " + file))
+
 
                 if self.config.credentials.delete_file_after_upload:
                     self.interface.log(str("deleting: " + file_path), "DELETING")
@@ -594,10 +470,10 @@ class keychain:
                 - EX: 'myapp.atlas.json'
         :return:
         """
-        for file in os.listdir(TCS_variables.PYBIRD_ADD_CRED_DIRECTORY):
-            if TCS_variables.EXT_UPLOAD_ATLAS in file:
-                appName = file.replace(TCS_variables.EXT_UPLOAD_ATLAS, "")
-                file_path = os.path.join(TCS_variables.PYBIRD_ADD_CRED_DIRECTORY, file)
+        for file in os.listdir(TCS_variables.PYBIRD_DIRECTORIES.ADD_CRED):
+            if TCS_variables.FILE_EXTENSIONS.UPLOAD_ATLAS in file:
+                appName = file.replace(TCS_variables.FILE_EXTENSIONS.UPLOAD_ATLAS, "")
+                file_path = os.path.join(TCS_variables.PYBIRD_DIRECTORIES.ADD_CRED, file)
                 with open(file_path, "r") as f:
                     new_cred = json.load(f)
                 try:
@@ -618,22 +494,6 @@ class keychain:
                                            logType='ERROR')
                         continue
 
-                # try:
-                #     creds = self.atlas_credentials()
-                #     creds.app_name = appName
-                #     creds.uri = new_cred_base["uri"]
-                #     creds.api_version = new_cred_base["api_version"]
-                #     creds.dedicated = new_cred_base["dedicated"]["dedicated_allowed"]
-                #     creds.dedicated_name = new_cred_base["dedicated"]["dedicated_name"]
-                #     creds.shared = new_cred_base["shared"]["shared_allowed"]
-                #     creds.shared_name = new_cred_base["shared"]["shared_name"]
-                # except:
-                #     self.interface.log(str("unable to read atlas credentials for " + appName + " from " + file),
-                #                        logType='ERROR')
-                #     continue
-                #
-                # self._add_atlas_key(creds)
-                # self.interface.log(str("Added atlas credentials for " + appName + " from " + file))
 
                 if self.config.credentials.delete_file_after_upload:
                     self.interface.log(str("deleting: " + file_path), "DELETING")
@@ -646,12 +506,12 @@ class keychain:
                 - EX: 'myapp.mykey.gen.txt'
         :return:
         """
-        for file in os.listdir(TCS_variables.PYBIRD_ADD_CRED_DIRECTORY):
-            if TCS_variables.EXT_UPLOAD_GENERAL in file:
-                info = file.replace(TCS_variables.EXT_UPLOAD_GENERAL, "").split(".")
+        for file in os.listdir(TCS_variables.PYBIRD_DIRECTORIES.ADD_CRED):
+            if TCS_variables.FILE_EXTENSIONS.UPLOAD_GENERAL in file:
+                info = file.replace(TCS_variables.FILE_EXTENSIONS.UPLOAD_GENERAL, "").split(".")
                 appName = info[0].upper()
                 keyname = info[1].upper()
-                file_path = os.path.join(TCS_variables.PYBIRD_ADD_CRED_DIRECTORY, file)
+                file_path = os.path.join(TCS_variables.PYBIRD_DIRECTORIES.ADD_CRED, file)
                 with open(file_path, "r") as f:
                     new_cred = f.readline().strip()
                 self._add_general_key(appName, keyname, new_cred)

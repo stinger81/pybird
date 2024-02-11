@@ -21,9 +21,9 @@
 #
 # ##########################################################################
 
+import datetime
 import random
 import string
-from datetime import datetime, timezone
 
 import TAS_app
 import TCS_configApp
@@ -45,15 +45,41 @@ class TUAapp(TAS_app.app):
         """
         This should be used to set all variables that need to be initialized when the app starts
         """
-        self.tweets_DB = self.primary_database.get_collection("Tweets")
+        self.my_db = self.connect_to_database("TEST_DB")
+        self.tweets_DB = self.my_db.get_collection("Tweets")
         self.passcount = 0
-        self.maxpass = 4
+        self.maxpass = 3
+        self.test_str = "This is a test string"
+        self.last_step = datetime.datetime.utcnow()
+
+    def myLoad(self):
+        """
+        This should be used to load all variables that need to be loaded between instances
+        """
+        self.test_str = self.data_interface.load("test")
+
+    def mySave(self):
+        """
+        This should be used to save all variables that need to be saved between instances
+        """
+        self.test_str = "This is a test string" + str(random.randrange(0, 100))
+        self.data_interface.save("test", self.test_str)
+
+    def myTimeRequest(self):
+        """
+        Used to send next step time to system
+        :return:
+        """
+        print("requesting time")
+        return self.last_step + datetime.timedelta(seconds=10)
 
     def myStep(self):
         """
         override step
         """
-        tweet = str(datetime.now(timezone.utc)) + "-TEST ID: "
+        # my = 1 / 0
+        self.last_step = datetime.datetime.utcnow()
+        tweet = str(datetime.datetime.utcnow()) + "-TEST ID: "
         testID = ""
         for i in range(0, random.randrange(8, 64)):
             if random.randrange(0, 2) == 0:
@@ -63,7 +89,7 @@ class TUAapp(TAS_app.app):
 
         tweet += testID
         # insert tweet into database
-        self.tweets_DB.insert_one({"date": datetime.now(timezone.utc),
+        self.tweets_DB.insert_one({"date": datetime.datetime.utcnow(),
                                    "test_id": testID,
                                    "tweet": tweet,
                                    "length": len(tweet)})
@@ -71,7 +97,10 @@ class TUAapp(TAS_app.app):
         self.interface.log(str("Tweet Length " + str(len(tweet))), "INFO")
         # silently log a message to the database/local
         self.interface.log_db(tweet, "TWEET")
-        self.tweet.post_tweet(tweet)
+        if self._app_config.app_parameters["post"]:
+            self.tweet.post_tweet(tweet)
+
+        self.data_interface.save("test", tweet)
 
         self.passcount += 1
         if self.passcount >= self.maxpass:
