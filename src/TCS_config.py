@@ -32,7 +32,7 @@ import sys
 import toml
 
 import TCS_variables
-from src import TCS_utils
+import TCS_utils
 
 
 class TCS_config:
