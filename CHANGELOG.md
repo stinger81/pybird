@@ -2,8 +2,147 @@
 
 ## Change Log
 
-### Version 0.9.0-PA
+### Version 0.10
+- added once and start to timing option 
+  - once will run at a specific time 
+  - start will run at the start of the system
 
+- add a pybird apps 
+  - PY0START (Pybird Startup Logger)
+    - Log the following data 
+      - Start Time 
+      - session id 
+      - Pybird Dir Size 
+      - Pybird Remote Dir Size 
+      - Pybird Home Dir Size 
+  - PY1SYS (Pybird System Monitor)
+    - log the following data ever X minutes 
+      - CPU % 
+      - MEMORY % Used 
+      - MEMORY Used KB/MB/GB/TB/PB 
+      - MEMORY Free KB/MB/GB/TB/PB 
+      - DISK % Used 
+      - DISK Used KB/MB/GB/TB/PB 
+      - DISK Free KB/MB/GB/TB/PB 
+      - PYBIRD HOME DIR SIZE KB/MB/GB/TB/PB 
+      - PYBIRD DATA DIR SIZE KB/MB/GB/TB/PB
+    - save all data above to a csv file 
+- add support to 
+  - Select a specific config file 
+  - Select a specific network 
+  - Select a specific remote directory 
+  - Select a specific platform 
+- fix error in keychain when not encrypting data 
+- added restriction that if encryption is enabled, keychain entries can not be entered untill key is there
+
+
+
+### Version 0.9.1
+- fixed sys arg error 
+- add a CLI command to select a specific configuration file 
+  - must be located in the config folder 
+- Add multi network support 
+  - can switch between saved data 
+  - can switch between different key storage
+
+### Version 0.9.0
+
+- Dev Move
+  - Dev mode added to system
+  - All log length restrictions lifted
+  - forced debug mode
+  - can only be executed by `--dev` flag
+- Added nre PYBIRD.py file which serves as the primary file to run the system
+- Split boot mode into two separate modes
+  - headless_mode
+    - Prints message at start up stating it is in headless mode
+    - disabled all log prints
+    - sysargs
+      - `-h|--headless` if true after it enables headless mode, false will disable the mode
+  - operations mode
+    - will disable tet and debug mode
+    - sysargs
+      - `-o|--operations` if true after it enables operations mode, false will disable the mode
+- added secure access to all saved data
+  - save key used to access app comfig
+  - key required to access app data
+  - key is hashed into encryption of file to protect it
+- Mongo DB Atlas Changes
+  - removed suport for secondary database
+  - all data based are now initialized within teh program its self. this removed the limitations on database creation
+- TCSVariables chnages
+  - split into three files. All inherited into the file TCS_variables.py
+    - Constant
+      - all static variables
+    - variables
+      - all variables that can be changed by system state
+    - error
+      - all error messages
+- exporting logs 
+  - New automatic save structure 
+    - logs -> int(UNIXTIME)_YEAR_MONTH_DAY->LOGS HERE 
+      - 817265876_2020_12DEC_25 
+  - fix the broken location structure 
+  - add sub methods to do most of the repeated work 
+    - Specific key words -> list 
+    - get path location(standard loc) -> str 
+    - get expected path -> str 
+    - NEW export specific log(list of logs) UI select 
+    - NEW export list logs (list of logs) UI select 
+    - Specific methods 
+      - export log (exports all logs, NO SLT)
+      - export master log (NO SLT)
+      - build master from session (NO SLT)
+      - export session log (NO SLT)
+      - export specific session 
+      - export app log (NO SLT)
+      - Export specific app logs 
+      - NEW export SYS apps all 
+      - NEW export specific SYS app 
+- update session file to not be nested in a dir 
+- timing update
+  - Apps are ececuted in the order they are listed in the config file 
+  - add an override to pybrid config for minumum time between start of steps(if min not exceed will sleep)
+  - remove sleep completely(will allow for future versions to have realtime commanding)
+    - replace with an interstep delay (set in pybird config)
+  - remove step on boot and step on shutdown 
+  - add string to select timing method
+    - 'step' = step based timing
+    - 'time' = time based timing
+    - 'cont' = continuous timing (will run as fast as possible, No recommend for apps that post to social media)
+    - 'test' = run every X minutes
+    - 'request' = app will request specific times to run 
+  - STEP BASED TIMING 
+    - used a delta from last execution to determine to step 
+    - add start time, will calulate the initial step to be based on a standard time, if blank set last step to 0.0 
+  - TIME BASED TIMING 
+    - will execute an a specific time 
+    - will be a list of utc times in 24hr format 
+    - each time will have the days of which to execute before it 
+      - E = EVERYDAY 
+      - M = MONDAY 
+      - T = TUESDAY 
+      - W = WEDNESDAY 
+      - R = THURSDAY 
+      - F = FRIDAY 
+      - S = SATURDAY 
+      - U = SUNDAY 
+    - EXAMPLE 
+      - ['12:00:00 E', '13:00:00 M', '14:00:00 T', '15:00:00 W', '16:00:00 R', '17:00:00 F', '18:00:00 S', '19:00:00 U'] 
+      - will execute at 12:00 UTC every day 
+      - will execute at 13:00 UTC every Monday 
+      - will execute at 14:00 UTC every Tuesday 
+      - will execute at 15:00 UTC every Wednesday 
+      - will execute at 16:00 UTC every Thursday 
+      - will execute at 17:00 UTC every Friday 
+      - will execute at 18:00 UTC every Saturday 
+    -   will execute at 19:00 UTC every Sunday 
+- update step structure 
+  - add config option to load_data_before_step 
+    - if true will execute the method (load_data) before the step 
+  - add config option to save_data_after_step 
+    - if true will execute the method (save_data) after the step
+  
 
 ### Version 0.8.8-PA
 - **ALL PREVIOUSLY ADDED KEYS WILL NEED TO BE RE-ADDED TO BE COMPLIANT WITH NEW KEY SYSTEM**

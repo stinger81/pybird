@@ -598,9 +598,9 @@ class interface:
         :return: None
         """
         if msgType != "":
-            if msgType.upper() == "ERROR":
+            if "ERROR" in msgType.upper():
                 msg = msg_color(msg, color="red", fmt="bold")
-            elif msgType.upper() == "WARNING":
+            elif "WARNING" in msgType.upper():
                 msg = msg_color(msg, color="orange", fmt="bold")
             elif msgType.upper() == "STEP ERROR":
                 msg = msg_color(msg, color="orange", fmt="bold")
@@ -810,7 +810,8 @@ class interface:
         :return: string of line number with total lines
         
         """
-        return "[" + str(line_num) + "/" + str(total_lines) + "] "
+        my_len = len(str(total_lines))
+        return "[" + str(line_num).zfill(my_len) + "/" + str(total_lines) + "] "
 
     # endregion 
     ################################################################################################

@@ -40,18 +40,18 @@ class TCS_config:
         self._config = None
         if TCS_utils.arg_in_sys_args(TCS_variables.SYS_ARG.BOOT):
             try:
-                self.file = os.path.join(TCS_variables.HOME, "PYBIRD_SERVER_CONFIG.toml")
+                self.file = os.path.join(TCS_variables.HOME, TCS_variables.FILE_NAMES.SERVER_CONFIG)
                 self._fullConfig = toml.load(self.file)
                 self._config = self._fullConfig["system_config"]
             except:
-                raise TCS_variables.PYBIRDIOError("PYBIRD_SERVER_CONFIG.toml not found")
+                raise TCS_variables.PYBIRDIOError(TCS_variables.FILE_NAMES.SERVER_CONFIG + " not found")
         if self._config == None:
             try:
-                self.file = os.path.join(TCS_variables.HOME, "PYBIRD_SERVER_CONFIG.toml")
+                self.file = os.path.join(TCS_variables.HOME, TCS_variables.FILE_NAMES.SERVER_CONFIG)
                 self._fullConfig = toml.load(self.file)
                 self._config = self._fullConfig["system_config"]
             except:
-                self.file = os.path.join(TCS_variables.PYBIRD_DIRECTORIES.CONFIG, "PYBIRD_SERVER_CONFIG.toml")
+                self.file = os.path.join(TCS_variables.PYBIRD_DIRECTORIES.CONFIG, TCS_variables.FILE_NAMES.SERVER_CONFIG)
                 self._fullConfig = toml.load(self.file)
                 self._config = self._fullConfig["system_config"]
 
@@ -92,6 +92,7 @@ class TCS_config:
         self.status._read(self._config)
         self.encryption._read(self._config)
         self.credentials._read(self._config)
+
 
     def _read_sys_argv(self):
         """
@@ -173,6 +174,7 @@ class system_config:
         self.headless = False
         self.operations = False
         self.inter_step_delay = 0
+        self.enable_pybird_core_apps = True
 
     def _read(self, _config):
         """
@@ -186,6 +188,7 @@ class system_config:
         self.debug_mode = self._raw["debug_mode"]
         self.remote_app_enabled = self._raw["remote_app_enabled"]
         self.inter_step_delay = self._raw["inter_step_delay"]
+        self.enable_pybird_core_apps = self._raw["enable_pybird_core_apps"]
 
 
     def __str__(self) -> str:
@@ -198,6 +201,7 @@ class system_config:
         string_out += f"headless: {self.headless}\n"
         string_out += f"operations: {self.operations}\n"
         string_out += f"inter_step_delay: {self.inter_step_delay}\n"
+        string_out += f"enable_pybird_core_apps: {self.enable_pybird_core_apps}\n"
 
         return string_out
 

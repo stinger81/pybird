@@ -45,8 +45,11 @@ class TimingManager:
         self.step_duration = self._app_config.timing_step_duration
         self.step_sync_time = self._app_config.timing_step_sync_time
         self.timing_time_list = self._app_config.timing_time_list
+        self.timing_once = self._app_config.timing_once
 
         self.last_time = datetime.datetime.utcnow()
+
+        self._start_complete = False
 
         if self.mode == 'test':
             self._next_time = self._next_time_test
@@ -65,6 +68,13 @@ class TimingManager:
             self._next_time = self._next_time_cont
         elif self.mode == 'request':
             self._next_time = self._next_time_request
+        elif self.mode == 'start':
+            self._next_time = self._next_time_start
+        elif self.mode == 'once':
+            self._next_time = self._next_time_once
+        else:
+            raise ValueError(f"Invalid mode: {self.mode}")
+
 
     def get_cur_time(self):
         """
@@ -149,6 +159,27 @@ class TimingManager:
         :return:
         """
         return 'request'
+
+    def _next_time_once(self):
+        """
+        Get the next time for the once mode
+        :return:
+        """
+        my_time = datetime.datetime.strptime(self.timing_once, "%d %b %Y %H:%M:%S")
+        if my_time.timestamp() > datetime.datetime.utcnow().timestamp():
+            return my_time
+        return 'never'
+
+    def _next_time_start(self):
+        """
+        Get the next time for the start mode
+        :return:
+        """
+        if not self._start_complete:
+            self._start_complete = True
+            return datetime.datetime.utcnow()
+        return 'never'
+
 
     def _step_duration_decode(self, duration: str):
         """

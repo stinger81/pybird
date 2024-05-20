@@ -25,6 +25,8 @@
 
 
 import sys
+import os
+import importlib
 
 import TCS_utils
 import TCS_variables
@@ -34,15 +36,27 @@ import TNS_run
 def pre_start():
     """
     Check for help and version flags
+    Set systems environment variables
     :return:
     """
     for i in range(len(sys.argv)):
+        # check for help and version flags
         if sys.argv[i] in TCS_variables.SYS_ARG.HELP:
             print(TCS_variables.HELP)
             exit(0)
         elif sys.argv[i] in TCS_variables.SYS_ARG.VERSION:
             print(TCS_utils.version())
             exit(0)
+        # set systems environment variables
+        elif sys.argv[i] in TCS_variables.SYS_ARG.REMOTE:
+            os.environ[TCS_variables.PYBIRD_ENV.REMOTE_DIR_TAG] = sys.argv[i + 1]
+            importlib.reload(TCS_variables)
+        elif sys.argv[i] in TCS_variables.SYS_ARG.PLATFORM:
+            os.environ[TCS_variables.PYBIRD_ENV.PLATFORM_TAG] = sys.argv[i + 1]
+            importlib.reload(TCS_variables)
+
+
+
 
 def launch_node(node_name: str):
     """
@@ -58,6 +72,7 @@ def launch_node(node_name: str):
 
 if __name__ == "__main__":
     pre_start()
+
 
     # handle nodes first
     node_name = "N000" # default node name

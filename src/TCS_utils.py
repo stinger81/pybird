@@ -178,7 +178,7 @@ def pybird_keychain_tree():
     Display a tree of the files and folders in the keychain
     :return:
     """
-    my_path = TCS_variables.PYBIRD_DIRECTORIES.PYBIRD_DIRECTORY
+    my_path = TCS_variables.PYBIRD_DIRECTORIES.PYBIRD_HOME
     tree(my_path, 0, -1)
 
 def pybird_data_tree():
@@ -342,7 +342,7 @@ def append_text_file(in_filename: str, in_string: str):
     :return: None
     """
     try:
-        with open(in_filename, "a") as my_file:
+        with open(in_filename, "a", encoding="utf-8") as my_file:
             my_file.write(in_string + '\n')
     except (IOError, OSError) as e:
         if TCS_variables.SYS_ARG.RAISE[0] in sys.argv:
@@ -359,7 +359,7 @@ def append_text_file_restricted_file_length(in_filename: str, in_string: str, ma
     :return: None
     """
     try:
-        with open(in_filename, "r") as my_file:
+        with open(in_filename, "r", encoding="utf-8") as my_file:
             lines = my_file.readlines()
             file_length = len(lines) - 1
     except (IOError, OSError):
@@ -380,7 +380,7 @@ def append_text_file_restricted_file_length(in_filename: str, in_string: str, ma
         print(delta)
         my_lines = [lines[0]]
         my_lines.extend(lines[delta:])
-        with open(in_filename, "w") as my_file:
+        with open(in_filename, "w", encoding="utf-8") as my_file:
             my_file.writelines(my_lines)
         append_text_file(in_filename, in_string)
 
@@ -703,7 +703,7 @@ def get_arg_value_float(in_arg: List, in_default : float = None) -> Union[None,f
 
 def get_arg_value_bool(in_arg: List,
                        in_if_exist_default: bool = True,
-                       in_if_not_exist_default: bool= False) -> Union[None,bool]:
+                       in_default: Union[bool,None]= None) -> Union[None,bool]:
     """
     Get the value of an argument
     :param in_arg: str - Argument to check
@@ -724,11 +724,69 @@ def get_arg_value_bool(in_arg: List,
         except AttributeError:
             return in_if_exist_default
     else:
-        return in_if_not_exist_default
+        return in_default
+
+
 
 
 # endregion
 ###W###############################################################################################
+
+####################################################################################################
+# bytes size management
+class ByteSize(int):
+    _KB = 1024
+    _suffixes = 'B', 'KB', 'MB', 'GB', 'PB'
+
+    def __new__(cls, *args, **kwargs):
+        return super().__new__(cls, *args, **kwargs)
+
+    def __init__(self, *args, **kwargs):
+        self.bytes = self.B = int(self)
+        self.kilobytes = self.KB = self / self._KB ** 1
+        self.megabytes = self.MB = self / self._KB ** 2
+        self.gigabytes = self.GB = self / self._KB ** 3
+        self.petabytes = self.PB = self / self._KB ** 4
+        *suffixes, last = self._suffixes
+        suffix = next((
+            suffix
+            for suffix in suffixes
+            if 1 < getattr(self, suffix) < self._KB
+        ), last)
+        self.readable = suffix, getattr(self, suffix)
+
+        super().__init__()
+
+    def __str__(self):
+        return self.__format__('.2f')
+
+    def __repr__(self):
+        return '{}({})'.format(self.__class__.__name__, super().__repr__())
+
+    def __format__(self, format_spec):
+        suffix, val = self.readable
+        return '{val:{fmt}} {suf}'.format(val=val, fmt=format_spec, suf=suffix)
+
+    def __sub__(self, other):
+        return self.__class__(super().__sub__(other))
+
+    def __add__(self, other):
+        return self.__class__(super().__add__(other))
+
+    def __mul__(self, other):
+        return self.__class__(super().__mul__(other))
+
+    def __rsub__(self, other):
+        return self.__class__(super().__sub__(other))
+
+    def __radd__(self, other):
+        return self.__class__(super().__add__(other))
+
+    def __rmul__(self, other):
+        return self.__class__(super().__rmul__(other))
+
+# endregion
+####################################################################################################
 if __name__ == '__main__':
     # v = version()
     # v.major = 1

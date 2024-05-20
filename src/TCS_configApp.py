@@ -63,12 +63,12 @@ class TAS_apps_config:
                     if row[1][0] == "#":
                         self.configs[-1].active = False
                     else:
-                        self.configs[-1].active = TCS_utils.str_to_bool(row[1])
+                        self.configs[-1].active = TCS_utils.str_to_bool(row[1].strip())
 
                     if row[2][0] == "#":
                         self.configs[-1].active_test = False
                     else:
-                        self.configs[-1].active_test = TCS_utils.str_to_bool(row[2])
+                        self.configs[-1].active_test = TCS_utils.str_to_bool(row[2].strip())
 
                     if row[0][0] == "#":
                         self.configs[-1].app_code = row[0][1:]
@@ -76,13 +76,13 @@ class TAS_apps_config:
                         self.configs[-1].active = False
                         self.configs[-1].active_test = False
                     else:
-                        self.configs[-1].app_code = row[0]
+                        self.configs[-1].app_code = row[0].strip()
 
-                    self.configs[-1].local_app = TCS_utils.str_to_bool(row[3])
-                    self.configs[-1].csv_debug_mode = TCS_utils.str_to_bool(row[4])
-                    self.configs[-1].main_app = row[5]
-                    self.configs[-1].app_config = row[6]
-                    self.configs[-1].dependencies = TCS_utils.delimitated_to_list_str(row[7], "|")
+                    self.configs[-1].local_app = TCS_utils.str_to_bool(row[3].strip())
+                    self.configs[-1].csv_debug_mode = TCS_utils.str_to_bool(row[4].strip())
+                    self.configs[-1].main_app = row[5].strip()
+                    self.configs[-1].app_config = row[6].strip()
+                    self.configs[-1].dependencies = TCS_utils.delimitated_to_list_str(row[7].strip(), "|")
 
                 i += 1
 
@@ -111,6 +111,7 @@ class TAS_apps_config:
                     config.timing_step_skip_missed = config.toml["app_config"]["timing"]["step"]["skip_missed"]
                     config.timing_step_sync_time = config.toml["app_config"]["timing"]["step"]["sync_time"]
                     config.timing_time_list = config.toml["app_config"]["timing"]["time"]["time_list"]
+                    config.timing_once = config.toml["app_config"]["timing"]["once"]["time"]
                     
                     config.toml_debug_mode = config.toml["app_config"]["debug_mode"]
                     config.save_key = config.toml["app_config"]["save_key"]
@@ -188,6 +189,7 @@ class _app_config:
         self.timing_step_skip_missed = True
         self.timing_step_sync_time = ""
         self.timing_time_list = []
+        self.timing_once = ""
         self.save_key:str = ""
         self.app_parameters: dict = {}
         self.atlas_dbs_enabled: bool = False

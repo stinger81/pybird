@@ -26,6 +26,7 @@ Provides constants to be used
 """
 import os
 import sys
+import toml
 from pathlib import Path
 from platform import uname
 
@@ -41,34 +42,45 @@ def _make_path(path):
     """
     path = os.path.normpath(path)
     # print(path)
-    split = path.split(os.sep)
-    # print(split)
-    base = split.pop(0) + os.sep
-    for i in split:
-        if '.' in i:
-            break
-        base = os.path.join(base, i)
-        # print(base)
-        if not os.path.exists(base):
-            os.mkdir(base)
+    os.makedirs(path, exist_ok=True)
 
 ####################################################################################################
-# region init home
+# region init
+# home location
 HOME = ""
 for i in range(len(sys.argv)):
     if sys.argv[i] in SYS_ARG.HOME:
-        _home_list = sys.argv[i + 1].split("/")
-        HOME = os.path.join("/", *_home_list)
-        # print("WARNING: -boot is only supported on Linux")
+        _home = sys.argv[i + 1]
+        HOME = os.path.normpath(_home)
 if HOME == "":
     HOME = Path.home()
 HOME_DIRECTORY = HOME
+
+# config file name
+for i in SYS_ARG.CONFIG:
+    for j in sys.argv:
+        if i == j:
+            try:
+                FILE_NAMES.SERVER_CONFIG = sys.argv[sys.argv.index(i) + 1]
+            except:
+                raise PYBIRDPlatformError("No config file specified")
+
+NETWORK_NAME = "" # network name should only be used on development systems to replicate a existing server
+
+for i in SYS_ARG.NETWORK:
+    for j in sys.argv:
+        if i == j:
+            try:
+                NETWORK_NAME = sys.argv[sys.argv.index(i) + 1].upper()
+            except:
+                raise PYBIRDPlatformError("No network name specified")
+
 
 
 # endregion
 ####################################################################################################
 ####################################################################################################
-# region Base Directories
+# region Pybird Directories
 
 @dataclass(frozen=True)
 class PYBIRD_DIRECTORIES:
@@ -105,7 +117,7 @@ class PYBIRD_DIRECTORIES:
     DATA_SESSION: str = os.path.join(DATA, DIRECTORY_NAME.SESSION)
     _make_path(DATA_SESSION)
 
-    DATA_APPDATA: str = os.path.join(DATA, DIRECTORY_NAME.APPDATA)
+    DATA_APPDATA: str = os.path.join(DATA, DIRECTORY_NAME.APPDATA, NETWORK_NAME)
     _make_path(DATA_APPDATA)
 
     # endregion
@@ -115,10 +127,12 @@ class PYBIRD_DIRECTORIES:
     PYBIRD_HOME: str = os.path.join(HOME_DIRECTORY, DIRECTORY_NAME.HOME_DATA)
     _make_path(PYBIRD_HOME)
 
-    PYBIRD_HOME_APP: str = os.path.join(PYBIRD_HOME, DIRECTORY_NAME.HOME_DATA_APP)
+    PYBIRD_HOME_NET: str = os.path.join(PYBIRD_HOME, NETWORK_NAME)
+
+    PYBIRD_HOME_APP: str = os.path.join(PYBIRD_HOME_NET, DIRECTORY_NAME.HOME_DATA_APP)
     _make_path(PYBIRD_HOME_APP)
 
-    PYBIRD_HOME_AES: str = os.path.join(PYBIRD_HOME, DIRECTORY_NAME.HOME_DATA_AES)
+    PYBIRD_HOME_AES: str = os.path.join(PYBIRD_HOME_NET, DIRECTORY_NAME.HOME_DATA_AES)
     _make_path(PYBIRD_HOME_AES)
 
     @staticmethod
@@ -158,6 +172,12 @@ class PYBIRD_DIRECTORIES:
     def PYBIRD_APP_GENERAL_KEY(app_name: str, key_name: str) -> str:
         return os.path.join(PYBIRD_DIRECTORIES.PYBIRD_APP_GENERAL_DIR(app_name),
                             key_name.upper() + FILE_EXTENSIONS.KEY_GENERAL)
+
+    @staticmethod
+    def PYBIRD_APP_DATA_DIR(app_name: str) -> str:
+        path = os.path.join(PYBIRD_DIRECTORIES.DATA_APPDATA,app_name.upper())
+        _make_path(path)
+        return path
 
 
 # endregion

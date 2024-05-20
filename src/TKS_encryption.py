@@ -27,6 +27,7 @@ import base64
 import hashlib
 import os
 import secrets
+from typing import Union
 
 from Crypto import Random
 from Crypto.Cipher import AES as _aes
@@ -43,29 +44,53 @@ class _AES:
 
         self.aes = _aes
 
-
-    def encrypt(self, raw:str):
+    def encrypt(self, raw: Union[str, bytes]) -> bytes:
+        """
+        This function is used to encrypt a string or bytes using the AES key
+        :param raw: String or Bytes
+        :return: Encrypted values as bytes
+        """
+        if isinstance(raw, str):
+            raw = raw.encode(TCS_variables.AES.ENCODING)
         private_key = self._key.encode(TCS_variables.AES.ENCODING)
         raw = self.pad(raw)
         iv = Random.new().read(_aes.block_size)
         cipher = self.aes.new(private_key, _aes.MODE_CBC, iv)
-        return base64.b64encode(iv + cipher.encrypt(raw.encode(TCS_variables.AES.ENCODING)))
+        return base64.b64encode(iv + cipher.encrypt(raw))
 
-
-    def decrypt(self, enc:str):
+    def decrypt(self, enc: bytes, _type:type = bytes) -> Union[str, bytes]:
+        """
+        decrypt a string or bytes using the AES key
+        :param enc:
+        :param _type:
+        :return:
+        """
         private_key = self._key.encode(TCS_variables.AES.ENCODING)
         enc = base64.b64decode(enc)
         iv = enc[:16]
         cipher = _aes.new(private_key, _aes.MODE_CBC, iv)
-        return self.unpad(cipher.decrypt(enc[16:]))
+        raw_bytes = self.unpad(cipher.decrypt(enc[16:]))
+        if _type == str:
+            return raw_bytes.decode(TCS_variables.AES.ENCODING)
+        else:
+            return raw_bytes
+    def pad(self, s: bytes)->bytes:
+        """
+        This function is used to pad bytes to the correct block size
+        :param s:
+        :return:
+        """
+        return s + ((TCS_variables.AES.BLOCK_SIZE - len(s) % TCS_variables.AES.BLOCK_SIZE) * \
+            chr(TCS_variables.AES.BLOCK_SIZE - len(s) % TCS_variables.AES.BLOCK_SIZE)).encode(TCS_variables.AES.ENCODING)
 
-
-    def pad(self, s):
-        return s + (TCS_variables.AES.BLOCK_SIZE - len(s) % TCS_variables.AES.BLOCK_SIZE) * chr(
-            TCS_variables.AES.BLOCK_SIZE - len(s) % TCS_variables.AES.BLOCK_SIZE)
-
-    def unpad(self, s):
+    def unpad(self, s:bytes)->bytes:
+        """
+        This function is used to unpad bytes to the correct block size
+        :param s:
+        :return:
+        """
         return s[:-ord(s[len(s) - 1:])]
+
 
 class AES_ENC(_AES):
     def __init__(self):
@@ -76,32 +101,32 @@ class AES_ENC(_AES):
         self._key = self._aes_keychain._read_key()
         super().__init__(self._key)
 
+
 class AES_savekey(_AES):
-    def __init__(self, app_name:str, save_key:str) -> None:
+    def __init__(self, app_name: str, save_key: str) -> None:
         """
         This class is used to encrypt the AES key using a saved key
         :param app_name:
         :param save_key:
         """
-        encoded_key = str(app_name+save_key).encode(TCS_variables.AES.ENCODING)
+        encoded_key = str(app_name + save_key).encode(TCS_variables.AES.ENCODING)
         self._key = hashlib.sha256(encoded_key).hexdigest()[0:32]
         super().__init__(self._key)
 
+
 class AES_savekey_ENC(_AES):
-    def __init__(self, app_name:str, save_key:str) -> None:
+    def __init__(self, app_name: str, save_key: str) -> None:
         """
         This class is used to encrypt the AES key using a saved key that is encrypted
         :param app_name:
         :param save_key:
         """
         key_aes = AES_ENC()
-        my_key = app_name+save_key
+        my_key = app_name + save_key
         my_key_enc = key_aes.encrypt(my_key)
         self._key = hashlib.sha256(my_key_enc).hexdigest()[0:32]
         del key_aes
         super().__init__(self._key)
-
-
 
 
 class _AES_keychain:
@@ -127,13 +152,13 @@ class _AES_keychain:
                 print("""
 By running this program, the current AES key will be permanently deleted. The new key 
 that is entered will replace it. This operation can NOT be reversed This will causes 
-all existing Twitter keys to be unusable by this software. All keys must be re-enter 
+all existing keys to be unusable by this software. All keys must be re-enter 
 using "PYBIRDMgrUI.py". 
                 """)
                 print()
                 user_input = input("Type 'CONFIRM' to continue: ")
                 if user_input == "CONFIRM":
-                    self._add_AES.key()
+                    self._add_aes_key()
                     break
             elif user_input == "2":
                 print("256-bit Key:")

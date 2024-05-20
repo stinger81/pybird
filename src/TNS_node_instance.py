@@ -38,7 +38,10 @@ class TWnode(TNS_node.node):
         self.description = "App description"
         # read from csv
 
-        self.app_config_list = TCS_configApp.TAS_apps_config(nodeName).configs
+        self.app_config_list = []
+        if self._config.system.enable_pybird_core_apps and nodeName != "PYBIRD":
+            self.app_config_list.extend(TCS_configApp.TAS_apps_config("PYBIRD").configs)
+        self.app_config_list.extend(TCS_configApp.TAS_apps_config(nodeName).configs)
         # dlog system config
         self.interface.dlog_multiline(str(self._config), "SYSTEM-CONFIG")
 

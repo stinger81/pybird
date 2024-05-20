@@ -31,9 +31,9 @@ class PYBIRD_VER:
     PYBIRD version
     """
     MAJOR = 0
-    MINOR = 9
+    MINOR = 10
     PATCH = 0
-    BUILD = 3
+    BUILD = 0
     PRE: bool = True
     RC: bool = False
     BETA: bool = False
@@ -71,10 +71,14 @@ class SYS_ARG:
     OPERATIONS = ['-o', '--operations'] # a flag for running the system in operations mode (Override debug and test to f)
     HEADLESS = ['-h', '--headless'] # a flag for running the system in headless mode
 
-    # development modes
+    # development modes/tools
     DEV = ['--dev'] # a flag for running the system in dev mode
     TEST = ['-t', '--test'] # a flag for running the system in test mode
     RAISE = ['--raise'] # a flag for raising an exception
+    CONFIG = ['-c', '--config']  # a flag for running a specific config
+    NETWORK = ['--network']  # a flag for running a specific network configuration
+    REMOTE = ['--remote']  # set the remote directory for the system
+    PLATFORM = ['--platform']   # set the platform for the system
 
     _help_msg = """
     Information:
@@ -92,10 +96,15 @@ class SYS_ARG:
     -o|--operations  Run the system in operations mode (Override debug and test to false)
     -h|--headless    Run the system in headless mode
     
-    Development Modes:
-    --dev            Run the system in dev mode
+    Development Modes (DEV TOOLS SHOULD NOT BE USED IN STANDARD OPERATIONS)
+      |--dev            Run the system in dev mode
     -t|--test        Run the system in test mode
-    --raise          Raise all exceptions so that error tracebacks are printed
+      |--raise          Raise all exceptions so that error tracebacks are printed
+    -c|--config      Run with a specific Config File
+      |--network        Run with a specific Network Configuration
+      |--remote         Set the remote directory for the system
+      |--platform       Set the platform for the system
+    
     """
 
 
@@ -151,6 +160,10 @@ class FILE_EXTENSIONS:
     UPLOAD_GENERAL = '.gen.txt'
     SESSION_ID = '.sessionID'
     NODE_CONFIG = '_NODE_CONFIG.csv'
+
+@dataclass
+class FILE_NAMES:
+    SERVER_CONFIG = "PYBIRD_SERVER_CONFIG.toml"
 
 
 @dataclass

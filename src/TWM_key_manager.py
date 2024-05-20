@@ -22,10 +22,12 @@
 # ##########################################################################
 
 import tweepy
+import sys
 
 import TAS_app
 import TCS_utils
 import TKS_keychain
+import TCS_variables
 
 """
 Program to handle twitter keys.
@@ -75,6 +77,8 @@ class keys:
                 self.client = tweepy.API(auth)
                 self._client_id = self.client.verify_credentials().id
             except Exception as e:
+                if TCS_variables.SYS_ARG.RAISE[0] in sys.argv:
+                    raise e
                 self._app.interface.log("Invalid Keys")
                 e_mod = str(e).split("\n")
                 for i in e_mod:
@@ -84,6 +88,8 @@ class keys:
 
 
         except Exception as e:
+            if TCS_variables.SYS_ARG.RAISE[0] in sys.argv:
+                raise e
             self._app.interface.log("Unable to load keys", logType="ERROR")
             e_mod = str(e).split("\n")
             for i in e_mod:

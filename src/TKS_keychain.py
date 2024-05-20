@@ -39,11 +39,17 @@ class keychain:
         self.version = TCS_utils.version()
 
         # self._keys: dict = dict()
-        self.AES = TKS_encryption.AES_ENC()
-        self.AES_saveKey = TKS_encryption.AES_savekey_ENC
+        self.interface = TCS_interface.interface("keychain",pybird_app=True)
         self.config = TCS_config.TCS_config()
 
-        self.interface = TCS_interface.interface("keychain",pybird_app=True)
+        if not self.config.encryption.encrypt_app_key:
+            self.interface.dlog("WARNING: App keys are not encrypted", "WARNING")
+            self.AES = None
+            self.AES_saveKey = None
+        else:
+            self.AES = TKS_encryption.AES_ENC()
+            self.AES_saveKey = TKS_encryption.AES_savekey_ENC
+
         # self.interface.log("TESTTSTS")
 
 
