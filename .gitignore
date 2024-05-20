@@ -35,7 +35,9 @@ appRemote/
 docs/__temp__/
 *.csv
 !config/N000_NODE_CONFIG.csv
-#!config/PYBIRD_NODE_CONFIG.csv
+!config/PYBIRD_NODE_CONFIG.csv
+*.toml
+!config/PYBIRD_SERVER_CONFIG.toml
 .todo
 DEV_APPS/
 dev_testing/

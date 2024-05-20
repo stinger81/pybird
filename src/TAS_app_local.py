@@ -31,8 +31,6 @@ import TCS_utils
 import TCS_variables
 import TDS_NVM
 import TDS_database_atlas
-import TWM_key_manager
-import TWM_tweet_manger_APIv2
 import TDS_file
 
 
@@ -65,19 +63,7 @@ class app(TCS_core.core):
         # display test mode message 
         if test:
             self.interface.log("Started in test mode TEST MODE", logType="INFO")
-
-        # get twitter keys
-        self.key = TWM_key_manager.keys(self)
-
-        self.tweet_enabled = self.key.load_keys()
-
-        if self.tweet_enabled:
-            self.interface.dlog("using api v2", "API VERSION")
-            self.tweet = TWM_tweet_manger_APIv2.Bot(self, self.key)
-            self.tweet.access_twitter = True
-            self.tweet.post_allowed = True
-        else:
-            self.interface.log("Tweeting disabled", "ERROR")
+        self.interface.dlog("Local Apps do not support twitter posting", "INFO")
 
         #  database initial set up
         if self._app_config.log_to_DB_enabled:
@@ -93,6 +79,7 @@ class app(TCS_core.core):
         # NVM initial set up
         self.data_interface = TDS_NVM.NVM_dataInterface(self.name,save_key=self.save_key)
         self.file_interface = TDS_file.TDS_file(self.name,save_key=self.save_key)
+
 
         # plugins initial set up
         self.plugins = TAS_app_plugins.plugins()

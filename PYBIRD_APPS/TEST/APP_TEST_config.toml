@@ -14,10 +14,12 @@
         #   time = run at specific times
         #   cont = run continuously (will run every pass) (not recommended)
         #   request = run on request (app will request what time to run)
+        #   start = run at start once
+        #   once = run once at a specific time
         [app_config.timing.step]
-            step_duration = "5 s" # delta from the last start time
+            step_duration = "1 h" # delta from the last start time
             skip_missed = true # if true, will skip missed steps
-            sync_time = "1 Jan 2024 01:15:30" # time in UTC to sync with. If empty, will not sync and just run at start (EX "1 Jan 2000 00:00:00")
+            sync_time = "1 Jan 2024 00:00:00" # time in UTC to sync with. If empty, will not sync and just run at start (EX "1 Jan 2000 00:00:00")
         [app_config.timing.time]
             time_list = ["02:43:00 E", "02:43:30 E"]
             # E = EVERYDAY
@@ -28,6 +30,8 @@
             # F = FRIDAY
             # S = SATURDAY
             # U = SUNDAY
+        [app_config.timing.once]
+            time = "17 Mar 2024 17:46:00" # time in UTC to run at
 
     [app_config.atlas]
         enabled = true
@@ -36,4 +40,4 @@
             DB_Name = "TEST_DB"
 [app_parameters]
     example = "example"
-    post = true
+    post = false

@@ -42,21 +42,17 @@ launchSWwdt = true # Software Watch Dog
 
 [nodes]
 nodes = ["N000"] # used for running TBS_Bootloader.py
-#bootMode = true # must use -b or --boot, only designated a specific start up sequence
-## BOOTMODE will override the following settings
-##   system_config.console.show_console = False
-##   system_config.system.test_mode = False
-##   system_config.system.debug_mode = False
+
 # end bootloader config
 ##################################################################
 # PYBIRD config
 [system_config]
     [system_config.system]
-        test_mode=true
-        debug_mode=true
+        test_mode=false
+        debug_mode=false
         remote_app_enabled=true
         inter_step_delay=1 # sec
-
+        enable_pybird_core_apps=true
 
     [system_config.logging]
     # Either Master or Session Logging must be enabled, if they are both false session logging will be overriden to True

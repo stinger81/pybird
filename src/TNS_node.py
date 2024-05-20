@@ -78,7 +78,7 @@ class node(TCS_core.core):
         _temp_app._settings()
         self.app_list.append(step_info(_temp_app))
         self.interface.log(
-            f"{self.name} v{self.version} : APP ADDED", logType="INFO")
+            f"{self.name} v{self.version} : APP ADDED {_temp_app.name}", logType="INFO")
 
     def _start_base(self):
         # self.calc_step_time()
@@ -87,9 +87,10 @@ class node(TCS_core.core):
             try:
                 app.timing_manager.set_next_time()
                 app.app._start()
-            except:
-
-                self.interface.log("app start failed: " + app.name, "ERROR")
+            except Exception as e:
+                self.interface.log(f"Error: {e}", logType="ERROR")
+                if TCS_variables.SYS_ARG.RAISE[0] in sys.argv:
+                    raise e
 
     def _step_base(self):
 
@@ -101,6 +102,9 @@ class node(TCS_core.core):
             next_time = app.timing_manager.get_cur_time()
             if next_time == "request":
                 next_time = app.app.myTimeRequest()
+            elif next_time == "never":
+                continue
+
             if next_time.timestamp() <= datetime.datetime.utcnow().timestamp():
 
                 self._app_step(app)
