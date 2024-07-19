@@ -29,7 +29,7 @@ data/
 .private
 private/
 appRemote/
-.old
+*.old
 .py.old
 .idea/
 docs/__temp__/

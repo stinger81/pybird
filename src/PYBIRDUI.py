@@ -44,8 +44,6 @@ def _UI():
     ui.addOption("esa", "Export Specific App Logs", export.export_app_log_select)
     ui.addOption("essa", "Export Specific Pybird System App Logs", export.export_sysapp_log_select)
 
-
-
     ui.addHeader("BUILD LOGS")
     ui.addOption("bm", "Build Master Log From Session Logs", export.build_master_from_session_logs)
 

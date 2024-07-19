@@ -21,13 +21,14 @@
 #
 # ##########################################################################
 
-import tweepy
 import sys
+
+import tweepy
 
 import TAS_app
 import TCS_utils
-import TKS_keychain
 import TCS_variables
+import TKS_keychain
 
 """
 Program to handle twitter keys.

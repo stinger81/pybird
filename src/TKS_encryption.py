@@ -58,7 +58,7 @@ class _AES:
         cipher = self.aes.new(private_key, _aes.MODE_CBC, iv)
         return base64.b64encode(iv + cipher.encrypt(raw))
 
-    def decrypt(self, enc: bytes, _type:type = bytes) -> Union[str, bytes]:
+    def decrypt(self, enc: bytes, _type: type = bytes) -> Union[str, bytes]:
         """
         decrypt a string or bytes using the AES key
         :param enc:
@@ -74,16 +74,18 @@ class _AES:
             return raw_bytes.decode(TCS_variables.AES.ENCODING)
         else:
             return raw_bytes
-    def pad(self, s: bytes)->bytes:
+
+    def pad(self, s: bytes) -> bytes:
         """
         This function is used to pad bytes to the correct block size
         :param s:
         :return:
         """
         return s + ((TCS_variables.AES.BLOCK_SIZE - len(s) % TCS_variables.AES.BLOCK_SIZE) * \
-            chr(TCS_variables.AES.BLOCK_SIZE - len(s) % TCS_variables.AES.BLOCK_SIZE)).encode(TCS_variables.AES.ENCODING)
+                    chr(TCS_variables.AES.BLOCK_SIZE - len(s) % TCS_variables.AES.BLOCK_SIZE)).encode(
+            TCS_variables.AES.ENCODING)
 
-    def unpad(self, s:bytes)->bytes:
+    def unpad(self, s: bytes) -> bytes:
         """
         This function is used to unpad bytes to the correct block size
         :param s:

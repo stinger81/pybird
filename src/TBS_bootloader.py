@@ -31,6 +31,7 @@ time.sleep(0.5)
 
 PROCESS: List[multiprocessing.Process] = []
 
+
 def launchNodes():
     """
     Launch all nodes

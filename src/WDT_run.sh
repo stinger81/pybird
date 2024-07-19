@@ -38,34 +38,30 @@ _py_file_name='WDT_watch.py'
 crashes=0
 
 echo "WDT_run.sh -> V0_8_3-DEV"
-echo "Watch Dog Service Starting $(date)" >> $WDT_LOGFILE
+echo "Watch Dog Service Starting $(date)" >>$WDT_LOGFILE
 echo "Entering WDT startup delay"
 sleep 90
-echo "Launching WDT: $(date)" >> $WDT_LOGFILE
+echo "Launching WDT: $(date)" >>$WDT_LOGFILE
 while true; do
-    echo "Launching Python WDT"
-    $_py_command $WDT/$_py_file_name
+  echo "Launching Python WDT"
+  $_py_command $WDT/$_py_file_name
 
-    
-    #increment crashes
-    crashes=$((crashes+1))
-    echo "crashes: $crashes"
+  #increment crashes
+  crashes=$((crashes + 1))
+  echo "crashes: $crashes"
 
-    if [ $reboot_threshold -ne 0 ]; then
-        n=$((crashes%$reboot_threshold))
-        if [ $n -eq 0 ]; then
-            # Reboot
-            echo 'Crashes exceed reboot threshold - rebooting' >> $WDT_LOGFILE
-            echo "Watch Dog Service TERMINATED" >> $WDT_LOGFILE
-            $reboot_command
-        fi
+  if [ $reboot_threshold -ne 0 ]; then
+    n=$((crashes % $reboot_threshold))
+    if [ $n -eq 0 ]; then
+      # Reboot
+      echo 'Crashes exceed reboot threshold - rebooting' >>$WDT_LOGFILE
+      echo "Watch Dog Service TERMINATED" >>$WDT_LOGFILE
+      $reboot_command
     fi
-    
+  fi
 
-    sleep 60
-
-
+  sleep 60
 
 done
 
-echo "Watch Dog Service TERMINATED" >> $WDT_LOGFILE
+echo "Watch Dog Service TERMINATED" >>$WDT_LOGFILE

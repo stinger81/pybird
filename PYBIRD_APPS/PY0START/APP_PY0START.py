@@ -27,16 +27,16 @@ import os
 import csv
 from pathlib import Path
 
-import TAS_app_local
+import TAS_app_base
 import TCS_configApp
 import TCS_utils
 import TCS_variables
 
 
-class TUAapp(TAS_app_local.app):
+class TUAapp(TAS_app_base.app):
     def __init__(self, parameters: TCS_configApp._app_config, test: bool = False):
-        super().__init__("PY0START", parameters, test)
-        self.name = "PY0START"
+        super().__init__(parameters.app_code, parameters, test)
+        self.name = parameters.app_code
         self.version = TCS_utils.app_version()
         self.version.major = 1
         self.version.minor = 0
@@ -93,6 +93,11 @@ class TUAapp(TAS_app_local.app):
         report.append(f"Pybird Dir Size: {str(pybird_dir_size)}")
         data.append(int(pybird_dir_size))
 
+        # .pybird Directory Size
+        _pybird_dir_size = self.get_dir_size(TCS_variables.PYBIRD_DIRECTORIES.PYBIRD_HOME)
+        report.append(f".pybird Dir Size: {str(_pybird_dir_size)}")
+        data.append(int(_pybird_dir_size))
+
         # Remote Dir Size
         if TCS_variables.PYBIRD_DIRECTORIES.PYBIRD_REMOTE_APP_DIRECTORY != str(Path.home()):
             remote_dir_size = self.get_dir_size(TCS_variables.PYBIRD_DIRECTORIES.PYBIRD_REMOTE_APP_DIRECTORY)
@@ -100,11 +105,6 @@ class TUAapp(TAS_app_local.app):
             remote_dir_size = -1
         report.append(f"Remote Dir Size: {str(remote_dir_size)}")
         data.append(int(remote_dir_size))
-
-        # .pybird Directory Size
-        _pybird_dir_size = self.get_dir_size(TCS_variables.PYBIRD_DIRECTORIES.PYBIRD_HOME)
-        report.append(f".pybird Dir Size: {str(_pybird_dir_size)}")
-        data.append(int(_pybird_dir_size))
 
         report.append("**** END OF REPORT | ID: STARTUP ****")
         self.interface.log_list(report, "REPORT")

@@ -38,7 +38,7 @@ PYBIRDpython="python3"
 
 [watchdog]
 launchSWwdt = true # Software Watch Dog
-# RESERVED FOR FUTURE USE | launchServiceWdt = false # will create a process to watch that the service launching the boot loader is up
+# RESERVED FOR FUTURE USE | launchServiceWdt = false # will create a process to watch that the service launching the bootloader is up
 
 [nodes]
 nodes = ["N000"] # used for running TBS_Bootloader.py

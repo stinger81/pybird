@@ -22,11 +22,9 @@
 # ##########################################################################
 
 
-
-
-import sys
-import os
 import importlib
+import os
+import sys
 
 import TCS_utils
 import TCS_variables
@@ -56,8 +54,6 @@ def pre_start():
             importlib.reload(TCS_variables)
 
 
-
-
 def launch_node(node_name: str):
     """
     Launch a node
@@ -70,12 +66,26 @@ def launch_node(node_name: str):
     node.run()
 
 
+def launch_app(app_name: str):
+    # create temp config
+    dir = os.path.join(TCS_variables.PYBIRD_DIRECTORIES.CONFIG, "TEMP_NODE_CONFIG.csv")
+    local = False
+    if os.path.exists(os.path.join(TCS_variables.PYBIRD_DIRECTORIES.APP_LOCAL, app_name.upper())):
+        local = True
+    with open(dir, "w") as f:
+        f.write("App Code (4 Char),Active(bool),Test Active (bool),Local App (bool),Debug Mode (bool),Main File(str),"
+                "Config file name,Dependent Files('|' separated\n")
+        myStr: str = f"{app_name.upper()},true,true,{str(local).lower()},false,APP_{app_name.upper()},APP_{app_name.upper()}.toml,"
+        f.write(myStr)
+
+    launch_node("TEMP")
+
+
 if __name__ == "__main__":
     pre_start()
 
-
     # handle nodes first
-    node_name = "N000" # default node name
+    node_name = "N000"  # default node name
     node_in_tag = False
     for node_flag in TCS_variables.SYS_ARG.NODE:
         if node_flag in sys.argv:
@@ -83,7 +93,7 @@ if __name__ == "__main__":
             node_in_tag = True
             break
     # handle specific app launch
-    # TODO implement app launch
+    app_name = "TEST"
     app_in_tag = False
     for app_flag in TCS_variables.SYS_ARG.APP:
         if app_flag in sys.argv:
@@ -91,17 +101,12 @@ if __name__ == "__main__":
             app_in_tag = True
             break
 
-
     if node_in_tag and app_in_tag:
         raise TCS_variables.PYBIRDError("cannot launch node and app at same time")
 
     if node_in_tag:
         launch_node(node_name)
     elif app_in_tag:
-        raise TCS_variables.PYBIRDError("app launch not implemented")
+        launch_app(app_name)
 else:
     raise TCS_variables.PYBIRDError("PYBIRD.py cannot be imported")
-
-
-
-

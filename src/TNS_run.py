@@ -70,6 +70,7 @@ class run(TCS_core.core):
             # time.sleep(self._host.step_time - (start - time.time()))
 
             time.sleep(self._host._config.system.inter_step_delay)
+
     def _run_error_handling(self):
         try:
             self._host.step()
@@ -95,7 +96,6 @@ def goodbye():
 
 
 if __name__ == "__main__":
-
 
     signal(SIGINT, handler)
     argv = sys.argv

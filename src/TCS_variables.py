@@ -26,7 +26,6 @@ Provides constants to be used
 """
 import os
 import sys
-import toml
 from pathlib import Path
 from platform import uname
 
@@ -43,6 +42,7 @@ def _make_path(path):
     path = os.path.normpath(path)
     # print(path)
     os.makedirs(path, exist_ok=True)
+
 
 ####################################################################################################
 # region init
@@ -65,16 +65,15 @@ for i in SYS_ARG.CONFIG:
             except:
                 raise PYBIRDPlatformError("No config file specified")
 
-NETWORK_NAME = "" # network name should only be used on development systems to replicate a existing server
+NETWORK_NAME = ""  # network name should only be used on development systems to replicate a existing server
 
-for i in SYS_ARG.NETWORK:
+for i in SYS_ARG.DEVENV:
     for j in sys.argv:
         if i == j:
             try:
                 NETWORK_NAME = sys.argv[sys.argv.index(i) + 1].upper()
             except:
                 raise PYBIRDPlatformError("No network name specified")
-
 
 
 # endregion
@@ -175,7 +174,7 @@ class PYBIRD_DIRECTORIES:
 
     @staticmethod
     def PYBIRD_APP_DATA_DIR(app_name: str) -> str:
-        path = os.path.join(PYBIRD_DIRECTORIES.DATA_APPDATA,app_name.upper())
+        path = os.path.join(PYBIRD_DIRECTORIES.DATA_APPDATA, app_name.upper())
         _make_path(path)
         return path
 
@@ -187,7 +186,6 @@ class PYBIRD_DIRECTORIES:
 # region Predefined file names
 
 # Linux
-SYS_LINUX_BOOT_LOG: str = os.path.join(HOME_DIRECTORY, "last_boot.txt")
 SYS_LINUX_UPTIME: str = "/proc/uptime"
 
 # endregion
@@ -202,8 +200,8 @@ try:
     if TEMP_PLATFORM in [PLATFORM.WINDOWS,
                          PLATFORM.LINUX,
                          PLATFORM.MACOS,
-                         PLATFORM.AWS_EC2_LINUX2,
-                         PLATFORM.AWS_EC2_LINUX2023,
+                         PLATFORM.AWS_EC2_AMZ,
+                         PLATFORM.AWS_EC2_UBUNTU,
                          PLATFORM.WSL,
                          PLATFORM.PI32,
                          PLATFORM.PI64]:
@@ -244,44 +242,39 @@ AES_KEY_FILE = os.path.join(PYBIRD_DIRECTORIES.PYBIRD_HOME_AES, AES.KEY_FILE_NAM
 ####################################################################################################
 # region OS Specific Settings
 if PYBIRD_PLATFORM == PLATFORM.WINDOWS:  # Windows 10/11
-    PLATFORM_HAS_CLI = True
-    PLATFORM_FORCE_TEST_MODE = False
-    PLATFORM_FORCE_DEBUG_MODE = False
+    PLATFORM_UNIX_BASED = False
+    PLATFORM_REMOTE_SERVER = False
 
 elif PYBIRD_PLATFORM == PLATFORM.LINUX:  # General Linux
-    PLATFORM_HAS_CLI = True
-    PLATFORM_FORCE_TEST_MODE = False
-    PLATFORM_FORCE_DEBUG_MODE = False
+    PLATFORM_UNIX_BASED = True
+    PLATFORM_REMOTE_SERVER = False
 
 elif PYBIRD_PLATFORM == PLATFORM.MACOS:  # MacOS
-    PLATFORM_HAS_CLI = True
-    PLATFORM_FORCE_TEST_MODE = False
-    PLATFORM_FORCE_DEBUG_MODE = False
+    PLATFORM_UNIX_BASED = True
+    PLATFORM_REMOTE_SERVER = False
 
 elif PYBIRD_PLATFORM == PLATFORM.WSL:  # Windows Subsystem for Linux
-    PLATFORM_HAS_CLI = True
-    PLATFORM_FORCE_TEST_MODE = False
-    PLATFORM_FORCE_DEBUG_MODE = True
+    PLATFORM_UNIX_BASED = True
+    PLATFORM_REMOTE_SERVER = False
 
-elif PYBIRD_PLATFORM == PLATFORM.AWS_EC2_LINUX2:  # AWS EC2 (Amazon Linux 2) Server
-    PLATFORM_HAS_CLI = False
-    PLATFORM_FORCE_TEST_MODE = False
-    PLATFORM_FORCE_DEBUG_MODE = False
+elif PYBIRD_PLATFORM == PLATFORM.AWS_EC2_AMZ:  # AWS EC2 (Amazon Linux 2) Server
+    PLATFORM_UNIX_BASED = True
+    PLATFORM_REMOTE_SERVER = True
 
-elif PYBIRD_PLATFORM == PLATFORM.AWS_EC2_LINUX2023:  # AWS EC2 (Amazon Linux 2) Server
-    PLATFORM_HAS_CLI = False
-    PLATFORM_FORCE_TEST_MODE = False
-    PLATFORM_FORCE_DEBUG_MODE = False
+elif PYBIRD_PLATFORM == PLATFORM.AWS_EC2_UBUNTU:  # AWS EC2 (Amazon Linux 2023) Server
+    PLATFORM_UNIX_BASED = True
+    PLATFORM_REMOTE_SERVER = True
 
 elif PYBIRD_PLATFORM == PLATFORM.PI32:  # Raspberry Pi OS 32 Bit
-    PLATFORM_HAS_CLI = False
-    PLATFORM_FORCE_TEST_MODE = False
-    PLATFORM_FORCE_DEBUG_MODE = False
+    PLATFORM_UNIX_BASED = True
+    PLATFORM_REMOTE_SERVER = False
 
 elif PYBIRD_PLATFORM == PLATFORM.PI64:  # Raspberry Pi OS 64 Bit
-    PLATFORM_HAS_CLI = False
-    PLATFORM_FORCE_TEST_MODE = False
-    PLATFORM_FORCE_DEBUG_MODE = False
+    PLATFORM_UNIX_BASED = True
+    PLATFORM_REMOTE_SERVER = False
+else:
+    PLATFORM_UNIX_BASED = False
+    PLATFORM_REMOTE_SERVER = False
 
 # endregion
 ####################################################################################################

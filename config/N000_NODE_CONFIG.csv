@@ -1,2 +1,2 @@
 App Code (4 Char),Active(bool),Test Active (bool),Local App (bool),Debug Mode (bool),Main File(str),Config file name,Dependent Libraries('|' separated)
-TEST,true,true,true,false,APP_TEST,APP_TEST_config.toml,
+TEST,true,true,true,false,APP_TEST,APP_TEST.toml,

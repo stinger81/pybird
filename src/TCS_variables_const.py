@@ -24,17 +24,16 @@
 from dataclasses import dataclass
 
 
-
 @dataclass
 class PYBIRD_VER:
     """
     PYBIRD version
     """
     MAJOR = 0
-    MINOR = 10
+    MINOR = 11
     PATCH = 0
     BUILD = 0
-    PRE: bool = True
+    PRE: bool = False
     RC: bool = False
     BETA: bool = False
     ALPHA: bool = True
@@ -51,34 +50,37 @@ class PYBIRD_ENV:
     REMOTE_DIR_TAG = 'PYBIRDRemoteDir'
     PLATFORM_TAG = 'PYBIRDPlatform'
     PYTHON_TAG = 'PYBIRDPython'
+
+
 @dataclass
 class SYS_ARG:
     """
     System arguments
     """
     # info
-    HELP = ['--help'] # will print the help information and then exit
-    VERSION = ['--version'] # will print the version information and then exit
+    HELP = ['--help']  # will print the help information and then exit
+    VERSION = ['--version']  # will print the version information and then exit
 
     # run declarations
-    HOME = ['-H', '--home'] # a flag for listing where the home directory is
-    NODE = ['-n', '--node'] # a flag for running a specific node
-    APP = ['-a', '--app'] # a flag for running a specific app
+    HOME = ['-H', '--home']  # a flag for listing where the home directory is
+    NODE = ['-n', '--node']  # a flag for running a specific node
+    APP = ['-a', '--app']  # a flag for running a specific app
 
     # standard modes
-    BOOT = ['-b', '--boot'] # a flag for the system starting from a service on boot
-    DEBUG = ['-d', '--debug'] # a flag for running the system in debug mode
-    OPERATIONS = ['-o', '--operations'] # a flag for running the system in operations mode (Override debug and test to f)
-    HEADLESS = ['-h', '--headless'] # a flag for running the system in headless mode
+    BOOT = ['-b', '--boot']  # a flag for the system starting from a service on boot
+    DEBUG = ['-d', '--debug']  # a flag for running the system in debug mode
+    OPERATIONS = ['-o',
+                  '--operations']  # a flag for running the system in operations mode (Override debug and test to f)
+    HEADLESS = ['-h', '--headless']  # a flag for running the system in headless mode
 
     # development modes/tools
-    DEV = ['--dev'] # a flag for running the system in dev mode
-    TEST = ['-t', '--test'] # a flag for running the system in test mode
-    RAISE = ['--raise'] # a flag for raising an exception
+    DEV = ['--dev']  # a flag for running the system in dev mode
+    TEST = ['-t', '--test']  # a flag for running the system in test mode
+    RAISE = ['--raise']  # a flag for raising an exception
     CONFIG = ['-c', '--config']  # a flag for running a specific config
-    NETWORK = ['--network']  # a flag for running a specific network configuration
+    DEVENV = ['--devenv']  # a flag for running a specific dev environment configuration
     REMOTE = ['--remote']  # set the remote directory for the system
-    PLATFORM = ['--platform']   # set the platform for the system
+    PLATFORM = ['--platform']  # set the platform for the system
 
     _help_msg = """
     Information:
@@ -106,10 +108,6 @@ class SYS_ARG:
       |--platform       Set the platform for the system
     
     """
-
-
-
-
 
 
 @dataclass
@@ -161,6 +159,7 @@ class FILE_EXTENSIONS:
     SESSION_ID = '.sessionID'
     NODE_CONFIG = '_NODE_CONFIG.csv'
 
+
 @dataclass
 class FILE_NAMES:
     SERVER_CONFIG = "PYBIRD_SERVER_CONFIG.toml"
@@ -179,8 +178,8 @@ class PLATFORM:
     WINDOWS: str = 'windows'  # windows 10/11
     LINUX: str = 'linux'  # general linux
     MACOS: str = "macos"  # MacOS
-    AWS_EC2_LINUX2: str = "aws-ec2-linux2"  # AWS EC2 (Amazon Linux 2)  (Unable to detect, platform must be declared)
-    AWS_EC2_LINUX2023: str = "aws-ec2-linux2023"  # AWS EC2 (Amazon Linux 2023) (Unable to detect, platform must be declared)
+    AWS_EC2_AMZ: str = "aws-ec2-amz"  # AWS EC2 (Amazon Linux)(Unable to detect, platform must be declared)
+    AWS_EC2_UBUNTU: str = "aws-ec2-ubuntu"  # AWS EC2 (ubuntu)(Unable to detect, platform must be declared)
     WSL: str = "wsl"  # Windows Subsystem for linux
     PI32: str = "pi32"  # Raspberry Pi 32-bit platform (Unable to detect, platform must be declared)
     PI64: str = "pi64"  # Raspberry Pi 64-bit platform (Unable to detect, platform must be declared)
@@ -217,4 +216,3 @@ HELP = """
     A python based server for app based systems
 
     """ + SYS_ARG._help_msg
-

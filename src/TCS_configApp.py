@@ -97,7 +97,8 @@ class TAS_apps_config:
                     toml_address = os.path.join(TCS_variables.PYBIRD_DIRECTORIES.APP_LOCAL, config.app_code,
                                                 config.app_config)
                 else:
-                    toml_address = os.path.join(TCS_variables.PYBIRD_DIRECTORIES.PYBIRD_REMOTE_APP_DIRECTORY, config.app_code,
+                    toml_address = os.path.join(TCS_variables.PYBIRD_DIRECTORIES.PYBIRD_REMOTE_APP_DIRECTORY,
+                                                config.app_code,
                                                 config.app_config)
                 # print(json_address)
                 with open(toml_address, "r") as toml_file:
@@ -112,18 +113,14 @@ class TAS_apps_config:
                     config.timing_step_sync_time = config.toml["app_config"]["timing"]["step"]["sync_time"]
                     config.timing_time_list = config.toml["app_config"]["timing"]["time"]["time_list"]
                     config.timing_once = config.toml["app_config"]["timing"]["once"]["time"]
-                    
+
                     config.toml_debug_mode = config.toml["app_config"]["debug_mode"]
                     config.save_key = config.toml["app_config"]["save_key"]
 
-
-
-                    config.atlas_dbs_enabled = config.toml["app_config"]["atlas"]["enabled"]
-                    config.log_to_DB_enabled = config.toml["app_config"]["atlas"]["logging"]["enabled"]
-                    config.log_to_DB_name = config.toml["app_config"]["atlas"]["logging"]["DB_Name"]
+                    config.plugin_twitter_enabled = config.toml["app_config"]["plugins"]["enable_twitter"]
+                    config.plugin_atlas_enabled = config.toml["app_config"]["plugins"]["enable_mongoDB_atlas"]
 
                     config.app_parameters = config.toml["app_parameters"]
-
 
     def _post_process_config(self):
         """
@@ -132,8 +129,6 @@ class TAS_apps_config:
         """
         for config in self.configs:
             if config.csv_debug_mode or config.toml_debug_mode:
-                config.debug_mode = True
-            elif TCS_variables.PLATFORM_FORCE_DEBUG_MODE:
                 config.debug_mode = True
 
     @staticmethod
@@ -190,11 +185,10 @@ class _app_config:
         self.timing_step_sync_time = ""
         self.timing_time_list = []
         self.timing_once = ""
-        self.save_key:str = ""
+        self.save_key: str = ""
         self.app_parameters: dict = {}
-        self.atlas_dbs_enabled: bool = False
-        self.log_to_DB_enabled: bool = False
-        self.log_to_DB_name: str = ""
+        self.plugin_twitter_enabled: bool = False
+        self.plugin_atlas_enabled: bool = False
         self.debug_mode: bool = False
 
     def __str__(self) -> str:
@@ -218,9 +212,8 @@ class _app_config:
         string_out += "timing_step_sync_time: " + str(self.timing_step_sync_time) + "\n"
         string_out += "timing_time_list: " + str(self.timing_time_list) + "\n"
         string_out += "app_parameters: " + str(self.app_parameters) + "\n"
-        string_out += "atlas_dbs_enabled: " + str(self.atlas_dbs_enabled) + "\n"
-        string_out += "log_to_DB_enabled: " + str(self.log_to_DB_enabled) + "\n"
-        string_out += "log_to_DB_name: " + str(self.log_to_DB_name) + "\n"
+        string_out += "plugin_twitter_enabled: " + str(self.plugin_twitter_enabled) + "\n"
+        string_out += "plugin_atlas_enabled: " + str(self.plugin_atlas_enabled) + "\n"
         string_out += "debug_mode: " + str(self.debug_mode) + "\n"
 
         return string_out

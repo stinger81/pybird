@@ -22,15 +22,12 @@
 # ##########################################################################
 
 
-import TAS_app_plugins
 import TCS_config
 import TCS_configApp
 import TCS_core
 import TCS_interface
 import TCS_utils
-import TCS_variables
 import TDS_NVM
-import TDS_database_atlas
 import TDS_file
 
 
@@ -63,45 +60,13 @@ class app(TCS_core.core):
         # display test mode message 
         if test:
             self.interface.log("Started in test mode TEST MODE", logType="INFO")
-        self.interface.dlog("Local Apps do not support twitter posting", "INFO")
-
-        #  database initial set up
-        if self._app_config.log_to_DB_enabled:
-            self.interface.dlog("Database Logging Enabled", "INFO")
-            self._logging_db = self.connect_to_database(self._app_config.log_to_DB_name)
-            if self._logging_db is None:
-                self.interface.log("Database Logging Disabled Unable to connect", "ERROR")
-                self._app_config.log_to_DB_enabled = False
-                self._app_config.log_to_DB_name = "unknown"
-            else:
-                self.interface._add_collection(self._logging_db.get_collection(TCS_variables.ATLAS.LOG_COLLECTION))
 
         # NVM initial set up
-        self.data_interface = TDS_NVM.NVM_dataInterface(self.name,save_key=self.save_key)
-        self.file_interface = TDS_file.TDS_file(self.name,save_key=self.save_key)
+        self.data_interface = TDS_NVM.NVM_dataInterface(self.name, save_key=self.save_key)
+        self.file_interface = TDS_file.TDS_file(self.name, save_key=self.save_key)
 
-
-        # plugins initial set up
-        self.plugins = TAS_app_plugins.plugins()
         self.interface.dlog(
             f"{self.name} v{self.version} : APP-BASE INITIALIZED", logType="INFO")
-
-    def connect_to_database(self, database_name: str):
-        """
-        Connect to the database
-        :param database_name:
-        :return:
-        """
-        if self._app_config.atlas_dbs_enabled:
-            temp_db = TDS_database_atlas.mongodb_atlas(self, database_name)
-            if temp_db.valid:
-                return temp_db.db
-            else:
-                self.interface.log("Database [" + database_name + "]: Unable to connect", "ERROR")
-                return None
-        else:
-            self.interface.log("Atlas Database: Disabled", "ERROR")
-            return None
 
     def _run_base(self):
         pass
@@ -119,6 +84,7 @@ class app(TCS_core.core):
     def mySave(self):
         # to be overridden in parent class
         pass
+
     def preStep(self):
         """
         Pre step

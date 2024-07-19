@@ -127,8 +127,8 @@ class node(TCS_core.core):
         else:
 
             self.interface.log("COMPLETE | step error count = " + str(self.errorNum) +
-                                " | step apps ran = " + str(apps_ran) + " | step error list = " + str(self.errorList),
-                                logType="STEP")
+                               " | step apps ran = " + str(apps_ran) + " | step error list = " + str(self.errorList),
+                               logType="STEP")
 
     def _app_step(self, app_info: step_info):
         try:
@@ -147,8 +147,6 @@ class node(TCS_core.core):
             if TCS_variables.SYS_ARG.RAISE[0] in sys.argv:
                 raise e
         return False
-
-
 
 
 if __name__ == "__main__":

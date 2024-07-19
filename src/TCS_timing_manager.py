@@ -75,7 +75,6 @@ class TimingManager:
         else:
             raise ValueError(f"Invalid mode: {self.mode}")
 
-
     def get_cur_time(self):
         """
         Get the current step time
@@ -179,7 +178,6 @@ class TimingManager:
             self._start_complete = True
             return datetime.datetime.utcnow()
         return 'never'
-
 
     def _step_duration_decode(self, duration: str):
         """

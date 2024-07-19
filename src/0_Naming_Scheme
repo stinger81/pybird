@@ -34,5 +34,6 @@ TDS - Data Subsystem | contains basic data structures and a way to save user dat
     -> NVM Names based data storage (Data is not guarantied to transfer between instances)
 TKS - Keychain Subsystem | Securely store keys/credentials separately from the Main PYBIRD Files
 TNS - Node Subsystem | Used to build/run an instance of PYBIRD
+TPS - Plugin Subsystem | Used to manage plugins
 TWM - Twitter Manager | Used to post on twitter
 WDT - Watchdog | classes for managing the software watchdog

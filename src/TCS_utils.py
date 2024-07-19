@@ -22,7 +22,6 @@
 # ##########################################################################
 
 import os
-# region imports
 import shutil
 import sys
 from typing import Union, List
@@ -158,7 +157,6 @@ class app_version(_version):
 # region file management
 
 
-
 def tree(path: str = '.', level: int = 0, max_level: int = -1):
     """
     Display a tree of the files and folders in a path
@@ -173,6 +171,7 @@ def tree(path: str = '.', level: int = 0, max_level: int = -1):
             if os.path.isdir(os.path.join(path, f)):
                 tree(os.path.join(path, f), level + 1, max_level)
 
+
 def pybird_keychain_tree():
     """
     Display a tree of the files and folders in the keychain
@@ -181,6 +180,7 @@ def pybird_keychain_tree():
     my_path = TCS_variables.PYBIRD_DIRECTORIES.PYBIRD_HOME
     tree(my_path, 0, -1)
 
+
 def pybird_data_tree():
     """
     Display a tree of the files and folders in the data directory
@@ -188,6 +188,7 @@ def pybird_data_tree():
     """
     my_path = TCS_variables.PYBIRD_DIRECTORIES.DATA
     tree(my_path, 0, -1)
+
 
 def rename_file(in_filename: str = '', in_new_filename: str = ''):
     """
@@ -347,7 +348,6 @@ def append_text_file(in_filename: str, in_string: str):
     except (IOError, OSError) as e:
         if TCS_variables.SYS_ARG.RAISE[0] in sys.argv:
             raise e
-
 
 
 def append_text_file_restricted_file_length(in_filename: str, in_string: str, max_length: int = -1):
@@ -557,6 +557,8 @@ def getUserInput_listChoice(in_prompt: str = '', in_options: list = [], in_defau
         except ValueError:
             print("Invalid input must be an integer")
     return in_options[my_input]
+
+
 def getUserInput_listChoiceMulti(in_prompt: str = '', in_options: list = [], in_default: int = 0):
     """
     Get user input
@@ -571,7 +573,7 @@ def getUserInput_listChoiceMulti(in_prompt: str = '', in_options: list = [], in_
     while True:
         for i in range(len(in_options)):
             print(str(i) + " - " + in_options[i])
-        my_input:str = getUserInput(in_prompt, str(in_default))
+        my_input: str = getUserInput(in_prompt, str(in_default))
         # print(my_input)
         my_input_list = my_input.split(',')
         my_output_list = []
@@ -615,6 +617,7 @@ def getUserInput_Confirm(in_prompt: str = '', in_confirmation_code: str = 'y', i
         else:
             return False
 
+
 def getUserInput_required_length(in_prompt: str = '', in_length: int = 0) -> str:
     """
     Get user input
@@ -629,6 +632,7 @@ def getUserInput_required_length(in_prompt: str = '', in_length: int = 0) -> str
         else:
             print("Invalid input must be " + str(in_length) + " characters")
     return my_input
+
 
 def getUserInput_required_minimum_length(in_prompt: str = '', in_length: int = 0) -> str:
     """
@@ -663,7 +667,8 @@ def arg_in_sys_args(in_arg: List) -> bool:
             return True
     return False
 
-def get_arg_value(in_arg: List, in_default: str = None) -> Union[None,str]:
+
+def get_arg_value(in_arg: List, in_default: str = None) -> Union[None, str]:
     """
     Get the value of an argument
     :param in_arg: str - Argument to check
@@ -677,7 +682,8 @@ def get_arg_value(in_arg: List, in_default: str = None) -> Union[None,str]:
                 return in_default
     return in_default
 
-def get_arg_value_int(in_arg: List, in_default: int = None) -> Union[None,int]:
+
+def get_arg_value_int(in_arg: List, in_default: int = None) -> Union[None, int]:
     """
     Get the value of an argument
     :param in_arg: str - Argument to check
@@ -689,7 +695,8 @@ def get_arg_value_int(in_arg: List, in_default: int = None) -> Union[None,int]:
     except ValueError:
         return in_default
 
-def get_arg_value_float(in_arg: List, in_default : float = None) -> Union[None,float]:
+
+def get_arg_value_float(in_arg: List, in_default: float = None) -> Union[None, float]:
     """
     Get the value of an argument
     :param in_arg: str - Argument to check
@@ -701,9 +708,10 @@ def get_arg_value_float(in_arg: List, in_default : float = None) -> Union[None,f
     except ValueError:
         return in_default
 
+
 def get_arg_value_bool(in_arg: List,
                        in_if_exist_default: bool = True,
-                       in_default: Union[bool,None]= None) -> Union[None,bool]:
+                       in_default: Union[bool, None] = None) -> Union[None, bool]:
     """
     Get the value of an argument
     :param in_arg: str - Argument to check
@@ -725,8 +733,6 @@ def get_arg_value_bool(in_arg: List,
             return in_if_exist_default
     else:
         return in_default
-
-
 
 
 # endregion
@@ -784,6 +790,7 @@ class ByteSize(int):
 
     def __rmul__(self, other):
         return self.__class__(super().__rmul__(other))
+
 
 # endregion
 ####################################################################################################

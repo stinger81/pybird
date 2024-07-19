@@ -20,21 +20,10 @@
 #   michael@dompke.dev
 #
 # ##########################################################################
-
 import TCS_utils
 
 
-class plugins:
-    """
-    Class to bundle all plugins
-    """
-
-    def __init__(self) -> None:
-        # Progress bar
-        self.progress = _progress_bar()
-
-
-class _progress_bar:
+class ProgressBar:
     """
     Generates a progress bar
     """
@@ -218,10 +207,11 @@ class _progress_bar:
 
 if __name__ == "__main__":
     n = 1
-    bar = _progress_bar()
+    bar = ProgressBar()
     bar.enable_partial_blocks()
     bar.set_bar_length(25)
     bar.set_decimal_places(2)
     bar.disable_warning()
     bar.enable_warning()
-    print(bar.get_bar(bar.get_percent(50, 100)))
+    for i in range(0, 105):
+        print(bar.get_bar(bar.get_percent(i, 100)))

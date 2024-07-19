@@ -21,11 +21,7 @@
 #
 # ##########################################################################
 
-#export HOME="home/ec2-user"
-#tag=$( tail -n 1 $HOME/last_boot.txt )
-# echo "last boot: $tags"
 
-python3 $PYBIRD/tools/status_linux/boot_time.py
 python3 $PYBIRD/tools/status_linux/uptime.py
 
 echo "Services /etc/systemd/system"

@@ -39,8 +39,13 @@ class TWnode(TNS_node.node):
         # read from csv
 
         self.app_config_list = []
+        # add pybird core apps into the system
         if self._config.system.enable_pybird_core_apps and nodeName != "PYBIRD":
             self.app_config_list.extend(TCS_configApp.TAS_apps_config("PYBIRD").configs)
+            for i in range(len(self.app_config_list)):
+                self.app_config_list[i].app_code += "-PYBIRD-CORE-" + nodeName
+
+        # add node apps into the system
         self.app_config_list.extend(TCS_configApp.TAS_apps_config(nodeName).configs)
         # dlog system config
         self.interface.dlog_multiline(str(self._config), "SYSTEM-CONFIG")
@@ -87,9 +92,16 @@ class TWnode(TNS_node.node):
 
     def _sys_path(self, app_info):
         if app_info.local_app:
-            sys.path.append(os.path.join(TCS_variables.PYBIRD_DIRECTORIES.APP_LOCAL, app_info.app_code))
+            sys.path.append(os.path.join(TCS_variables.PYBIRD_DIRECTORIES.APP_LOCAL, self._pathCode(app_info)))
         elif not app_info.local_app:
-            sys.path.append(os.path.join(TCS_variables.PYBIRD_DIRECTORIES.PYBIRD_REMOTE_APP_DIRECTORY, app_info.app_code))
+            sys.path.append(
+                os.path.join(TCS_variables.PYBIRD_DIRECTORIES.PYBIRD_REMOTE_APP_DIRECTORY, self._pathCode(app_info)))
+
+    def _pathCode(self, app_info):
+        if "PYBIRD-CORE" in app_info.app_code:
+            return app_info.app_code.split("-")[0]
+        else:
+            return app_info.app_code
 
     def myStart(self):
         pass

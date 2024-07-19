@@ -31,7 +31,6 @@ print(TCS_utils.LICENSE)
 
 
 def _UI():
-
     if TCS_variables.NETWORK_NAME != "":
         print("PYBIRD Mgr UI")
         print("WARNING: This manager will modify the local network setting listed below")
@@ -42,7 +41,7 @@ def _UI():
         print("WARNING: This manager will modify the local network setting listed above")
         print("WARNING: If this is not the correct network, please exit now")
 
-        user = TCS_utils.getUserInput_yn("Is '"+TCS_variables.NETWORK_NAME+"'  the correct network? ")
+        user = TCS_utils.getUserInput_yn("Is '" + TCS_variables.NETWORK_NAME + "'  the correct network? ")
 
         if not user:
             print("Exiting")
@@ -59,7 +58,8 @@ def _UI():
 
         ui.addOption("app", "Add/Update App Key", keys.add_twitter_key_ui)
         ui.addOption("atlas", "Add/Update MongoDB Atlas Credentials", keys.add_atlas_key_ui)
-        ui.addOption("upload", "Upload credentials in " + TCS_variables.PYBIRD_DIRECTORIES.ADD_CRED, keys.check_new_creds,
+        ui.addOption("upload", "Upload credentials in " + TCS_variables.PYBIRD_DIRECTORIES.ADD_CRED,
+                     keys.check_new_creds,
                      requireConfirmation=True)
         ui.addOption("rmapp", "Remove App Key", keys.remove_entire_app_keys_ui)
         ui.addOption("rmsk", "Remove Specific Key from App", keys.remove_specific_key_ui)

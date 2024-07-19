@@ -32,20 +32,20 @@ import TKS_encryption
 
 class NVM_dataInterface:
     def __init__(self, app_code: str, save_key: str = "") -> None:
-        self.app_code = app_code
-        self.save_key = save_key
+        self._app_code = app_code
+        self._save_key = save_key
         if save_key == "":
-            self.encryption = False
+            self._encryption = False
         else:
-            self.encryption = True
-            self._my_aes = TKS_encryption.AES_savekey(app_name=self.app_code, save_key=self.save_key)
+            self._encryption = True
+            self._my_aes = TKS_encryption.AES_savekey(app_name=self._app_code, save_key=self._save_key)
         self._app_dir = os.path.join(TCS_variables.PYBIRD_DIRECTORIES.DATA_APPDATA, app_code.upper())
         if not os.path.exists(self._app_dir):
             os.makedirs(self._app_dir)
 
     def _file_name(self, data_name: str):
         filename = ""
-        filename += str(self.app_code)
+        filename += str(self._app_code)
         filename += "__"
         filename += data_name.replace(" ", "_")
         filename = filename.upper()
@@ -57,7 +57,7 @@ class NVM_dataInterface:
         return self._file_name(data_name) + ".enc"
 
     def _get_file_name(self, data_name: str):
-        if self.encryption:
+        if self._encryption:
             return self._file_enc_name(data_name)
         else:
             return self._file_name(data_name)
@@ -72,7 +72,7 @@ class NVM_dataInterface:
         file = self._get_file_name(data_name)
         with open(file, 'wb') as f:
             my_data = pickle.dumps(data)
-            if self.encryption:
+            if self._encryption:
                 my_data_hex = my_data.hex()
                 my_data_enc = self._my_aes.encrypt(my_data_hex)
                 f.write(my_data_enc)
@@ -88,14 +88,14 @@ class NVM_dataInterface:
         file = self._get_file_name(data_name)
         if os.path.isfile(file):
             with open(file, 'rb') as f:
-                if self.encryption:
+                if self._encryption:
                     try:
                         my_data_enc = f.read()
                         my_data_hex = self._my_aes.decrypt(my_data_enc.decode()).decode(TCS_variables.AES.ENCODING)
                         my_data = bytes.fromhex(my_data_hex)
                         return pickle.loads(bytes(my_data))
                     except EOFError as e:
-                        app_inter = TCS_interface.interface(self.app_code)
+                        app_inter = TCS_interface.interface(self._app_code)
                         app_inter.log("Error loading data: " + data_name, "ERROR")
                         app_inter.log("File may be corrupted or the save key may have changed", "ERROR")
                         del app_inter
@@ -109,7 +109,7 @@ class NVM_dataInterface:
                         my_data = f.read()
                         return pickle.loads(my_data)
                     except EOFError as e:
-                        app_inter = TCS_interface.interface(self.app_code)
+                        app_inter = TCS_interface.interface(self._app_code)
                         app_inter.log("Error loading data: " + data_name, "ERROR")
                         app_inter.log("File may be corrupted", "ERROR")
                         del app_inter
@@ -138,6 +138,6 @@ if __name__ == "__main__":
     # di = data_interface("new", "TEST!@#")
     # di.save_data("test", "test")
     # print(di.load_data("test"))
-    di = NVM_dataInterface("new","TEST!@#")
+    di = NVM_dataInterface("new", "TEST!@#")
     di.save("test", "test")
     print(di.load("test"))

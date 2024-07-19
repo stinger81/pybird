@@ -1,6 +1,12 @@
 # PYBIRD
 
 ## Change Log
+### version 0.11
+- Added functionality to launch a singular app
+  - python PYBIRD.py -a APPCODE
+- added a way for node names to be passed into system and provide a unique id to system apps
+- added session log limits
+- moved X, MongoDB, data structure, and progress bar, to its own plugin system
 
 ### Version 0.10
 - added once and start to timing option 

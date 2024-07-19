@@ -1,4 +1,5 @@
 App Code (4 Char),Active(bool),Test Active (bool),Local App (bool),Debug Mode (bool),Main File(str),Config file name,Dependent Files('|' separated)
 PY0START,true,true,true,false,APP_PY0START,APP_PY0START.toml,
 PY1SYS,true,true,true,false,APP_PY1SYS,APP_PY1SYS.toml,
+PY2HEALTH,true,false,true,false,APP_PY2HEALTH,APP_PY2HEALTH.toml,
 #TEST,true,true,true,false,APP_TEST,APP_TEST_config.json,

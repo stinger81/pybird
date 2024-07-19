@@ -21,12 +21,26 @@
 #
 # ##########################################################################
 
-import os
-import sys
+import TDS_database_atlas
 
-sys.path.append(os.path.join(os.environ["PYBIRD"], "src"))
-import TCS_variables as VAR
 
-with open(VAR.SYS_LINUX_BOOT_LOG, "r") as f:
-    times = f.readlines()
-    print("Last Boot:", times[-1].strip())
+class MongoDB_Atlas:
+    def __init__(self, app):
+        self.app = app
+
+    def connect_to_database(self, database_name: str):
+        """
+        Connect to the database
+        :param database_name:
+        :return:
+        """
+        if self.app._app_config.plugin_atlas_enabled:
+            temp_db = TDS_database_atlas.mongodb_atlas(self.app, database_name)
+            if temp_db.valid:
+                return temp_db.db
+            else:
+                self.app.interface.log("Database [" + database_name + "]: Unable to connect", "ERROR")
+                return None
+        else:
+            self.app.interface.log("Atlas Database: Disabled", "ERROR")
+            return None

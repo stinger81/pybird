@@ -26,16 +26,16 @@ import psutil
 import os
 import csv
 
-import TAS_app_local
+import TAS_app_base
 import TCS_configApp
 import TCS_utils
 import TCS_variables
 
 
-class TUAapp(TAS_app_local.app):
+class TUAapp(TAS_app_base.app):
     def __init__(self, parameters: TCS_configApp._app_config, test: bool = False):
-        super().__init__("PY1SYS", parameters, test)
-        self.name = "PY1SYS"
+        super().__init__(parameters.app_code, parameters, test)
+        self.name = parameters.app_code
         self.version = TCS_utils.app_version()
         self.version.major = 1
         self.version.minor = 0

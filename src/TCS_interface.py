@@ -38,7 +38,13 @@ import TCS_configApp
 import TCS_utils
 import TCS_variables
 
-LOG_HEADER = "Date,Version,Session ID,Subsystem/App Name, Uptime(s),Step Count,Log Type,Log Message\n"
+WARNING = "WARNING"
+STEP_ERROR = "STEP ERROR"
+EXIT = "EXIT"
+ERROR = "ERROR"
+SYSTEM_NOTICE = "SYSTEM NOTICE"
+
+_LOG_HEADER = "Date,Version,Session ID,Subsystem/App Name, Uptime(s),Step Count,Log Type,Log Message\n"
 
 _h = "\033["
 _e = '\033[0;39;49m'
@@ -100,16 +106,12 @@ class interface:
             write_state_file(nodeName=self.sourceName)
             self.sessionID, self.startUp = read_state_file()
 
-
-        self._log_to_db_collection = None
-
         self.allow_debug = self._config.system.debug_mode or inDebug
 
         self.master_log = ''
         self.session_log = ''
         self.app_log = ''
         self.update_dir()
-
 
         if self._config.system.headless:
             self.log("Pybird Started in Headless Mode", "SYSTEM NOTICE")
@@ -136,14 +138,12 @@ class interface:
                 key = "DEV_MASTER_LOG.csv"
             self.master_log: str = self._create_log_file(key)
 
-
         if self._config.logging.enable_session_log:
             key = "SESSION_"
             if self._config.system.development_mode:
                 key = "DEV_SESSION_"
             self.session_log: str = self._create_log_file(
                 str(key + str(int(self.startUp)) + "_" + self.sessionID + "_LOG.csv"))
-
 
         if self._config.logging.enable_app_log:
             key = "APP_"
@@ -152,7 +152,6 @@ class interface:
             if self._config.system.development_mode:
                 key = "DEV_" + key
             self.app_log: str = self._create_log_file(str(key + self.sourceName + "_LOG.csv"))
-
 
     def _create_log_file(self, in_FileName: str) -> str:
         """
@@ -166,14 +165,11 @@ class interface:
         )
         if not os.path.exists(my_path):
             with open(my_path, "w", encoding="utf-8") as f:
-                f.write(LOG_HEADER)
+                f.write(_LOG_HEADER)
             if sys.platform.startswith(TCS_variables.PLATFORM_CHECK.LINUX):
                 subprocess.call(['chmod', '666', my_path])
 
         return my_path
-
-    def _add_collection(self, collection):
-        self._log_to_db_collection = collection
 
     ################################################################################################
     # region Log Exports
@@ -208,7 +204,6 @@ class interface:
         log_files = os.listdir(TCS_variables.PYBIRD_DIRECTORIES.DATA_LOG)
         self._export_log(log_files, self.select_export_location(note="ALL LOGS"))
 
-
     def export_master_log(self):
         """
         export master log
@@ -216,8 +211,6 @@ class interface:
         """
         files = self.log_list_from_keyword("MASTER")
         self._export_log(files, self.select_export_location(note="MASTER"))
-
-
 
     def export_session_log(self):
         """
@@ -261,7 +254,6 @@ class interface:
         """
         self.export_keyword("SYSAPP", select=True)
 
-
     def build_master_from_session_logs(self):
         """
         build master log from session logs
@@ -285,14 +277,12 @@ class interface:
                 with open(os.path.join(TCS_variables.PYBIRD_DIRECTORIES.DATA_LOG, file), "r", encoding="utf-8") as f:
                     lines = f.readlines()
                     TCS_utils.append_text_file(file_path, str("*********START OF " + file + "*********" + (
-                                "," * (len(LOG_HEADER.split(",")) - 1))))
+                            "," * (len(_LOG_HEADER.split(",")) - 1))))
                     for line in lines:
                         TCS_utils.append_text_file(file_path, line.strip())
                     TCS_utils.append_text_file(file_path, str("*********END OF " + file + "*********" + (
-                                "," * (len(LOG_HEADER.split(",")) - 1))))
+                            "," * (len(_LOG_HEADER.split(",")) - 1))))
                     print("Finished with: ", file)
-
-
 
     def export_keyword(self, keyword: str, select: bool = False):
         """
@@ -352,6 +342,11 @@ class interface:
         :param note:
         :return:
         """
+        print("Export Location: ")
+        print(f"\n\t{self.default_export_location(note)}\n")
+        print(f"\t- Press ENTER to confirm the location")
+        print(f"\t- Press CTRL-C to abort the export")
+        print(f"\t- Or specify a different location below")
         out_path = TCS_utils.getUserInput(in_prompt="Enter the export location",
                                           in_default=self.default_export_location(note)
                                           )
@@ -424,23 +419,6 @@ class interface:
         con_msg, file_msg = self._build_message(str(in_string), logType=logType)
         self._to_console(con_msg, logType)
         self._log_to_file(file_msg)
-
-    def log_db(self, in_string: str, logType: str = "MSG") -> None:
-        """
-        log message to:
-            console
-            local log
-            database
-
-        :param in_string: string to be logged
-        :param logType: type of log to be logged
-        :return: None       
-        """
-        logType = self._add_db_type(logType)
-        con_msg, file_msg = self._build_message(str(in_string), logType=logType)
-        self._to_console(con_msg, logType)
-        self._log_to_file(file_msg)
-        self._log_to_db(in_string, logType)
 
     def log_list(self, in_list: list, logType: str = "MSG") -> None:
         """
@@ -529,16 +507,6 @@ class interface:
             logType = self._add_debug_type(logType)
             self.log(in_string, logType=logType)
 
-    def dlog_db(self, in_string: str, logType: str = "MSG") -> None:
-        """
-        :param in_string: string to be logged
-        :param logType: type of log to be logged
-        :return: None
-        """
-        if self.allow_debug:
-            logType = self._add_debug_type(logType)
-            self.log_db(in_string=in_string, logType=logType)
-
     def dlog_list(self, in_list, logType: str = "MSG") -> None:
         """
         :param in_list: list to be logged
@@ -607,9 +575,7 @@ class interface:
             elif "EXIT" in msgType.upper():
                 msg = msg_color(msg, color="red", fmt="bold")
 
-        if self._console_available and self._config.platform.has_cli:
-            print(msg)
-        elif self._config.console.show_console:
+        if self._console_available:
             print(msg)
         elif self._config.system.test_mode:
             print(msg)
@@ -649,25 +615,6 @@ class interface:
 
             except Exception as e:
                 raise TCS_variables.PYBIRDIOError("_log_to_file error on primary method only (APP LOG)")
-
-    def _log_to_db(self, msg: str, type: str) -> None:
-        """
-        :param msg: message to be logged
-        :param type: type of log to be logged
-        :return: None
-        """
-        packet = {
-            'app_name': self.sourceName,
-            'date': datetime.now(timezone.utc),
-            'uptime': self.get_uptime(),
-            'step_count': self.get_stepCount(),
-            'log_type': type.upper(),
-            'message': msg
-        }
-        if self._log_to_db_collection != None:
-            self._log_to_db_collection.insert_one(packet)
-        else:
-            self.log("_log_to_db: No collection to log to (DB LOG)", "ERROR")
 
     def _log_dict(self, in_dict: dict, logType: str = "MSG", indent: int = 0, total_items: int = 0,
                   in_item_number: int = 1, nested: bool = False) -> int:
@@ -720,13 +667,6 @@ class interface:
         :return: message type with DEBUG appended
         """
         return "DEBUG " + message_type.upper()
-
-    def _add_db_type(self, message_type: str) -> str:
-        """
-        :param message_type: type of message to be logged
-        :return: message type with DB appended
-        """
-        return message_type.upper() + " DB"
 
     def _dict_length(self, in_dict: dict) -> int:
         """

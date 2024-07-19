@@ -41,16 +41,24 @@ class TUAapp(TAS_app.app):
 
         self.description = "TEST app"
 
+
+
     def myStart(self):
         """
         This should be used to set all variables that need to be initialized when the app starts
         """
-        self.my_db = self.connect_to_database("TEST_DB")
+
+        self.tweet = self.plugins.SocialMedia.Twitter(self)
+        self.mongo = self.plugins.DataBase.MongoDB(self)
+
+        self.my_db = self.mongo.connect_to_database("TEST_DB")
         self.tweets_DB = self.my_db.get_collection("Tweets")
         self.passcount = 0
         self.maxpass = 3
         self.test_str = "This is a test string"
         self.last_step = datetime.datetime.utcnow()
+
+
 
     def myLoad(self):
         """
@@ -96,9 +104,8 @@ class TUAapp(TAS_app.app):
         # log tweet length
         self.interface.log(str("Tweet Length " + str(len(tweet))), "INFO")
         # silently log a message to the database/local
-        self.interface.log_db(tweet, "TWEET")
         if self._app_config.app_parameters["post"]:
-            self.tweet.post_tweet(tweet)
+            self.tweet.post(tweet)
 
         self.data_interface.save("test", tweet)
 

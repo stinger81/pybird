@@ -23,26 +23,26 @@
 import os
 from contextlib import contextmanager
 
+import TCS_utils
 import TCS_variables
 import TKS_encryption
-import TCS_utils
 
 
 class TDS_file:
     def __init__(self, appName, save_key=""):
-        self.appName = appName
-        self.saveKey = save_key
-        self._app_dir = TCS_variables.PYBIRD_DIRECTORIES.PYBIRD_APP_DATA_DIR(self.appName)
+        self._appName = appName
+        self._saveKey = save_key
+        self._app_dir = TCS_variables.PYBIRD_DIRECTORIES.PYBIRD_APP_DATA_DIR(self._appName)
         if save_key == "":
-            self.encryption = False
+            self._encryption = False
         else:
-            self.encryption = True
-            self._my_aes = TKS_encryption.AES_savekey(app_name=self.appName, save_key=self.saveKey)
+            self._encryption = True
+            self._my_aes = TKS_encryption.AES_savekey(app_name=self._appName, save_key=self._saveKey)
 
     def open(self, file, mode='r', buffering=-1, encoding=None, errors=None, newline=None, closefd=True, opener=None):
 
         my_file = os.path.join(self._app_dir, file)
-        if self.encryption:
+        if self._encryption:
             return openFileEnc(file=my_file,
                                aes=self._my_aes,
                                mode=mode,
@@ -64,7 +64,7 @@ class TDS_file:
 
     def exists(self, filename):
         my_file = os.path.join(self._app_dir, filename)
-        if self.encryption:
+        if self._encryption:
             my_file = my_file + ".enc"
         return os.path.exists(my_file)
 

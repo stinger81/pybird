@@ -43,22 +43,7 @@ self.interface.log(in_string: str, logType: str = "MSG") -> None:
     :return: None
     """
 ----
-==== log_db
-[source,python]
-----
 
-self.interface.log_db(in_string: str, logType: str = "MSG") -> None:
-    """
-    log message to:
-        console
-        local log
-        database
-
-    :param in_string: string to be logged
-    :param logType: type of log to be logged
-    :return: None
-    """
-----
 ==== log_list
 [source,python]
 ----
@@ -143,20 +128,7 @@ self.interface.dlog(in_string: str, logType: str = "MSG") -> None:
     """
 
 ----
-==== dlog_db
-[source,python]
-----
-self.interface.dlog_db(in_string: str, logType: str = "MSG") -> None:
-    """
-    debug log message to:
-        console
-        local log
-        database
-    :param in_string: string to be logged
-    :param logType: type of log to be logged
-    :return: None
-    """
-----
+
 ==== dlog_list
 [source,python]
 ----

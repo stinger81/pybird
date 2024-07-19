@@ -39,7 +39,7 @@ class userInterface:
                   functionToCall=None,
                   isDefault: bool = False,
                   requireConfirmation: bool = False,
-                  confirmationCode: str="CONFIRM"):
+                  confirmationCode: str = "CONFIRM"):
         """
         Add an option to the user interface
         :param command:

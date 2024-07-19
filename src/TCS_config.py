@@ -31,8 +31,8 @@ import sys
 
 import toml
 
-import TCS_variables
 import TCS_utils
+import TCS_variables
 
 
 class TCS_config:
@@ -51,7 +51,8 @@ class TCS_config:
                 self._fullConfig = toml.load(self.file)
                 self._config = self._fullConfig["system_config"]
             except:
-                self.file = os.path.join(TCS_variables.PYBIRD_DIRECTORIES.CONFIG, TCS_variables.FILE_NAMES.SERVER_CONFIG)
+                self.file = os.path.join(TCS_variables.PYBIRD_DIRECTORIES.CONFIG,
+                                         TCS_variables.FILE_NAMES.SERVER_CONFIG)
                 self._fullConfig = toml.load(self.file)
                 self._config = self._fullConfig["system_config"]
 
@@ -67,9 +68,6 @@ class TCS_config:
         self.credentials: credentials = credentials()
 
         self._read_config()
-
-        if self.platform.force_test_mode:
-            self.system.test_mode = True
 
         if self.system.test_mode:
             self.system.debug_mode = True
@@ -92,7 +90,6 @@ class TCS_config:
         self.status._read(self._config)
         self.encryption._read(self._config)
         self.credentials._read(self._config)
-
 
     def _read_sys_argv(self):
         """
@@ -148,7 +145,6 @@ class TCS_config:
             self.session_log_length = -1
             self.app_log_length = -1
 
-
     def __str__(self) -> str:
         string_out = ""
         string_out += f"system: \n{self.system}\n"
@@ -164,6 +160,7 @@ class system_config:
     """
     System configuration
     """
+
     def __init__(self) -> None:
         self._raw = None
 
@@ -190,9 +187,7 @@ class system_config:
         self.inter_step_delay = self._raw["inter_step_delay"]
         self.enable_pybird_core_apps = self._raw["enable_pybird_core_apps"]
 
-
     def __str__(self) -> str:
-
         string_out = ""
         string_out += f"test_mode: {self.test_mode}\n"
         string_out += f"debug_mode: {self.debug_mode}\n"
@@ -210,6 +205,7 @@ class logging_config:
     """
     Logging configuration
     """
+
     def __init__(self) -> None:
         self._raw = None
 
@@ -252,6 +248,7 @@ class console_config:
     """
     Console configuration
     """
+
     def __init__(self) -> None:
         self._raw = None
 
@@ -278,6 +275,7 @@ class twitter_config:
     """
     Twitter configuration
     """
+
     def __init__(self) -> None:
         self._raw = None
 
@@ -303,14 +301,15 @@ class platform:
     """
     Platform configuration
     """
+
     def __init__(self) -> None:
-        self.has_cli = TCS_variables.PLATFORM_HAS_CLI
-        self.force_test_mode = TCS_variables.PLATFORM_FORCE_TEST_MODE
+        self.unixBased = TCS_variables.PLATFORM_UNIX_BASED
+        self.remoteServer = TCS_variables.PLATFORM_REMOTE_SERVER
 
     def __str__(self) -> str:
         string_out = ""
-        string_out += f"has_cli: {self.has_cli}\n"
-        string_out += f"force_test_mode: {self.force_test_mode}\n"
+        string_out += f"unixBased: {self.unixBased}\n"
+        string_out += f"remoteServer: {self.remoteServer}\n"
         return string_out
 
 
@@ -318,6 +317,7 @@ class status:
     """
     Status configuration
     """
+
     def __init__(self) -> None:
         self._raw = None
         self.log_length = None
@@ -341,6 +341,7 @@ class encryption:
     """
     Encryption configuration
     """
+
     def __init__(self) -> None:
         self._raw = None
         self.encrypt_app_key = None
@@ -364,6 +365,7 @@ class credentials:
     """
     Credentials configuration
     """
+
     def __init__(self) -> None:
         self._raw = None
         self.delete_dir_after_upload = True

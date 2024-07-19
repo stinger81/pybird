@@ -39,7 +39,7 @@ class keychain:
         self.version = TCS_utils.version()
 
         # self._keys: dict = dict()
-        self.interface = TCS_interface.interface("keychain",pybird_app=True)
+        self.interface = TCS_interface.interface("keychain", pybird_app=True)
         self.config = TCS_config.TCS_config()
 
         if not self.config.encryption.encrypt_app_key:
@@ -52,10 +52,9 @@ class keychain:
 
         # self.interface.log("TESTTSTS")
 
-
     ################################################################################################
     # region add UI
-    def add_twitter_key_ui(self)->None:
+    def add_twitter_key_ui(self) -> None:
         """
         Add twitter keys to apps twitter key directory
         :return:
@@ -89,8 +88,7 @@ class keychain:
         else:
             self.interface.log("Key not saved")
 
-
-    def add_atlas_key_ui(self)->None:
+    def add_atlas_key_ui(self) -> None:
         """
         add atlas keys to apps atlas key directory
         :return:
@@ -100,9 +98,9 @@ class keychain:
         print("App Information")
 
         app_name = TCS_utils.getUserInput_required_minimum_length(in_prompt="Enter App Name", in_length=4)
-        uri = TCS_utils.getUserInput(in_prompt="Enter Atlas URI (Username/Password MUST be included)",in_default="")
-        api_version = TCS_utils.getUserInput_int(in_prompt="Enter Atlas API Version ",in_default=1)
-        db_name = TCS_utils.getUserInput(in_prompt="Enter Database Name: ",in_default="")
+        uri = TCS_utils.getUserInput(in_prompt="Enter Atlas URI (Username/Password MUST be included)", in_default="")
+        api_version = TCS_utils.getUserInput_int(in_prompt="Enter Atlas API Version ", in_default=1)
+        db_name = TCS_utils.getUserInput(in_prompt="Enter Database Name: ", in_default="")
 
         if TCS_utils.getUserInput_Confirm(in_prompt="Do you want to save this key?",
                                           in_confirmation_code="CONFIRM",
@@ -115,9 +113,7 @@ class keychain:
         else:
             self.interface.log("Key not saved")
 
-
-
-    # endregion 
+    # endregion
     ################################################################################################
     ################################################################################################
     # region remove keys
@@ -220,8 +216,6 @@ class keychain:
         self._save_key_to_file(my_save_file, keys)
         self.interface.dlog("Credentials for " + in_app_name + " added!")
 
-
-
     def load_twitter_keys(self, in_app_name) -> list:
         """
         Load App keys from the apps twitter key directory
@@ -237,8 +231,6 @@ class keychain:
     ################################################################################################
     ################################################################################################
     # region mongodb credentials
-
-
 
     def _add_atlas_key(self,
                        in_appname: str,
@@ -258,10 +250,8 @@ class keychain:
 
         keys = ",".join([in_appname, in_uri, in_api_version, in_db_name])
 
-
         self._save_key_to_file(my_save_file, keys)
         self.interface.dlog("Credentials for atlas " + in_appname + " added!")
-
 
     def load_atlas_keys(self, app_name: str, db_name: str) -> list:
         """
@@ -463,8 +453,6 @@ class keychain:
 
                 self.interface.log(str("Added twitter credentials for " + appName + " from " + file))
 
-
-
                 if self.config.credentials.delete_file_after_upload:
                     self.interface.log(str("deleting: " + file_path), "DELETING")
                     os.remove(file_path)
@@ -499,7 +487,6 @@ class keychain:
                         self.interface.log(str("unable to read atlas credentials for " + appName + " from " + file),
                                            logType='ERROR')
                         continue
-
 
                 if self.config.credentials.delete_file_after_upload:
                     self.interface.log(str("deleting: " + file_path), "DELETING")
