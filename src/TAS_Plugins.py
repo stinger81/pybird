@@ -83,6 +83,7 @@ class Plugins:
 
 
 if __name__ == "__main__":
+    print(Plugins.__subclasses__())
     queue = Plugins.Utils.Queue()
     queue.push(1)
     print(queue)

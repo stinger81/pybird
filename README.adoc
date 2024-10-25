@@ -83,8 +83,33 @@ conda install -c conda-forge pyaescrypt
 
 === Linux/RaspberryPi
 
-. Install dependencies
+. Set up environment
++
+[source,commandline]
+----
+cd ~
+python -m venv pybird311 --system-site-packages
+----
 
+. Activate the environment
++
+[source,commandline]
+----
+source ~/pybird311/bin/activate
+----
+
+. Add environment to bashrc
++
+[source,commandline]
+----
+nano ~/.bashrc
+# Add
+source ~/pybird311/bin/activate
+# Save, exit
+source ~/.bashrc
+----
+. Install dependencies
++
 [source,commandline]
 ----
 sudo apt install -y python3-pip
